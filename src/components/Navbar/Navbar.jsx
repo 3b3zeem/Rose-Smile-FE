@@ -94,11 +94,11 @@ const ArabicNavbar = () => {
   };
 
   const navItems = [
-    { text: "تواصل معنا", href: "#" },
-    { text: "آخر الأخبار", href: "#" },
-    { text: "خدماتنا", href: "#" },
-    { text: "الأطباء", href: "#" },
     { text: "الرئيسية", href: "#" },
+    { text: "الأطباء", href: "#" },
+    { text: "خدماتنا", href: "#" },
+    { text: "آخر الأخبار", href: "#" },
+    { text: "تواصل معنا", href: "#" },
   ];
 
   return (
