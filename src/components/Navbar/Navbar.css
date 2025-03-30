@@ -1,0 +1,21 @@
+.NavLinks {
+  position: relative;
+  display: inline-block;
+}
+
+.NavLinks::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #ff4067;
+  transition: all 0.4s ease-in-out;
+}
+
+.NavLinks:hover::after {
+  width: 90%;
+  left: auto;
+  right: 0;
+}
