@@ -84,12 +84,12 @@ const ArabicNavbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
+    // if (
+    //   event.type === "keydown" &&
+    //   (event.key === "Tab" || event.key === "Shift")
+    // ) {
+    //   return;
+    // }
     setDrawerOpen(open);
   };
 
@@ -129,7 +129,7 @@ const ArabicNavbar = () => {
 
       {/* Mobile menu button */}
       <div className="md:hidden flex items-center gap-5">
-        <button className="text-gray-700" onClick={toggleDrawer(true)}>
+        <button className="text-gray-700 cursor-pointer" onClick={toggleDrawer(true)}>
           <Menu size={24} />
         </button>
 
@@ -176,7 +176,7 @@ const ArabicNavbar = () => {
           onKeyDown={toggleDrawer(false)}
           dir="rtl"
         >
-          <div className="flex justify-between items-center p-4 border-b">
+          <div className="flex justify-between items-center p-4 border-b cursor-pointer">
             <span className="font-bold text-lg">القائمة</span>
             <button onClick={toggleDrawer(false)}>
               <X size={24} />
