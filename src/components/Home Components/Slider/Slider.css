@@ -1,0 +1,10 @@
+.custom-dots {
+    position: absolute;
+    bottom: 20px;
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+  }
+  .custom-dots li {
+    margin: 0 5px;
+  }
