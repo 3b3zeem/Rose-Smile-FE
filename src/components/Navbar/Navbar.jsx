@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 const ArabicNavbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const toggleDrawer = (open) => (event) => {
     // if (
@@ -21,6 +22,19 @@ const ArabicNavbar = () => {
     // }
     setDrawerOpen(open);
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const scrollHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { text: "الرئيسية", href: "#" },
@@ -33,71 +47,80 @@ const ArabicNavbar = () => {
   return (
     <React.Fragment>
       <nav
-        className="sticky top-0 bg-white shadow-md w-full py-4 px-6 flex items-center justify-between z-100"
+        className="sticky top-0 bg-white shadow-md w-full py-4 px-6 flex flex-col justify-between z-100 relative"
         dir="rtl"
       >
-        {/* Navigation links - desktop view */}
-        <div className="hidden md:flex items-center">
-          {/* Login/Register button */}
-          <button className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 search cursor-pointer">
-            <span>تسجيل دخول</span>
-          </button>
+        <div className="flex items-center justify-between">
+          {/* Navigation links - desktop view */}
+          <div className="hidden md:flex items-center">
+            {/* Login/Register button */}
+            <button className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 search cursor-pointer">
+              <span>تسجيل دخول</span>
+            </button>
 
-          {/* Navigation links Normal mode */}
-          <div>
-            {navItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.href}
-                className={`text-gray-700 hover:text-blue-800 font-bold px-3 NavLinks`}
-              >
-                {item.text}
-              </Link>
-            ))}
+            {/* Navigation links Normal mode */}
+            <div>
+              {navItems.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.href}
+                  className={`text-gray-700 hover:text-blue-800 font-bold px-3 NavLinks`}
+                >
+                  {item.text}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center gap-5">
+            <button
+              className="text-gray-700 cursor-pointer"
+              onClick={toggleDrawer(true)}
+            >
+              <Menu size={24} />
+            </button>
+
+            {/* Login/Register button for mobile */}
+            <button className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-3 search">
+              <span>تسجيل دخول</span>
+            </button>
+          </div>
+
+          {/* Logo */}
+          <div className="flex items-center">
+            <svg
+              width="50"
+              height="40"
+              viewBox="0 0 50 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M25 5C18 15 8 18 8 25C8 32 15 37 25 37C35 37 42 32 42 25C42 18 32 15 25 5Z"
+                fill="white"
+                stroke="#FF4081"
+                strokeWidth="2"
+              />
+              <path
+                d="M25 5C28 12 32 15 35 18C30 18 20 18 15 18C18 15 22 12 25 5Z"
+                fill="#FF4081"
+              />
+              <path
+                d="M15 25C15 22 18 20 25 20C32 20 35 22 35 25C35 28 32 30 25 30C18 30 15 28 15 25Z"
+                fill="white"
+                stroke="#FF4081"
+                strokeWidth="1"
+              />
+            </svg>
           </div>
         </div>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden flex items-center gap-5">
-          <button
-            className="text-gray-700 cursor-pointer"
-            onClick={toggleDrawer(true)}
-          >
-            <Menu size={24} />
-          </button>
-
-          {/* Login/Register button for mobile */}
-          <button className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-3 search">
-            <span>تسجيل دخول</span>
-          </button>
-        </div>
-
-        {/* Logo */}
-        <div className="flex items-center">
-          <svg
-            width="50"
-            height="40"
-            viewBox="0 0 50 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M25 5C18 15 8 18 8 25C8 32 15 37 25 37C35 37 42 32 42 25C42 18 32 15 25 5Z"
-              fill="white"
-              stroke="#FF4081"
-              strokeWidth="2"
-            />
-            <path
-              d="M25 5C28 12 32 15 35 18C30 18 20 18 15 18C18 15 22 12 25 5Z"
-              fill="#FF4081"
-            />
-            <path
-              d="M15 25C15 22 18 20 25 20C32 20 35 22 35 25C35 28 32 30 25 30C18 30 15 28 15 25Z"
-              fill="white"
-              stroke="#FF4081"
-              strokeWidth="1"
-            />
-          </svg>
+        <div className="h-[3px] w-full bg-gray-200 absolute bottom-0 left-0">
+          <div
+            className="h-full bg-blue-800 transition-all duration-150"
+            style={{ width: `${scrollProgress}%` }}
+          ></div>
         </div>
 
         {/* MUI Drawer for mobile navigation */}
