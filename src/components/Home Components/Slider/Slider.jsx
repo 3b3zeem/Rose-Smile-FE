@@ -6,6 +6,7 @@ import "./Slider.css";
 import img1 from "../../../assets/Iamges/4c9b0095724607.5e9e2d86b5d89.jpg";
 import img2 from "../../../assets/Iamges/R.jpeg";
 import img3 from "../../../assets/Iamges/OIP.jpeg";
+import { CircleCheckBig } from "lucide-react";
 
 const DentalClinicSlider = () => {
   const settings = {
@@ -48,30 +49,32 @@ const DentalClinicSlider = () => {
   ];
 
   return (
-    <div className="container mx-auto py-6" dir="rtl">
+    <div className="container mx-auto py-12 px-4 sm:px-6" dir="rtl">
       <Slider {...settings}>
         {slides.map((slide) => (
           <div key={slide.id}>
             <div
-              className="relative h-96 md:h-[550px] bg-cover bg-center rounded-md overflow-hidden"
+              className="relative h-[70vh] sm:h-[80vh] md:h-[550px] bg-cover bg-center rounded-md overflow-hidden"
               style={{
                 backgroundImage: `url(${slide.image})`,
               }}
             >
-              {/* Overlay gradient - now from right to left */}
+              {/* Overlay gradient - from right to left */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent to-blue-900/80"></div>
 
-
               {/* Content */}
-              <div className="relative z-20 h-full flex flex-col justify-center items-end text-right p-8 md:p-16 md:max-w-2xl md:ml-auto">
-                <h2 className="text-4xl md:text-6xl text-white font-bold mb-4">
+              <div className="relative z-20 h-full flex flex-col justify-center items-end text-right p-4 sm:p-8 md:p-16 md:max-w-2xl md:ml-auto">
+                <h2 className="text-2xl sm:text-3xl md:text-6xl text-white font-bold mb-3 sm:mb-4">
                   {slide.title}
                 </h2>
-                <p className="text-lg md:text-xl text-pink-200 mb-8 leading-relaxed">
+                <p className="text-sm sm:text-lg md:text-xl text-pink-200 mb-6 sm:mb-8 leading-relaxed">
                   {slide.subtitle}
                 </p>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md transition duration-300 flex items-center search cursor-pointer">
-                  <span>{slide.buttonText}</span>
+                <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 sm:py-3 sm:px-6 rounded-md transition duration-300 flex items-center justify-center w-full sm:w-auto search cursor-pointer">
+                  <span className="flex gap-2 items-center">
+                    <CircleCheckBig size={16} />
+                    {slide.buttonText}
+                  </span>
                 </button>
               </div>
             </div>
