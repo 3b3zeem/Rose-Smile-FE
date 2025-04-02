@@ -33,7 +33,7 @@ const ArabicNavbar = () => {
   return (
     <React.Fragment>
       <nav
-        className="bg-white shadow-md w-full py-4 px-6 flex items-center justify-between"
+        className="sticky top-0 bg-white shadow-md w-full py-4 px-6 flex items-center justify-between z-100"
         dir="rtl"
       >
         {/* Navigation links - desktop view */}
