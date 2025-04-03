@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
+import { Tooltip } from "@mui/material";
+import { IoLogoWhatsapp } from "react-icons/io";
 
 const Up_top = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,15 +21,29 @@ const Up_top = () => {
   };
 
   return (
-    <motion.button
-      className="fixed bottom-10 right-12 bg-[#4f46e5] border border-[#fff] text-white p-3 rounded shadow-lg hover:bg-[#4e46e5d8] transition duration-300 z-100 cursor-pointer"
-      onClick={scrollToTop}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-      transition={{ duration: 0.3 }}
-    >
-      <ArrowUp size={25} />
-    </motion.button>
+    <React.Fragment>
+      <motion.button
+        className="fixed bottom-10 right-12 bg-[#4f46e5] border border-[#fff] text-white p-3 rounded shadow-lg hover:bg-[#4e46e5d8] transition duration-300 z-100 cursor-pointer"
+        onClick={scrollToTop}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+        transition={{ duration: 0.3 }}
+      >
+        <ArrowUp size={25} />
+      </motion.button>
+
+      <motion.button
+        className="fixed bottom-25 right-12 bg-[#46e561] border border-[#fff] text-white p-3 rounded shadow-lg z-100 cursor-pointer"
+        onClick={scrollToTop}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Tooltip title="تواصل واتس اب" placement="top">
+          <IoLogoWhatsapp size={25} />
+        </Tooltip>
+      </motion.button>
+    </React.Fragment>
   );
 };
 
