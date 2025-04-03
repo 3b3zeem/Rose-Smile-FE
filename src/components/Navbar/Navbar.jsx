@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
+
 import { Menu, X } from "lucide-react";
 import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+
+import logo from "../../assets/Iamges/logo.png"
 
 const ArabicNavbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -47,7 +46,7 @@ const ArabicNavbar = () => {
   return (
     <React.Fragment>
       <nav
-        className="sticky top-0 bg-white shadow-md w-full py-4 px-6 flex flex-col justify-between z-100 relative"
+        className="sticky top-0 bg-white shadow-md w-full p-2 px-6 flex flex-col justify-between z-100 relative"
         dir="rtl"
       >
         <div className="flex items-center justify-between">
@@ -89,30 +88,7 @@ const ArabicNavbar = () => {
 
           {/* Logo */}
           <div className="flex items-center">
-            <svg
-              width="50"
-              height="40"
-              viewBox="0 0 50 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M25 5C18 15 8 18 8 25C8 32 15 37 25 37C35 37 42 32 42 25C42 18 32 15 25 5Z"
-                fill="white"
-                stroke="#FF4081"
-                strokeWidth="2"
-              />
-              <path
-                d="M25 5C28 12 32 15 35 18C30 18 20 18 15 18C18 15 22 12 25 5Z"
-                fill="#FF4081"
-              />
-              <path
-                d="M15 25C15 22 18 20 25 20C32 20 35 22 35 25C35 28 32 30 25 30C18 30 15 28 15 25Z"
-                fill="white"
-                stroke="#FF4081"
-                strokeWidth="1"
-              />
-            </svg>
+            <img src={logo} alt="logo" width={90} />
           </div>
         </div>
 
