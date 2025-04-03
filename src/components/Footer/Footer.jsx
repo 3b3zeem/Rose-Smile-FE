@@ -67,14 +67,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter and WhatsApp Button */}
-        <div className="mt-8 flex flex-col md:flex-row items-center justify-end">
-          {/* WhatsApp Button */}
-          <Tooltip title="تواصل واتس اب" placement="top">
-            <IoLogoWhatsapp size={50} className="bg-green-500  p-2 rounded-full cursor-pointer" />
-          </Tooltip>
-        </div>
-
         {/* Divider */}
         <hr className="my-6 border-blue-500" />
 
