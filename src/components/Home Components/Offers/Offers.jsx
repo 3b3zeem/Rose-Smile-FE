@@ -7,7 +7,6 @@ import img2 from "../../../assets/Iamges/offer2.png";
 import img3 from "../../../assets/Iamges/offer3.png";
 
 const Offers = () => {
-  // Sample services data
   const services = [
     {
       id: 1,
