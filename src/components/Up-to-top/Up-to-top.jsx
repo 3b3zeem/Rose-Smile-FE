@@ -7,6 +7,9 @@ import { IoLogoWhatsapp } from "react-icons/io";
 const Up_top = () => {
   const [isVisible, setIsVisible] = useState(false);
 
+  const phoneNumber = "+966508533232";
+  const whatsappLink = `https://wa.me/${phoneNumber}`;
+
   useEffect(() => {
     const toggleVisibility = () => {
       setIsVisible(window.scrollY > 200);
@@ -34,9 +37,9 @@ const Up_top = () => {
 
       <motion.button
         className="fixed bottom-25 right-12 bg-[#46e561] border border-[#fff] text-white p-3 rounded shadow-lg z-100 cursor-pointer"
-        onClick={scrollToTop}
+        onClick={() => window.open(whatsappLink, "_blank")}
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
         <Tooltip title="تواصل واتس اب" placement="top">

@@ -50,18 +50,17 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">اتصل بنا</h3>
             <ul className="space-y-2 text-right">
               <li className="flex items-center justify-end gap-2 cursor-pointer">
-                <span dir="ltr">812-255 (237) 681</span>
-                <Phone className="w-4 h-4" />
+                <a
+                  href="tel:+966508533232"
+                  className="text-white hover:underline flex items-center gap-2 duration-200 transition-all"
+                >
+                  <span dir="ltr" className="">+966 50 853 3232</span>
+                  <Phone className="w-4 h-4" />
+                </a>
               </li>
               <li className="flex items-center justify-end gap-2 cursor-pointer">
                 <span>fildineesoe@gmail.com</span>
                 <Mail className="w-4 h-4" />
-              </li>
-              <li className="flex items-center justify-end gap-2 cursor-pointer">
-                <div className="text-right">
-                  <p>مصر</p>
-                </div>
-                <MapPin className="w-4 h-4" />
               </li>
             </ul>
           </div>
