@@ -39,6 +39,7 @@ const ArabicNavbar = () => {
     { text: "الرئيسية", href: "#" },
     { text: "الأطباء", href: "#" },
     { text: "خدماتنا", href: "/Services" },
+    { text: "السكاشن المتاحة", href: "/sections" },
     { text: "آخر الأخبار", href: "#" },
     { text: "تواصل معنا", href: "#" },
   ];
