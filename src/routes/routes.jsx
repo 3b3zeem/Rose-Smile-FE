@@ -2,10 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import LayOut from "../layouts/Layout.jsx";
 import { lazy, Suspense } from "react";
 import NotFound from "../components/NotFound/NotFound.jsx";
-import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy.jsx";
 
 const Loader = lazy(() => import("../layouts/Loader.jsx"));
 const Home = lazy(() => import("../pages/Home/Home.jsx"));
+const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy/PrivacyPolicy.jsx"));
 const Services = lazy(() => import("../pages/Service/Services.jsx"));
 const ServiceId = lazy(() => import("../pages/Service/ServiceId/ServiceId.jsx"));
 const Sections = lazy(() => import("../pages/Section/Sections.jsx"));

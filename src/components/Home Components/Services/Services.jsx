@@ -1,10 +1,10 @@
 import React from "react";
 import Slider from "react-slick";
 import { Calendar, Info, ChevronLeft, ChevronRight } from "lucide-react";
-import { useAllServices } from "../../../hooks/Services/useServices";
+import { useSomeServices } from "../../../hooks/Services/useServices";
 
 const Services = () => {
-  const { data: services, loading, error } = useAllServices();
+  const { data: services, loading, error } = useSomeServices();
 
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
@@ -30,16 +30,16 @@ const Services = () => {
     dots: false,
     infinite: services.length > 1,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(services.length, 3),
     slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    nextArrow: services.length > 1 ? <NextArrow /> : null,
+    prevArrow: services.length > 1 ? <PrevArrow /> : null,
     rtl: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: Math.min(services.length, 2),
           slidesToScroll: 1,
         },
       },
@@ -77,41 +77,49 @@ const Services = () => {
 
       {/* Services Slider */}
       <div className="px-2 md:px-4">
-        <Slider {...settings}>
-          {services.map((service) => (
-            <div key={service._id} className="p-2 md:p-3">
-              <div className="flex flex-col items-center text-center h-100">
-                <div className="w-full h-60 rounded-lg overflow-hidden mb-2 md:mb-4">
-                  <img
-                    src={service.image.url}
-                    alt={service.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* Title */}
-                <h3 className="text-lg md:text-xl font-bold text-pink-500 mb-2 truncate w-full">
-                  {service.title}
-                </h3>
-                {/* Buttons */}
-                <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-center mt-auto">
-                  <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
-                    <span className="flex items-center gap-2">
-                      <Calendar size={16} />
-                      <span>احجـز موعدك</span>
-                    </span>
-                  </button>
+        {loading ? (
+          <p className="text-center text-lg text-blue-700 font-bold">
+            جارٍ تحميل العروض...
+          </p>
+        ) : !services.length ? (
+          <p className="text-center text-gray-500">لا توجد عروض متاحة حالياً.</p>
+        ) : (
+          <Slider {...settings}>
+            {services.map((service) => (
+              <div key={service._id} className="p-2 md:p-3">
+                <div className="flex flex-col items-center text-center h-100">
+                  <div className="w-full h-60 rounded-lg overflow-hidden mb-2 md:mb-4">
+                    <img
+                      src={service.image.url}
+                      alt={service.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Title */}
+                  <h3 className="text-lg md:text-xl font-bold text-pink-500 mb-2 truncate w-full">
+                    {service.title}
+                  </h3>
+                  {/* Buttons */}
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-center mt-auto">
+                    <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
+                      <span className="flex items-center gap-2">
+                        <Calendar size={16} />
+                        <span>احجـز موعدك</span>
+                      </span>
+                    </button>
 
-                  <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
-                    <span className="flex items-center gap-2">
-                      <Info size={16} />
-                      <span>التفاصيل</span>
-                    </span>
-                  </button>
+                    <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
+                      <span className="flex items-center gap-2">
+                        <Info size={16} />
+                        <span>التفاصيل</span>
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        )}
       </div>
     </div>
   );
