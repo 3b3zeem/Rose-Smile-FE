@@ -38,7 +38,7 @@ const ArabicNavbar = () => {
   const navItems = [
     { text: "الرئيسية", href: "#" },
     { text: "الأطباء", href: "#" },
-    { text: "خدماتنا", href: "#" },
+    { text: "خدماتنا", href: "/Services" },
     { text: "آخر الأخبار", href: "#" },
     { text: "تواصل معنا", href: "#" },
   ];
