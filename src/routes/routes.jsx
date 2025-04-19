@@ -10,6 +10,8 @@ const Services = lazy(() => import("../pages/Service/Services.jsx"));
 const ServiceId = lazy(() => import("../pages/Service/ServiceId/ServiceId.jsx"));
 const Sections = lazy(() => import("../pages/Section/Sections.jsx"));
 const SectionId = lazy(() => import("../pages/Section/SectionId/SectionId.jsx"));
+const DoctorList = lazy(() => import("../pages/Doctors/DoctorList.jsx"));
+const DoctorDetail = lazy(() => import("../pages/Doctors/DoctorDetails.jsx"));
 
 const routes = createBrowserRouter([
   {
@@ -64,6 +66,23 @@ const routes = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: "doctors",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <DoctorList />
+          </Suspense>
+        ),
+      },
+      {
+        path: "doctor/:slug",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <DoctorDetail />
+          </Suspense>
+        ),
+      },
+
       { path: "*", element: <NotFound /> },
 
     ],
