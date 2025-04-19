@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { useAllServices } from "../../hooks/Services/useServices";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const [page, setPage] = useState(1);
@@ -120,13 +121,13 @@ const Services = () => {
                       <p className="text-gray-600 text-sm flex-1 line-clamp-3 truncate">
                         {service.desc}
                       </p>
-                      <div className="flex gap-2 mt-4">
-                        <button className="bg-blue-600 text-white py-2 px-4 rounded flex-1 cursor-pointer hover:bg-blue-500 transition-all duration-200">
+                      <div className="flex gap-2 mt-4 justify-between">
+                        <button className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-500 transition-all duration-200">
                           احجز موعد
                         </button>
-                        <button className="bg-gray-200 text-gray-800 py-2 px-4 rounded flex-1 cursor-pointer hover:bg-gray-300 transition-all duration-200">
+                        <Link to={`/service/${service._id}`} className="bg-gray-200 text-gray-800 py-2 px-4 rounded cursor-pointer hover:bg-gray-300 transition-all duration-200">
                           التفاصيل
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </div>
