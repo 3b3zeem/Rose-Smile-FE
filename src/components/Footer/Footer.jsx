@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Tooltip } from "@mui/material";
 import { IoLogoWhatsapp } from "react-icons/io";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -71,7 +72,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center text-sm">
-          <p>© جميع الحقوق محفوظة بواسطة</p>
+          <Link to={"/PrivacyPolicy"}>© جميع الحقوق محفوظة بواسطة</Link>
         </div>
       </div>
     </footer>

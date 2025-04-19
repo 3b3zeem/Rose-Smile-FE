@@ -1,34 +1,10 @@
 import React from "react";
 import Slider from "react-slick";
 import { Calendar, Info, ChevronLeft, ChevronRight } from "lucide-react";
-
-import img1 from "../../../assets/Iamges/offer1.png";
-import img2 from "../../../assets/Iamges/offer2.png";
-import img3 from "../../../assets/Iamges/offer3.png";
+import { useAllServices } from "../../../hooks/Services/useServices";
 
 const Services = () => {
-  const services = [
-    {
-      id: 1,
-      image: img1,
-      title: "خدمة زراعة الأسنان",
-    },
-    {
-      id: 2,
-      image: img2,
-      title: "خدمة زراعة الأسنان",
-    },
-    {
-      id: 3,
-      image: img3,
-      title: "خدمة زراعة الأسنان",
-    },
-    {
-      id: 4,
-      image: img2,
-      title: "خدمة تجميل الأسنان",
-    },
-  ];
+  const { data: services, loading, error } = useAllServices();
 
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
@@ -52,7 +28,7 @@ const Services = () => {
   // Slider settings
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: services.length > 1,
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
@@ -77,6 +53,14 @@ const Services = () => {
     ],
   };
 
+  if (loading) {
+    return <div className="text-center p-8">جاري التحميل...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center p-8 text-red-600">{error}</div>;
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 font-sans">
       {/* Header Section */}
@@ -95,24 +79,21 @@ const Services = () => {
       <div className="px-2 md:px-4">
         <Slider {...settings}>
           {services.map((service) => (
-            <div key={service.id} className="p-2 md:p-3">
-              <div className="flex flex-col items-center text-center">
-                {/* Image Container */}
-                <div className="w-full rounded-lg overflow-hidden mb-2 md:mb-4">
+            <div key={service._id} className="p-2 md:p-3">
+              <div className="flex flex-col items-center text-center h-100">
+                <div className="w-full h-60 rounded-lg overflow-hidden mb-2 md:mb-4">
                   <img
-                    src={service.image}
+                    src={service.image.url}
                     alt={service.title}
-                    className="w-full aspect-[4/3] md:aspect-[16/9] object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
-
                 {/* Title */}
-                <h3 className="text-lg md:text-xl font-bold text-pink-500 mb-2 md:mb-4">
+                <h3 className="text-lg md:text-xl font-bold text-pink-500 mb-2 truncate w-full">
                   {service.title}
                 </h3>
-
                 {/* Buttons */}
-                <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-center mt-2">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-center mt-auto">
                   <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
                     <span className="flex items-center gap-2">
                       <Calendar size={16} />

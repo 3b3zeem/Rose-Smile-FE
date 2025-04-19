@@ -2,41 +2,18 @@ import React from "react";
 import Slider from "react-slick";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 
-import img1 from "../../../assets/Iamges/offer1.png";
-import img2 from "../../../assets/Iamges/offer2.png";
-import img3 from "../../../assets/Iamges/offer3.png";
+import useOffers from "../../../hooks/HomeComponents/useOffers";
+import { useNavigate } from "react-router-dom";
 
 const Offers = () => {
-  const services = [
-    {
-      id: 1,
-      image: img1,
-      title: "زراعة الأسنان",
-      description: "زراعة الأسنان بأحدث التقنيات وأفضل الخامات",
-      buttonText: "احجـز موعدك",
-    },
-    {
-      id: 2,
-      image: img2,
-      title: "تركيبات الأسنان",
-      description: "تركيبات أسنان طبيعية بأعلى جودة",
-      buttonText: "احجـز موعدك",
-    },
-    {
-      id: 3,
-      image: img3,
-      title: "تجميل الأسنان",
-      description: "خدمات تجميل الأسنان لابتسامة مثالية",
-      buttonText: "احجـز موعدك",
-    },
-    {
-      id: 4,
-      image: img2,
-      title: "تركيبات الأسنان",
-      description: "تركيبات أسنان طبيعية بأعلى جودة",
-      buttonText: "احجـز موعدك",
-    },
-  ];
+  const { offers, loading } = useOffers();
+  const navigate = useNavigate();
+
+  const handleNavigate = (type, reference) => {
+    const path = `/${type}/${reference}`;
+    console.log(path);
+    navigate(path);
+  };
 
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
@@ -99,39 +76,47 @@ const Offers = () => {
 
       {/* Services Slider */}
       <div className="px-2 md:px-4">
-        <Slider {...settings}>
-          {services.map((service) => (
-            <div key={service.id} className="p-2 md:p-3 h-full">
-              <div className="relative bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-80 md:h-96">
-                {/* Image covering entire card */}
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  className="w-full h-full object-cover aspect-[4/3] md:aspect-auto"
-                />
+        {loading ? (
+          <p className="text-center text-lg text-blue-700 font-bold">
+            جارٍ تحميل العروض...
+          </p>
+        ) : !offers.length ? (
+          <p className="text-center text-red-500">لا توجد عروض متاحة حالياً.</p>
+        ) : (
+          <Slider {...settings}>
+            {offers.map((offer) => (
+              <div key={offer.id} className="p-2 md:p-3 h-full">
+                <div className="relative bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-80 md:h-96">
+                  {/* Image covering entire card */}
+                  <img
+                    src={offer.image.backgroundLarge}
+                    alt={offer.title}
+                    className="w-full h-full object-cover aspect-[4/3] md:aspect-auto"
+                  />
 
-                {/* Gradient overlay for better text visibility */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
+                  {/* Gradient overlay for better text visibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
 
-                {/* Text content overlay */}
-                <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-end items-end">
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-100 text-sm md:text-base mb-4 md:mb-6">
-                    {service.description}
-                  </p>
-                  <button className="bg-blue-600 text-white py-2 px-4 md:px-6 rounded w-full md:w-fit search cursor-pointer">
-                    <span className="flex items-center gap-2 justify-center">
-                      <Calendar size={16} />
-                      {service.buttonText}
-                    </span>
-                  </button>
+                  {/* Text content overlay */}
+                  <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-end items-end">
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">
+                      {offer.title}
+                    </h3>
+                    <p className="text-gray-100 text-sm md:text-base mb-4 md:mb-6">
+                      {offer.desc}
+                    </p>
+                    <button  onClick={() => handleNavigate(offer.type, offer.reference)} className="bg-blue-600 text-white py-2 px-4 md:px-6 rounded w-full md:w-fit search cursor-pointer">
+                      <span className="flex items-center gap-2 justify-center">
+                        <Calendar size={16} />
+                        احجـز موعدك
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        )}
       </div>
     </div>
   );

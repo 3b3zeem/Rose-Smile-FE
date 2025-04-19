@@ -26,7 +26,7 @@ const Up_top = () => {
   return (
     <React.Fragment>
       <motion.button
-        className="fixed bottom-10 right-12 bg-[#4f46e5] border border-[#fff] text-white p-3 rounded shadow-lg hover:bg-[#4e46e5d8] transition duration-300 z-100 cursor-pointer"
+        className="fixed bottom-8 left-8 bg-[#4f46e5] border border-[#fff] text-white p-3 rounded shadow-lg hover:bg-[#4e46e5d8] transition duration-300 z-100 cursor-pointer"
         onClick={scrollToTop}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
@@ -36,7 +36,7 @@ const Up_top = () => {
       </motion.button>
 
       <motion.button
-        className="fixed bottom-25 right-12 bg-[#46e561] border border-[#fff] text-white p-3 rounded shadow-lg z-100 cursor-pointer"
+        className="fixed bottom-8 right-8 bg-[#46e561] border border-[#fff] text-white p-3 rounded shadow-lg z-100 cursor-pointer"
         onClick={() => window.open(whatsappLink, "_blank")}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
