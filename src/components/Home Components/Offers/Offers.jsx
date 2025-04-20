@@ -11,7 +11,6 @@ const Offers = () => {
 
   const handleNavigate = (type, reference) => {
     const path = `/${type}/${reference}`;
-    console.log(path);
     navigate(path);
   };
 
@@ -37,18 +36,18 @@ const Offers = () => {
   // Slider settings
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: offers.length > 1,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(offers.length, 3),
     slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    nextArrow: offers.length > 1 ? <NextArrow /> : null,
+    prevArrow: offers.length > 1 ? <PrevArrow /> : null,
     rtl: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: Math.min(offers.length, 2),
           slidesToScroll: 1,
         },
       },
@@ -81,7 +80,9 @@ const Offers = () => {
             جارٍ تحميل العروض...
           </p>
         ) : !offers.length ? (
-          <p className="text-center text-red-500">لا توجد عروض متاحة حالياً.</p>
+          <p className="text-center text-gray-500">
+            لا توجد عروض متاحة حالياً.
+          </p>
         ) : (
           <Slider {...settings}>
             {offers.map((offer) => (
@@ -105,7 +106,12 @@ const Offers = () => {
                     <p className="text-gray-100 text-sm md:text-base mb-4 md:mb-6">
                       {offer.desc}
                     </p>
-                    <button  onClick={() => handleNavigate(offer.type, offer.reference)} className="bg-blue-600 text-white py-2 px-4 md:px-6 rounded w-full md:w-fit search cursor-pointer">
+                    <button
+                      onClick={() =>
+                        handleNavigate(offer.type, offer.reference)
+                      }
+                      className="bg-blue-600 text-white py-2 px-4 md:px-6 rounded w-full md:w-fit search cursor-pointer"
+                    >
                       <span className="flex items-center gap-2 justify-center">
                         <Calendar size={16} />
                         احجـز موعدك
