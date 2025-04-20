@@ -71,6 +71,36 @@ const doctors = [
     experience: 14,
     image: doc1,
   },
+  {
+    id: 1,
+    name: "الدكتور أحمد السنهوري",
+    firstName: "أحمد",
+    slug: "ahmed-sanhouri",
+    specialty: "طب و جراحة الأسنان",
+    certifications: "بكالوريوس طب وجراحة الفم والأسنان جامعة الإسكندرية",
+    experience: 14,
+    image: doc1,
+  },
+  {
+    id: 1,
+    name: "الدكتور أحمد السنهوري",
+    firstName: "أحمد",
+    slug: "ahmed-sanhouri",
+    specialty: "طب و جراحة الأسنان",
+    certifications: "بكالوريوس طب وجراحة الفم والأسنان جامعة الإسكندرية",
+    experience: 14,
+    image: doc1,
+  },
+  {
+    id: 1,
+    name: "الدكتور أحمد السنهوري",
+    firstName: "أحمد",
+    slug: "ahmed-sanhouri",
+    specialty: "طب و جراحة الأسنان",
+    certifications: "بكالوريوس طب وجراحة الفم والأسنان جامعة الإسكندرية",
+    experience: 14,
+    image: doc1,
+  },
 ];
 
 export default doctors;
