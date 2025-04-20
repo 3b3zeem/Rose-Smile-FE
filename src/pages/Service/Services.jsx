@@ -4,7 +4,7 @@ import { useAllServices } from "../../hooks/Services/useServices";
 import { Link, useSearchParams } from "react-router-dom";
 import { useSectionTitles } from "../../hooks/Sections/UseSections";
 
-import "./Services.css"
+import "./Services.css";
 
 const Services = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,6 +14,7 @@ const Services = () => {
   const searchTerm = searchParams.get("search") || "";
   const page = parseInt(searchParams.get("page")) || 1;
   const selectedSectionIds = searchParams.getAll("sectionIds");
+  const sortOption = searchParams.get("sort") || "";
 
   const { data: services, loading, error, pagination } = useAllServices();
   const {
@@ -67,6 +68,21 @@ const Services = () => {
     });
   };
 
+  // * Sort option state
+  const handleSortChange = (sortValue) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("sort", sortValue);
+      newParams.set("page", "1");
+      return newParams;
+    });
+    setIsSortOpen(false);
+  };
+  const getSortLabel = () => {
+    if (!sortOption) return "الكل";
+    return sortOption === "createdAt:desc" ? "ترتيب بالأحدث" : "ترتيب بالأسماء";
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 font-sans">
       {/* Header */}
@@ -96,9 +112,7 @@ const Services = () => {
               onClick={() => setIsSortOpen(!isSortOpen)}
               className="w-full py-2 px-4 rounded-lg border border-gray-300 bg-white text-gray-700 flex items-center justify-between text-right transition-all duration-200 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
-              <span>
-                ترتيب حسب
-              </span>
+              <span>{getSortLabel()}</span>
               <ChevronDown
                 size={20}
                 className={`transition-transform duration-200 ${isSortOpen ? "rotate-180" : ""}`}
@@ -107,19 +121,25 @@ const Services = () => {
             {isSortOpen && (
               <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
                 <button
-                  className="w-full py-2 px-4 text-right text-gray-700 hover:bg-blue-100 transition-all duration-200"
+                  onClick={() => handleSortChange("")}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${!sortOption ? "bg-blue-100 text-blue-700 font-semibold" : "text-gray-700 hover:bg-blue-100"
+                    }`}
+                >
+                  الكل
+                </button>
+                <button
+                  onClick={() => handleSortChange("createdAt:desc")}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${sortOption === "createdAt:desc" ? "bg-blue-100 text-blue-700 font-semibold" : "text-gray-700 hover:bg-blue-100"
+                    }`}
                 >
                   ترتيب بالأحدث
                 </button>
                 <button
-                  className="w-full py-2 px-4 text-right text-gray-700 hover:bg-blue-100 transition-all duration-200"
+                  onClick={() => handleSortChange("title:asc")}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${sortOption === "title:asc" ? "bg-blue-100 text-blue-700 font-semibold" : "text-gray-700 hover:bg-blue-100"
+                    }`}
                 >
                   ترتيب بالأسماء
-                </button>
-                <button
-                  className="w-full py-2 px-4 text-right text-gray-700 hover:bg-blue-100 transition-all duration-200"
-                >
-                  ترتيب بالأشهر
                 </button>
               </div>
             )}
@@ -131,11 +151,10 @@ const Services = () => {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Filter Sidebar (Hidden on mobile by default) */}
         <div
-          className={`fixed md:static inset-0 top-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-md border-r border-gray-200 p-6 transform transition-transform duration-300 md:w-1/4 md:transform-none ${
-            isFilterOpen
+          className={`fixed md:static inset-0 top-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-md border-r border-gray-200 p-6 transform transition-transform duration-300 md:w-1/4 md:transform-none ${isFilterOpen
               ? "translate-x-0"
               : "-translate-x-full md:translate-x-0"
-          }`}
+            }`}
         >
           <div className="flex justify-end items-center mb-6 md:hidden mt-20">
             <button
@@ -146,14 +165,14 @@ const Services = () => {
             </button>
           </div>
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">الأقسام</h3>
-            {sectionsLoading ? (
-              <div className="text-gray-600">جاري تحميل الفئات...</div>
-            ) : sectionsError ? (
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              الأقسام
+            </h3>
+            {sectionsError ? (
               <div className="text-red-600">{sectionsError}</div>
             ) : (
               <div className="space-y-2">
-              {sections.map((section) => (
+                {sections.map((section) => (
                   <div
                     key={section.id}
                     className="flex items-center gap-3 text-right"
@@ -200,9 +219,7 @@ const Services = () => {
 
         {/* Services Grid */}
         <div className="flex-1">
-          {loading ? (
-            <div className="text-center p-8">جاري التحميل...</div>
-          ) : error ? (
+          {error ? (
             <div className="text-center p-8 text-red-600">{error}</div>
           ) : services.length === 0 ? (
             <div className="text-center p-8 text-gray-600">
