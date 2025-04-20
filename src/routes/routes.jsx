@@ -75,7 +75,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "doctor/:slug",
+        path: "doctor/:doctorId",
         element: (
           <Suspense fallback={<Loader />}>
             <DoctorDetail />
