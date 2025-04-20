@@ -8,20 +8,11 @@ import {
   Linkedin,
 } from "lucide-react";
 
-import img1 from "../../../assets/Iamges/d1.png";
-import img2 from "../../../assets/Iamges/d2.png";
-import img3 from "../../../assets/Iamges/d3.png";
 import { Link } from "react-router-dom";
+import { useSomeDoctors } from "../../../hooks/Doctors/useDoctor";
 
 const DoctorsTeam = () => {
-  const doctors = [
-    { name: "Doctor's Name", specialty: "NEUROLOGY", image: img1 },
-    { name: "Doctor's Name", specialty: "NEUROLOGY", image: img2 },
-    { name: "Doctor's Name", specialty: "NEUROLOGY", image: img3 },
-    { name: "Doctor's Name", specialty: "NEUROLOGY", image: img2 },
-    { name: "Doctor's Name", specialty: "NEUROLOGY", image: img3 },
-    { name: "Doctor's Name", specialty: "NEUROLOGY", image: img3 },
-  ];
+  const { doctors, loading, error } = useSomeDoctors({ page: 1, size: 5 });
 
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
@@ -45,18 +36,18 @@ const DoctorsTeam = () => {
   // Slider settings
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: doctors.length > 1,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(doctors.length, 3),
     slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    nextArrow: doctors.length > 1 ? <NextArrow /> : null,
+    prevArrow: doctors.length > 1 ? <PrevArrow /> : null,
     rtl: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: Math.min(doctors.length, 2),
           slidesToScroll: 1,
         },
       },
@@ -84,55 +75,66 @@ const DoctorsTeam = () => {
         </p>
 
         <div className="relative px-6">
-          <Slider {...settings} className="doctors-slider">
-            {doctors.map((doctor, index) => (
-              <div key={index} className="px-2">
-                <div className="bg-white rounded-lg overflow-hidden shadow-md h-[600px] flex flex-col">
-                  <div className="h-full overflow-hidden hover:scale-110 duration-700 transition-all cursor-pointer">
-                    <img
-                      src={doctor.image}
-                      alt={doctor.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  <div className="bg-pink-100 p-4 text-center flex-grow flex flex-col justify-center">
-                    <h3 className="text-lg font-medium">{doctor.name}</h3>
-                    <p className="text-blue-900 font-bold">
-                      {doctor.specialty}
-                    </p>
-
-                    <div className="flex justify-center gap-3 mt-2">
-                      <Link
-                        to={"#"}
-                        className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
-                      >
-                        <Linkedin size={18} />
-                      </Link>
-                      <Link
-                        to={"#"}
-                        className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
-                      >
-                        <Facebook size={18} />
-                      </Link>
-                      <Link
-                        to={"#"}
-                        className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
-                      >
-                        <Instagram size={18} />
-                      </Link>
+          {loading ? (
+            <p className="text-center text-gray-600">جاري تحميل البيانات...</p>
+          ) : error ? (
+            <p className="text-center text-red-600">{error}</p>
+          ) : doctors.length === 0 ? (
+            <p className="text-center text-gray-600">لا يوجد أطباء متاحون</p>
+          ) : (
+            <Slider {...settings} className="doctors-slider">
+              {doctors.map((doctor) => (
+                <div key={doctor._id} className="px-2">
+                  <div className="bg-white rounded-lg overflow-hidden shadow-md h-[600px] flex flex-col">
+                    <div className="h-full overflow-hidden hover:scale-110 duration-700 transition-all cursor-pointer">
+                      <img
+                        src={doctor.image || "/path/to/default-image.png"}
+                        alt={doctor.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  </div>
 
-                  <div className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-4 text-center cursor-pointer relative">
-                    <button className="font-medium cursor-pointer">
-                      View Profile
-                    </button>
+                    <div className="bg-pink-100 p-4 text-center flex-grow flex flex-col justify-center">
+                      <h3 className="text-lg font-medium">{doctor.name}</h3>
+                      <p className="text-blue-900 font-bold">
+                        {doctor.specialization || "غير محدد"}
+                      </p>
+
+                      <div className="flex justify-center gap-3 mt-2">
+                        <Link
+                          to={doctor.linkedin || "#"}
+                          className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
+                        >
+                          <Linkedin size={18} />
+                        </Link>
+                        <Link
+                          to={doctor.facebook || "#"}
+                          className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
+                        >
+                          <Facebook size={18} />
+                        </Link>
+                        <Link
+                          to={doctor.instagram || "#"}
+                          className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-10 h-10 flex items-center justify-center"
+                        >
+                          <Instagram size={18} />
+                        </Link>
+                      </div>
+                    </div>
+
+                    <Link
+                      to={`/doctor/${doctor._id}`}
+                      className="font-medium cursor-pointer"
+                    >
+                      <div className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-4 text-center cursor-pointer relative">
+                        View Profile
+                      </div>
+                    </Link>
                   </div>
                 </div>
-              </div>
-            ))}
-          </Slider>
+              ))}
+            </Slider>
+          )}
         </div>
       </div>
     </div>

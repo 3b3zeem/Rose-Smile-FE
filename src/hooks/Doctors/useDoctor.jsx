@@ -32,4 +32,30 @@ const useDoctors = ({ page = 1, size = 8, search = "" }) => {
   return { doctors, totalDoctors, totalPages, loading, error };
 };
 
+export const useSomeDoctors = ({ page = 1, size = 5 }) => {
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams({ page, size });
+
+        const res = await axios.get(`http://localhost:5000/api/v1/doctor?${params.toString()}`);
+        setDoctors(res.data.doctors || []);
+      } catch (err) {
+        setError("فشل في تحميل بيانات الأطباء");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, [page, size]);
+
+  return { doctors, loading, error };
+};
+
 export default useDoctors;

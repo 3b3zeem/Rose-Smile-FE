@@ -34,11 +34,11 @@ const DoctorDetail = () => {
           </button>
         </div>
         <div>
-          <img
+          {/* <img
             src={doctor.image.url}
             alt={doctor.name}
             className="rounded shadow-lg"
-          />
+          /> */}
         </div>
       </div>
     </div>
