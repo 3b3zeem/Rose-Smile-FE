@@ -95,7 +95,7 @@ const Services = () => {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="ابحث عن خدمة..."
+              placeholder="...ابحث عن خدمة"
               value={searchTerm}
               onChange={handleSearch}
               className="w-full py-2 px-4 pr-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-right transition-all duration-200"

@@ -91,13 +91,13 @@ const DoctorList = () => {
             {doctors.map((doctor) => (
               <div
                 key={doctor._id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden text-center"
+                className="bg-white shadow-md rounded overflow-hidden text-center"
               >
-                <img
+                {/* <img
                   src={doctor.image.url}
                   alt={doctor.name}
                   className="w-full object-cover"
-                />
+                /> */}
                 <div className="p-4 bg-blue-50">
                   <h3 className="text-blue-800 font-semibold">{doctor.name}</h3>
                   <p className="text-gray-600">{doctor.specialization}</p>
@@ -106,7 +106,7 @@ const DoctorList = () => {
                   </p>
                   <Link
                     to={`/doctor/${doctor._id}`}
-                    className="text-blue-800 mt-2 inline-block underline"
+                    className="text-blue-800 mt-2 inline-block hover:underline"
                   >
                     رابط الموقع الشخصي
                   </Link>

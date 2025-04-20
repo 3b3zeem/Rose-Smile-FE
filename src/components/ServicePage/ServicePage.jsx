@@ -28,7 +28,7 @@ export default function ServicePage () {
               height="194"
               image={M1}
               alt="Paella dish"
-            />{" "}
+            />
 
             </Card>
           </Grid>
