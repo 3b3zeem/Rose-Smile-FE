@@ -1,56 +1,129 @@
-import React, { useState, useMemo } from "react";
-import { Search, Filter, X } from "lucide-react";
+import React, { useState } from "react";
+import { Search, Filter, X, ChevronDown } from "lucide-react";
 import { useAllServices } from "../../hooks/Services/useServices";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useSectionTitles } from "../../hooks/Sections/UseSections";
+
+import "./Services.css"
 
 const Services = () => {
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const size = 6;
+  const [isSortOpen, setIsSortOpen] = useState(false);
 
+  const searchTerm = searchParams.get("search") || "";
+  const page = parseInt(searchParams.get("page")) || 1;
+  const selectedSectionIds = searchParams.getAll("sectionIds");
+
+  const { data: services, loading, error, pagination } = useAllServices();
   const {
-    data: services,
-    loading,
-    error,
-    pagination,
-  } = useAllServices(page, size);
+    sections,
+    loading: sectionsLoading,
+    error: sectionsError,
+  } = useSectionTitles();
 
-  const filteredServices = useMemo(() => {
-    let result = services;
-    if (searchTerm) {
-      const lowerSearch = searchTerm.toLowerCase();
-      result = result.filter((service) =>
-        service.title.toLowerCase().includes(lowerSearch)
-      );
-    }
-    return result;
-  }, [services, searchTerm]);
-
+  // * Search term state
   const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setPage(1);
+    const newSearchTerm = e.target.value;
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (newSearchTerm) {
+        newParams.set("search", newSearchTerm);
+        newParams.set("page", "1");
+      } else {
+        newParams.delete("search");
+      }
+      return newParams;
+    });
+  };
+
+  // * Pagination state
+  const handlePageChange = (newPage) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", newPage.toString());
+      return newParams;
+    });
+  };
+
+  // * Selected section ids state
+  const handleCategoryChange = (sectionId) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      const currentSectionIds = newParams.getAll("sectionIds");
+
+      if (currentSectionIds.includes(sectionId)) {
+        // Remove the sectionId if already selected
+        newParams.delete("sectionIds");
+        currentSectionIds
+          .filter((id) => id !== sectionId)
+          .forEach((id) => newParams.append("sectionIds", id));
+      } else {
+        newParams.append("sectionIds", sectionId);
+      }
+
+      newParams.set("page", "1");
+      return newParams;
+    });
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 font-sans">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-blue-800 mb-4">
+      <div className="flex flex-col items-end mb-8">
+        <h1 className="text-center text-3xl md:text-4xl font-bold text-blue-800 mb-4">
           كل الخدمات
         </h1>
-        <div className="relative max-w-md mx-auto">
-          <input
-            type="text"
-            placeholder="ابحث عن خدمة..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="w-full py-2 px-4 pr-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-right transition-all duration-200"
-          />
-          <Search
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
-          />
+        <div className="flex flex-col w-full sm:flex-row gap-4 max-w-2xl">
+          {/* Search Bar */}
+          <div className="relative flex-1">
+            <input
+              type="text"
+              placeholder="ابحث عن خدمة..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="w-full py-2 px-4 pr-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 text-right transition-all duration-200"
+            />
+            <Search
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative w-full sm:w-48">
+            <button
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              className="w-full py-2 px-4 rounded-lg border border-gray-300 bg-white text-gray-700 flex items-center justify-between text-right transition-all duration-200 hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            >
+              <span>
+                ترتيب حسب
+              </span>
+              <ChevronDown
+                size={20}
+                className={`transition-transform duration-200 ${isSortOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {isSortOpen && (
+              <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                <button
+                  className="w-full py-2 px-4 text-right text-gray-700 hover:bg-blue-100 transition-all duration-200"
+                >
+                  ترتيب بالأحدث
+                </button>
+                <button
+                  className="w-full py-2 px-4 text-right text-gray-700 hover:bg-blue-100 transition-all duration-200"
+                >
+                  ترتيب بالأسماء
+                </button>
+                <button
+                  className="w-full py-2 px-4 text-right text-gray-700 hover:bg-blue-100 transition-all duration-200"
+                >
+                  ترتيب بالأشهر
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -64,8 +137,7 @@ const Services = () => {
               : "-translate-x-full md:translate-x-0"
           }`}
         >
-          <div className="flex justify-between items-center mb-6 md:hidden mt-20">
-            <h2 className="text-xl font-bold text-blue-800">الفلاتر</h2>
+          <div className="flex justify-end items-center mb-6 md:hidden mt-20">
             <button
               onClick={() => setIsFilterOpen(false)}
               className="text-gray-600 cursor-pointer"
@@ -73,11 +145,47 @@ const Services = () => {
               <X size={24} />
             </button>
           </div>
-          <h2 className="text-xl font-bold text-blue-800 mb-4 hidden md:block">
-            الفلاتر
-          </h2>
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">الفئة</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">الأقسام</h3>
+            {sectionsLoading ? (
+              <div className="text-gray-600">جاري تحميل الفئات...</div>
+            ) : sectionsError ? (
+              <div className="text-red-600">{sectionsError}</div>
+            ) : (
+              <div className="space-y-2">
+              {sections.map((section) => (
+                  <div
+                    key={section.id}
+                    className="flex items-center gap-3 text-right"
+                  >
+                    <div className="checkbox-wrapper-23">
+                      <input
+                        type="checkbox"
+                        id={`check-23-${section.id}`}
+                        name="sectionIds"
+                        value={section.id}
+                        checked={selectedSectionIds.includes(section.id)}
+                        onChange={() => handleCategoryChange(section.id)}
+                      />
+                      <label
+                        htmlFor={`check-23-${section.id}`}
+                        style={{ "--size": "24px" }}
+                      >
+                        <svg viewBox="0,0,50,50">
+                          <path d="M5 30 L 20 45 L 45 5"></path>
+                        </svg>
+                      </label>
+                    </div>
+                    <span
+                      className="checkbox-label truncate"
+                      onClick={() => handleCategoryChange(section.id)}
+                    >
+                      {section.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -96,20 +204,20 @@ const Services = () => {
             <div className="text-center p-8">جاري التحميل...</div>
           ) : error ? (
             <div className="text-center p-8 text-red-600">{error}</div>
-          ) : filteredServices.length === 0 ? (
+          ) : services.length === 0 ? (
             <div className="text-center p-8 text-gray-600">
               لا توجد خدمات مطابقة
             </div>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredServices.map((service) => (
+                {services.map((service) => (
                   <div
                     key={service._id}
                     className="bg-white rounded-lg shadow-lg overflow-hidden h-96 flex flex-col transition-transform duration-200 hover:scale-103"
                   >
                     <img
-                      src={service.image.url || "/api/placeholder/300/200"}
+                      src={service.image.url}
                       alt={service.title}
                       className="w-full h-48 object-cover"
                       loading="lazy"
@@ -125,7 +233,10 @@ const Services = () => {
                         <button className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-500 transition-all duration-200">
                           احجز موعد
                         </button>
-                        <Link to={`/service/${service._id}`} className="bg-gray-200 text-gray-800 py-2 px-4 rounded cursor-pointer hover:bg-gray-300 transition-all duration-200">
+                        <Link
+                          to={`/service/${service._id}`}
+                          className="bg-gray-200 text-gray-800 py-2 px-4 rounded cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                        >
                           التفاصيل
                         </Link>
                       </div>
@@ -136,9 +247,9 @@ const Services = () => {
 
               {/* Pagination */}
               {pagination && pagination.totalPages > 1 && (
-                <div className="flex justify-center gap-4 mt-8">
+                <div className="flex justify-center gap-4 mt-8 items-center">
                   <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    onClick={() => handlePageChange(Math.max(page - 1, 1))}
                     disabled={page === 1 || loading}
                     className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
                   >
@@ -148,7 +259,7 @@ const Services = () => {
                     الصفحة {page} من {pagination.totalPages}
                   </span>
                   <button
-                    onClick={() => setPage((prev) => prev + 1)}
+                    onClick={() => handlePageChange(page + 1)}
                     disabled={page === pagination.totalPages || loading}
                     className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
                   >
