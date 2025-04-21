@@ -12,47 +12,96 @@ import React from "react";
 
 import useSectionData from "../../hooks/Sections/UseSections";
 
-const Sections = () => {
-  const { sectionData } = useSectionData();
+const handleSearch = (e) => {
+  const newSearchTerm = e.target.value;
+  setSearchParams((prev) => {
+    const newParams = new URLSearchParams(prev);
+    if (newSearchTerm) {
+      newParams.set("search", newSearchTerm);
+      newParams.set("page", "1");
+    } else {
+      newParams.delete("search");
+    }
+    return newParams;
+  });
+};
 
-  console.log(sectionData, "sectionData");
+
+const Sections = () => {
+ 
+
+
+  const { sectionData } = useSectionData();
 
   return (
     <>
-    <br /><br />
-       <Container maxWidth="lg">
-        <Grid spacing={5} container>
+  
+    <Container maxWidth="lg" sx={{ py: 5 }}>
+      <Grid container spacing={4}>
+        {sectionData?.map((item) => (
+          <Grid item xs={12} sm={6} md={3} key={item._id}>
+            <Card
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: 5,
+                boxShadow: 3,
+                transition: "0.3s",
+                "&:hover": {
+                  boxShadow: 6,
+                  transform: "translateY(-5px)",
+                },
+              }}
+            >
+              <CardMedia
+                component="img"
+                height="200"
+                image={item.image.imageUrl}
+                alt={item.title}
+              />
 
-          {sectionData?.map((item) => (
-            <Grid  size={4} item xs={12} md={4} key={item._id}>
-              <Card sx={{ width: 320, maxWidth: 500, height: 400 }}>
-                <CardMedia
-                  sx={{ height: 250 }}
-                  image={item.image.imageUrl}
-                  title="green iguana"
-                />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="h2"
+                  fontWeight="bold"
+                >
+                  {item.title}
+                </Typography>
 
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {item.title}
-                  </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {item.desc}
+                </Typography>
+              </CardContent>
 
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {item.desc}
-                  </Typography>
-                </CardContent>
-
-                <CardActions>
-                  <Button size="small">Learn More</Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-
-        </Grid>
-      </Container>
-      <br />
+              <CardActions sx={{ px: 2, pb: 2 }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    backgroundColor: "#314DDF",
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    "&:hover": {
+                      backgroundColor: "#253276",
+                    },
+                  }}
+                >
+                  احجز ميعادك
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
     </>
+
   );
 };
 
