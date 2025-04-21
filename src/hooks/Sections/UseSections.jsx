@@ -1,25 +1,24 @@
 import { useState, useEffect } from "react";
 
 const useSectionData = (reference) => {
-  const [sectionData, setSectionData] = useState({
-    title: "",
-    desc: "",
-    image: { heroBanner: "" },
-  });
+  const [sectionData, setSectionData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://localhost:5000/api/v1/section/";
+  const BASE_URL = "http://localhost:5000/api/v1/section";
+
+  const url = reference ? `${BASE_URL}${reference}` : BASE_URL;
 
   useEffect(() => {
     const fetchSection = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}${reference}`
-        );
+        const response = await fetch(url);
         const data = await response.json();
+        console.log(data, "sectionData");
+
         if (data.success) {
-          setSectionData(data.section);
+          setSectionData(data.sections);
+          console.log(sectionData, "sectionData");
         } else {
           setError("Failed to fetch section data");
         }
@@ -29,10 +28,8 @@ const useSectionData = (reference) => {
         setLoading(false);
       }
     };
-
-    if (reference) {
-      fetchSection();
-    }
+  
+    fetchSection();
   }, [reference]);
 
   return { sectionData, loading, error };
