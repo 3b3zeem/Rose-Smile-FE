@@ -1,21 +1,39 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const BASE_URL = "http://localhost:5000/api/v1/service";
 
-export const useAllServices = (page = 1, size = 6) => {
+export const useAllServices = () => {
+  const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState(null);
 
+  const page = parseInt(searchParams.get("page")) || 1;
+  const size = 6;
+  const searchTerm = searchParams.get("search") || "";
+  const sectionIds = searchParams.getAll("sectionIds") || "";
+  const sort = searchParams.get("sort") || "createdAt:desc";
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log(`Fetching services: page=${page}, size=${size}`);
-        const res = await axios.get(`${BASE_URL}?page=${page}&size=${size}`);
-        console.log("API Response:", res.data);
+        console.log(
+          `Fetching services: page=${page}, size=${size}, search=${searchTerm}, sectionIds=${sectionIds.join(
+            ","
+          )}, sort=${sort}`
+        );
+        const sectionIdsQuery =
+          sectionIds.length > 0
+            ? sectionIds.map((id) => `sectionIds=${id}`).join("&")
+            : "";
+        const query = `page=${page}&size=${size}&search=${searchTerm}${
+          sectionIdsQuery ? `&${sectionIdsQuery}` : ""
+        }&sort=${sort}`;
+        const res = await axios.get(`${BASE_URL}?${query}`);
         setData(res.data.services || []);
         setPagination({
           currentPage: page,
@@ -30,7 +48,7 @@ export const useAllServices = (page = 1, size = 6) => {
     };
 
     fetchData();
-  }, [page, size]);
+  }, [page, size, searchTerm, sectionIds.join(","), sort]);
 
   return { data, loading, error, pagination };
 };

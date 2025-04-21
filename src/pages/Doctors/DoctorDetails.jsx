@@ -1,14 +1,19 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import doctors from "../Doctors/MockData.js";
-
+import useDoctorDetails from "../../hooks/Doctors/useDoctorDetails";
 const DoctorDetail = () => {
-  const { slug } = useParams();
-  const doctor = doctors.find((doc) => doc.slug === slug);
+  const { doctorId } = useParams(); 
+  const { doctor, loading, error } = useDoctorDetails(doctorId);
 
-  if (!doctor) {
+  if (loading) {
+    return <div className="text-center mt-20 text-blue-600">جاري التحميل...</div>;
+  }
+
+  if (error || !doctor) {
     return (
-      <div className="text-center mt-20 text-red-500">الطبيب غير موجود</div>
+      <div className="text-center mt-20 text-red-500">
+        {error || "الطبيب غير موجود"}
+      </div>
     );
   }
 
@@ -20,31 +25,23 @@ const DoctorDetail = () => {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
           <div>
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">
-              {doctor.name}
-            </h2>
-            <p>
-              <strong>التخصص:</strong> {doctor.specialty}
-            </p>
-            <p>
-              <strong>الشهادات:</strong> {doctor.certifications}
-            </p>
-            <p>
-              <strong>الخبرة:</strong> {doctor.experience} سنة
-            </p>
-            <button className="bg-cyan-500 text-white py-2 px-6 mt-4 rounded hover:bg-cyan-600 transition-all">
-              الاتصال مع الدكتور {doctor.firstName}
-            </button>
-          </div>
-          <div>
-            <img
-              src={doctor.image}
-              alt={doctor.name}
-              className="rounded shadow-lg"
-            />
-          </div>
+          <h2 className="text-3xl font-bold text-blue-900 mb-4">{doctor.name}</h2>
+          <p><strong>التخصص:</strong> {doctor.specialization}</p>
+          <p className="my-2"><strong>الوصف:</strong> {doctor.description}</p>
+          <p><strong>رقم الواتساب:</strong> {doctor.phone_whatsapp}</p>
+          <button className="bg-cyan-500 text-white py-2 px-6 mt-4 rounded hover:bg-cyan-600 transition-all">
+            التواصل مع الطبيب
+          </button>
+        </div>
+        <div>
+          {/* <img
+            src={doctor.image.url}
+            alt={doctor.name}
+            className="rounded shadow-lg"
+          /> */}
         </div>
       </div>
+    </div>
     </div>
   );
 };
