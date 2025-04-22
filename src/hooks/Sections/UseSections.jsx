@@ -1,25 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 
-const useSectionData = (reference) => {
-  const [sectionData, setSectionData] = useState([]);
+export const useAllSections = () => {
+  const [searchParams] = useSearchParams();
+  const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://localhost:5000/api/v1/section";
+  const searchTerm = searchParams.get("search") || "";
+
+  const BASE_URL = useMemo(() => {
+    return `http://localhost:5000/api/v1/section?search=${searchTerm}`;
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await fetch(BASE_URL);
+        const data = await response.json();
+
+        if (data.success) {
+          setSections(data.sections);
+        } else {
+          setError("Failed to fetch sections");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching sections");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSections();
+  }, [BASE_URL]);
+
+  return { sections, loading, error };
+};
+
+const useSectionData = (reference) => {
+  const [sectionData, setSectionData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const BASE_URL = "http://localhost:5000/api/v1/section/";
 
   const url = reference ? `${BASE_URL}${reference}` : BASE_URL;
 
   useEffect(() => {
     const fetchSection = async () => {
       try {
-
         const response = await fetch(url);
         const data = await response.json();
-        console.log(data, "sectionData");
 
         if (data.success) {
-          setSectionData(data.sections);
-          console.log(sectionData, "sectionData");
+          setSectionData(data.section);
         } else {
           setError("Failed to fetch section data");
         }
@@ -29,7 +63,7 @@ const useSectionData = (reference) => {
         setLoading(false);
       }
     };
-  
+
     fetchSection();
   }, [reference]);
 

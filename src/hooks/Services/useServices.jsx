@@ -21,11 +21,6 @@ export const useAllServices = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log(
-          `Fetching services: page=${page}, size=${size}, search=${searchTerm}, sectionIds=${sectionIds.join(
-            ","
-          )}, sort=${sort}`
-        );
         const sectionIdsQuery =
           sectionIds.length > 0
             ? sectionIds.map((id) => `sectionIds=${id}`).join("&")
@@ -98,3 +93,38 @@ export default function useServiceDetails(reference) {
 
   return { data, loading, error };
 }
+
+export const useServiceTitles = () => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const BASE_URL = "http://localhost:5000/api/v1/service/";
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${BASE_URL}?select=title,_id`);
+        const data = await response.json();
+        if (data.success) {
+          const serviceData = data.services.map((service) => ({
+            id: service._id,
+            title: service.title,
+          }));          
+          setServices(serviceData);
+        } else {
+          setError("Failed to fetch service titles");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching service titles");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  return { services, loading, error };
+};

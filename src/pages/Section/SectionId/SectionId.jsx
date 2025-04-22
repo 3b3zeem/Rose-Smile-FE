@@ -1,10 +1,11 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useSectionData from "../../../hooks/Sections/UseSections";
 
 import Slider from "react-slick";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import BookingForm from "../../../components/Booking/BookingForm";
 
 const SectionId = () => {
   const { reference } = useParams();
@@ -57,36 +58,48 @@ const SectionId = () => {
     ],
   };
 
-  if (loading) {
-    return <div className="text-center p-8">Loading...</div>;
-  }
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen text-2xl text-gray-600 font-bold font-['Cairo',sans-serif] dir-rtl">
+        جاري التحميل...
+      </div>
+    );
 
-  if (error) {
-    return <div className="text-center p-8 text-red-600">{error}</div>;
-  }
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen text-2xl text-red-600 font-bold font-['Cairo',sans-serif] dir-rtl">
+        {error}
+      </div>
+    );
 
   return (
     <div className="bg-white max-w-6xl mx-auto">
       {/* Main Section Content */}
-      <div className="flex flex-col md:flex-row p-4 md:p-8">
-        {/* صورة القسم */}
-        <div className="w-full md:w-1/2 flex justify-center items-center p-4">
-          <div className="relative bg-blue-100 rounded-xl p-6 w-full h-full">
+      <div className="flex flex-col md:flex-row p-4 md:p-8 gap-8">
+        <div className="lg:w-1/2">
+          <div className="bg-white rounded shadow-md p-6">
+            <h1 className="text-3xl font-bold text-blue-900 mb-4 text-right">
+              {sectionData.title}
+            </h1>
+            <p className="text-lg text-gray-700 mb-6 text-right">
+              {sectionData.desc}
+            </p>
             <img
-              src={sectionData.image.heroBanner || "/api/placeholder/450/400"}
+              src={
+                sectionData.image?.backgroundLarge || "/api/placeholder/450/400"
+              }
               alt={sectionData.title}
-              className="w-full h-full object-cover rounded-lg shadow-lg"
+              className="w-full h-96 object-cover rounded-lg"
             />
           </div>
         </div>
 
-        {/* المحتوى النصي */}
-        <div className="w-full md:w-1/2 p-4 md:p-6 flex flex-col">
-          <div className="mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold text-blue-800 text-right mb-3">
-              {sectionData.title}
-            </h1>
-            <p className="text-gray-600 text-right mb-6">{sectionData.desc}</p>
+        <div className="lg:w-1/2">
+          <div className="bg-white rounded shadow-md p-6">
+            <h2 className="text-2xl font-bold text-blue-900 mb-4 text-right">
+              احجز موعدك الآن
+            </h2>
+            <BookingForm sectionData={sectionData} />
           </div>
         </div>
       </div>
@@ -95,26 +108,39 @@ const SectionId = () => {
       {sectionData.services && sectionData.services.length > 0 && (
         <div className="p-4 md:p-8">
           <h2 className="text-xl md:text-2xl font-bold text-blue-800 text-right mb-6">
-            الخدمات
+            الخدمات المتاحة للقسم
           </h2>
           <Slider {...settings}>
             {sectionData.services.map((service) => (
-              <div key={service._id} className="p-4">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div
+                key={service._id}
+                className="p-4 flex flex-col rounded hover:shadow-md transition-shadow duration-300 overflow-hidden"
+              >
+                <div className="rounded overflow-hidden">
                   <img
-                    src={service.image.url || "/api/placeholder/300/200"}
+                    src={service.image?.url}
                     alt={service.title}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
                   />
-                  <div className="p-4 text-right">
-                    <h3 className="text-lg font-bold text-blue-800 mb-2">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-600">
-                      {service.desc.slice(0, 150)}
-                      {service.desc.length > 150 && "..."}
-                    </p>
-                  </div>
+                </div>
+
+                <div className="p-4 text-right flex flex-col gap-2">
+                  <h3 className="text-xl font-semibold text-blue-900">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {service.desc.slice(0, 150)}
+                    {service.desc.length > 150 && "..."}
+                  </p>
+                </div>
+
+                <div className="px-4 pb-4 mt-auto">
+                  <Link
+                    to={`/service/${service._id}`}
+                    className="block text-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-300 search"
+                  >
+                    <span>تفاصيل الخدمة</span>
+                  </Link>
                 </div>
               </div>
             ))}

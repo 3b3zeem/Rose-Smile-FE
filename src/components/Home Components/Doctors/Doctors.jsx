@@ -88,7 +88,7 @@ const DoctorsTeam = () => {
                   <div className="bg-white rounded-lg overflow-hidden shadow-md h-[600px] flex flex-col">
                     <div className="h-full overflow-hidden hover:scale-110 duration-700 transition-all cursor-pointer">
                       <img
-                        src={doctor.image || "/path/to/default-image.png"}
+                        src={doctor.image.url || "/path/to/default-image.png"}
                         alt={doctor.name}
                         className="w-full h-full object-cover"
                       />

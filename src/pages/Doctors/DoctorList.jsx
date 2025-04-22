@@ -9,7 +9,7 @@ const DoctorList = () => {
   const [doctorsPerPage] = useState(8);
   const [showFilters, setShowFilters] = useState(false);
 
-  const { doctors, totalDoctors, totalPages, loading, error } = useDoctors({
+  const { doctors, totalPages, loading, error } = useDoctors({
     page: currentPage,
     size: doctorsPerPage,
     search,
@@ -93,11 +93,11 @@ const DoctorList = () => {
                 key={doctor._id}
                 className="bg-white shadow-md rounded overflow-hidden text-center"
               >
-                {/* <img
+                <img
                   src={doctor.image.url}
                   alt={doctor.name}
                   className="w-full object-cover"
-                /> */}
+                />
                 <div className="p-4 bg-blue-50">
                   <h3 className="text-blue-800 font-semibold">{doctor.name}</h3>
                   <p className="text-gray-600">{doctor.specialization}</p>
