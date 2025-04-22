@@ -78,7 +78,7 @@ const SectionId = () => {
       <div className="flex flex-col md:flex-row p-4 md:p-8 gap-8">
         <div className="lg:w-1/2">
           <div className="bg-white rounded shadow-md p-6">
-            <h1 className="text-3xl font-bold text-blue-900 mb-4 text-right">
+            <h1 className="text-3xl font-semibold text-blue-900 mb-4 text-right">
               {sectionData.title}
             </h1>
             <p className="text-lg text-gray-700 mb-6 text-right">
