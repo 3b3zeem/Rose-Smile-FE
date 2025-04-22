@@ -27,9 +27,9 @@ export default function Service() {
           {/* Left Column: Service Details and Image */}
           <div className="lg:w-1/2">
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <span className="text-3xl font-semibold text-blue-900 mb-4 text-right">
+              <h1 className="text-3xl font-semibold text-blue-900 mb-4 text-right">
                 {data.title}
-              </span>
+              </h1>
               <p className="text-lg text-gray-700 mb-6 text-right">
                 {data.desc}
               </p>
