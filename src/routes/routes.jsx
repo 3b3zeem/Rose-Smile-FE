@@ -84,7 +84,8 @@ const routes = createBrowserRouter([
           </Suspense>
         ),
       },
-      {
+      { 
+        
         path: "register",
         element: (
           <Suspense fallback={<Loader />}>
