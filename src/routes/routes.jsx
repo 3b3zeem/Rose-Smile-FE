@@ -12,7 +12,9 @@ const Sections = lazy(() => import("../pages/Section/Sections.jsx"));
 const SectionId = lazy(() => import("../pages/Section/SectionId/SectionId.jsx"));
 const DoctorList = lazy(() => import("../pages/Doctors/DoctorList.jsx"));
 const DoctorDetail = lazy(() => import("../pages/Doctors/DoctorDetails.jsx"));
-
+const Register = lazy(() => import("../pages/Auth/Register.jsx")); 
+const Login = lazy(() => import("../pages/Auth/Login.jsx"));       
+const ResetPassword = lazy(() => import("../pages/Auth/ResetPassword.jsx"));   
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -82,7 +84,30 @@ const routes = createBrowserRouter([
           </Suspense>
         ),
       },
-
+      {
+        path: "register",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Register />
+          </Suspense>
+        ),
+      },
+      {
+        path: "login",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Login />
+          </Suspense>
+        ),
+      },
+      {
+        path: "resetPassword/:token",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <ResetPassword />
+          </Suspense>
+        ),
+      },
       { path: "*", element: <NotFound /> },
 
     ],
