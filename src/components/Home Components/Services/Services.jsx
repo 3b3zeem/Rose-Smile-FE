@@ -2,6 +2,7 @@ import React from "react";
 import Slider from "react-slick";
 import { Calendar, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { useSomeServices } from "../../../hooks/Services/useServices";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const { data: services, loading, error } = useSomeServices();
@@ -100,20 +101,13 @@ const Services = () => {
                     {service.title}
                   </h3>
                   {/* Buttons */}
-                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-center mt-auto">
-                    <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
-                      <span className="flex items-center gap-2">
-                        <Calendar size={16} />
-                        <span>احجـز موعدك</span>
-                      </span>
-                    </button>
-
-                    <button className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
+                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-end mt-4">
+                    <Link to={`/service/${service._id}`} className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
                       <span className="flex items-center gap-2">
                         <Info size={16} />
                         <span>التفاصيل</span>
                       </span>
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

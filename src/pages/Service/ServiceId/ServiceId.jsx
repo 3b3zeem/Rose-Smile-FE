@@ -1,122 +1,57 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Container,
-  Grid,
-  Typography,
-} from "@mui/material";
 import React from "react";
-import M1 from "../../../assets/Iamges/M1.jpg";
-
-import useServiceDetails from "../../../hooks/Services/useServices";
 import { useParams } from "react-router-dom";
-import Services from "../../../components/Home Components/Services/Services";
+import useServiceDetails from "../../../hooks/Services/useServices";
+import BookingForm from "../../../components/Booking/BookingForm";
 
 export default function Service() {
   const { reference } = useParams();
-  console.log(reference, "reference");
-
   const { data, loading, error } = useServiceDetails(reference);
 
-  console.log(data);
-
-  if (loading) return <Typography>جاري التحميل...</Typography>;
-  if (error) return <Typography color="error">{error}</Typography>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen text-2xl text-gray-600 font-bold font-['Cairo',sans-serif] dir-rtl">
+        جاري التحميل...
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-screen text-2xl text-red-600 font-bold font-['Cairo',sans-serif] dir-rtl">
+        {error}
+      </div>
+    );
 
   return (
-    <React.Fragment>
-      <br />
-      <br />
-      <Container>
-        <Grid container>
-          <Grid className="imageCont" size={6}>
-            <Card
-              className="card"
-              sx={{
-                minWidth: 275,
-                height: "580px",
-                width: "600",
-                backgroundColor: "#1F2B6C",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CardMedia
-                sx={{
-                  height: "514px",
-                  width: "456px",
-                  borderWidth: "6px",
-                  borderColor: "#F2F2F2",
-                }}
-                component="img"
-                height="194"
-                image={data.image.url}
-                alt="Paella dish"
+    <div className="min-h-screen bg-gray-100 dir-rtl font-['Cairo',sans-serif]">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left Column: Service Details and Image */}
+          <div className="lg:w-1/2">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <span className="text-3xl font-semibold text-blue-900 mb-4 text-right">
+                {data.title}
+              </span>
+              <p className="text-lg text-gray-700 mb-6 text-right">
+                {data.desc}
+              </p>
+              <img
+                src={data.image.backgroundLarge}
+                alt="Service"
+                className="w-full h-96 object-cover rounded-lg"
               />
-            </Card>
-          </Grid>
+            </div>
+          </div>
 
-          <Grid className="contantCont" size={6}>
-            <Card
-              sx={{
-                minWidth: 275,
-                height: "580px",
-                width: "600",
-                backgroundColor: "#F2F2F2",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CardContent sx={{ textAlign: "right", margin: "20px" }}>
-                <Typography
-                  variant="h2"
-                  gutterBottom
-                  sx={{ color: "#1F2B6C", fontSize: 45 }}
-                >
-                  {data.title}
-                </Typography>
-
-                <Typography
-                  variant="h5"
-                  component="div"
-                  sx={{ marginTop: "35px" }}
-                >
-                  {data.desc}
-                </Typography>
-                <CardActions
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: "35px",
-                  }}
-                >
-                  <Button
-                    sx={{
-                      backgroundColor: "#314DDF",
-                      color: "white",
-                      padding: "10px",
-                      fontSize: "20px",
-                      "&:hover": {
-                        backgroundColor: "#253276",
-                      },
-                    }}
-                    size="large"
-                  >
-                    احجز ميعادك{" "}
-                  </Button>
-                </CardActions>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Container>
-
-      <Services />
-    </React.Fragment>
+          {/* Right Column: Booking Form */}
+          <div className="lg:w-1/2">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-2xl font-bold text-blue-900 mb-4 text-right">
+                احجز موعدك الآن
+              </h2>
+              <BookingForm serviceData={data} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
