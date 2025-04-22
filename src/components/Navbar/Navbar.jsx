@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-
 import { Menu, X } from "lucide-react";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/Iamges/logo.png"
+import { useAuthContext } from "../../context/Auth/AuthContext";  
 
 const ArabicNavbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const { user, logout } = useAuthContext();   
+  const navigate = useNavigate();
+
 
   const toggleDrawer = (open) => (event) => {
     // if (
@@ -22,6 +24,10 @@ const ArabicNavbar = () => {
     setDrawerOpen(open);
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -54,9 +60,23 @@ const ArabicNavbar = () => {
           {/* Navigation links - desktop view */}
           <div className="hidden md:flex items-center">
             {/* Login/Register button */}
-            <button className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 search cursor-pointer">
-              <span>تسجيل دخول</span>
-            </button>
+            {user ? (
+                      <>
+                        <button
+                          onClick={handleLogout}
+                          className="bg-purple-600 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
+                        >
+                          تسجيل خروج
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => navigate("/login")}
+                        className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
+                      >
+                        تسجيل دخول
+                      </button>
+                    )}
 
             {/* Navigation links Normal mode */}
             <div>
@@ -82,11 +102,25 @@ const ArabicNavbar = () => {
             </button>
 
             {/* Login/Register button for mobile */}
-            <button className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-3 search">
-              <span>تسجيل دخول</span>
-            </button>
-          </div>
+            {user ? (
+                      <>
+                        <button
+                          onClick={handleLogout}
+                          className="bg-purple-600 text-white font-bold py-2 px-4 rounded me-3"
+                        >
+                          تسجيل خروج
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => navigate("/login")}
+                        className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-3"
+                      >
+                        تسجيل دخول
+                      </button>
+                    )}
 
+          </div>
           {/* Logo */}
           <div className="flex items-center">
             <img src={logo} alt="logo" width={90} />
