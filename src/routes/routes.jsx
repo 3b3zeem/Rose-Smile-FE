@@ -12,9 +12,11 @@ const Sections = lazy(() => import("../pages/Section/Sections.jsx"));
 const SectionId = lazy(() => import("../pages/Section/SectionId/SectionId.jsx"));
 const DoctorList = lazy(() => import("../pages/Doctors/DoctorList.jsx"));
 const DoctorDetail = lazy(() => import("../pages/Doctors/DoctorDetails.jsx"));
-const Register = lazy(() => import("../pages/Auth/Register.jsx")); 
-const Login = lazy(() => import("../pages/Auth/Login.jsx"));       
-const ResetPassword = lazy(() => import("../pages/Auth/ResetPassword.jsx"));   
+const Register = lazy(() => import("../pages/Auth/Register.jsx"));
+const Login = lazy(() => import("../pages/Auth/Login.jsx"));
+const ResetPassword = lazy(() => import("../pages/Auth/ResetPassword.jsx"));
+const Profile = lazy(() => import("../pages/User/Profile.jsx"));
+
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -106,6 +108,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loader />}>
             <ResetPassword />
+          </Suspense>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Profile />
           </Suspense>
         ),
       },

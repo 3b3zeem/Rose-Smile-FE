@@ -1,18 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/Iamges/logo.png"
-import { useAuthContext } from "../../context/Auth/AuthContext";  
+import logo from "../../assets/Iamges/logo.png";
+import { useAuthContext } from "../../context/Auth/AuthContext";
+import { useUserProfile } from "../../hooks/User/UseProfile";
 
 const ArabicNavbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { user, logout } = useAuthContext();   
+  const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuthContext();
   const navigate = useNavigate();
 
+  const isLogin = localStorage.getItem("isLogin");
+  const user = isLogin ? JSON.parse(localStorage.getItem("user")) : null;
+
+  const { userData, fetchUserProfile } = useUserProfile();
+
+  const avatarUrl = userData?.image?.url || null;
+  const FirstName = userData?.firstName || "User";
+  const LastName = userData?.lastName || "User";
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchUserProfile();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [fetchUserProfile]);
 
   const toggleDrawer = (open) => (event) => {
     // if (
@@ -28,6 +46,14 @@ const ArabicNavbar = () => {
     await logout();
     navigate("/login");
   };
+
+  const handleDashboardRedirect = () => {
+    if (!user) return;
+    if (user.role === "admin") navigate("/admin-dashboard");
+    else if (user.role === "superadmin") navigate("/superadmin-dashboard");
+    else navigate("/dashboard");
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -40,6 +66,19 @@ const ArabicNavbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+  //       setIsOpen(false);
+  //     }
+  //   };
+
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   const navItems = [
     { text: "الرئيسية", href: "/" },
@@ -60,23 +99,68 @@ const ArabicNavbar = () => {
           {/* Navigation links - desktop view */}
           <div className="hidden md:flex items-center">
             {/* Login/Register button */}
-            {user ? (
-                      <>
-                        <button
-                          onClick={handleLogout}
-                          className="bg-purple-600 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
-                        >
-                          تسجيل خروج
-                        </button>
-                      </>
-                    ) : (
+            {isLogin ? (
+              <div
+                className="cursor-pointer relative"
+                onClick={() => setIsOpen((prev) => !prev)}
+              >
+                <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center">
+                  <img
+                    src={avatarUrl}
+                    alt={FirstName}
+                    className="rounded-full"
+                  />
+                </div>
+
+                {isOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50">
+                    <p className="text-center text mt-2 mb-2 text-gray-700 font-bold">
+                      Hello, {FirstName} {LastName}
+                    </p>
+                    {user.role !== "user" && (
                       <button
-                        onClick={() => navigate("/login")}
-                        className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
+                        onClick={handleDashboardRedirect}
+                        className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       >
-                        تسجيل دخول
+                        <LayoutDashboard />
+                        لوحة التحكم
                       </button>
                     )}
+                    <button
+                      onClick={() => navigate("/profile")}
+                      className="flex items-center gap-3 w-full text-right px-4 py-4 hover:bg-gray-100 cursor-pointer border-b"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                        </svg>
+                      </div>
+                      الصفحة الشخصية
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 w-full text-right px-4 py-3 text-red-600 hover:bg-gray-100 hover:rounded-xl cursor-pointer"
+                    >
+                      <LogOut />
+                      تسجيل الخروج
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
+              >
+                تسجيل دخول
+              </button>
+            )}
 
             {/* Navigation links Normal mode */}
             <div>
@@ -102,24 +186,68 @@ const ArabicNavbar = () => {
             </button>
 
             {/* Login/Register button for mobile */}
-            {user ? (
-                      <>
-                        <button
-                          onClick={handleLogout}
-                          className="bg-purple-600 text-white font-bold py-2 px-4 rounded me-3"
-                        >
-                          تسجيل خروج
-                        </button>
-                      </>
-                    ) : (
+            {isLogin ? (
+              <div
+                className="cursor-pointer relative"
+                onClick={() => setIsOpen((prev) => !prev)}
+              >
+                <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center">
+                  <img
+                    src={avatarUrl}
+                    alt={FirstName}
+                    className="rounded-full"
+                  />
+                </div>
+
+                {isOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50">
+                    <p className="text-center text mt-2 mb-2 text-gray-700 font-bold">
+                      Hello, {FirstName} {LastName}
+                    </p>
+                    {user.role !== "user" && (
                       <button
-                        onClick={() => navigate("/login")}
-                        className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-3"
+                        onClick={handleDashboardRedirect}
+                        className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       >
-                        تسجيل دخول
+                        <LayoutDashboard />
+                        لوحة التحكم
                       </button>
                     )}
-
+                    <button
+                      onClick={() => navigate("/profile")}
+                      className="flex items-center gap-3 w-full text-right px-4 py-4 hover:bg-gray-100 cursor-pointer border-b"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                        </svg>
+                      </div>
+                      الصفحة الشخصية
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-3 w-full text-right px-4 py-3 text-red-600 hover:bg-gray-100 hover:rounded-xl cursor-pointer"
+                    >
+                      <LogOut />
+                      تسجيل الخروج
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
+              >
+                تسجيل دخول
+              </button>
+            )}
           </div>
           {/* Logo */}
           <div className="flex items-center">
