@@ -21,6 +21,7 @@ const useLogin = () => {
       //  whenever login succeeds, re‑fetch `/me`
       if (res.data.success) {
         await check();
+        localStorage.setItem("user", JSON.stringify(res.data.user));
       }
 
       return res.data;
