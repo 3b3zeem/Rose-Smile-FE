@@ -42,9 +42,18 @@ const Login = () => {
       const res = await login(payload);
       if (res?.success) {
         toast.success("تم تسجيل الدخول بنجاح");
+      
+        const user = res?.user || JSON.parse(localStorage.getItem("user"));
+      
         setTimeout(() => {
-          navigate( "/");
-        }, 1000);
+          if (user?.role === "admin") {
+            navigate("/admin-dashboard");
+          } else if (user?.role === "superadmin") {
+            navigate("/superadmin-dashboard");
+          } else {
+            navigate("/");
+          }
+        }, 500);
       }
     },
   });
