@@ -33,18 +33,18 @@ const SectionId = () => {
   // Slider settings
   const settings = {
     dots: false,
-    infinite: true,
+    infinite: sectionData?.services?.length > 1,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: Math.min(sectionData?.services?.length || 1, 3),
     slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    nextArrow: sectionData?.services?.length > 1 ? <NextArrow /> : null,
+    prevArrow: sectionData?.services?.length > 1 ? <PrevArrow /> : null,
     rtl: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: Math.min(sectionData?.services?.length || 1, 2),
           slidesToScroll: 1,
         },
       },
@@ -57,6 +57,7 @@ const SectionId = () => {
       },
     ],
   };
+  
 
   if (loading)
     return (
