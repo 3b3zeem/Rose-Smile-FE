@@ -5,6 +5,8 @@ export const useUserProfile = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateError, setUpdateError] = useState(null);
 
   const fetchUserProfile = async () => {
     try {
@@ -33,7 +35,47 @@ export const useUserProfile = () => {
     fetchUserProfile();
   }, []);
 
-  return { userData, loading, error, fetchUserProfile };
+  const updateUser = async (updatedData) => {
+    try {
+      setUpdateLoading(true);
+      setUpdateError(null);
+
+      const response = await axios.put(
+        "http://localhost:5000/api/v1/user/update",
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status !== 200) {
+        throw new Error("Failed to update user profile");
+      }
+
+      setUserData(response.data.user);
+      return response.data;
+    } catch (err) {
+      setUpdateError(
+        err.response?.data?.message || "Failed to update user profile"
+      );
+      return null;
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  return {
+    userData,
+    loading,
+    error,
+    fetchUserProfile,
+    updateUser,
+    updateLoading,
+    updateError,
+  };
 };
 
 export const useUploadAvatar = () => {
@@ -71,7 +113,6 @@ export const useUploadAvatar = () => {
       if (res.status == 200) {
         return res.data;
       }
-
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -135,7 +176,3 @@ export const useChangePassword = () => {
     changePasswordError,
   };
 };
-
-export const useUpdateProfile = () => {
-  
-}

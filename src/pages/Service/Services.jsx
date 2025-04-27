@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Filter, X, ChevronDown } from "lucide-react";
+import { Search, X, ChevronDown, Briefcase } from "lucide-react";
 import { useAllServices } from "../../hooks/Services/useServices";
 import { Link, useSearchParams } from "react-router-dom";
 import { useSectionTitles } from "../../hooks/Sections/UseSections";
@@ -211,10 +211,10 @@ const Services = () => {
         {/* Toggle Filter Button (Mobile) */}
         <button
           onClick={() => setIsFilterOpen(true)}
-          className="md:hidden flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+          className="md:hidden flex items-center justify-end gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 cursor-pointer hover:bg-blue-500 transition-all duration-200"
         >
-          <Filter size={20} />
-          <span>الفلاتر</span>
+          <Briefcase size={20} />
+          <span>الاقسام</span>
         </button>
 
         {/* Services Grid */}

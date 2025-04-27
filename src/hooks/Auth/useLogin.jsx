@@ -16,7 +16,6 @@ const useLogin = () => {
         { withCredentials: true }
       );
 
-      //  whenever login succeeds, re‑fetch `/me`
       if (res.data.success) {
         localStorage.setItem("user", JSON.stringify(res.data.user));
         localStorage.setItem("isLogin", "true");
