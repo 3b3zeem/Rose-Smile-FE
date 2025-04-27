@@ -25,12 +25,8 @@ const ArabicNavbar = () => {
   const LastName = userData?.lastName || "User";
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchUserProfile();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [fetchUserProfile]);
+    fetchUserProfile();
+  }, []);
 
   const toggleDrawer = (open) => (event) => {
     // if (
@@ -49,8 +45,8 @@ const ArabicNavbar = () => {
 
   const handleDashboardRedirect = () => {
     if (!user) return;
-    if (user.role === "admin") navigate("/admin-dashboard");
-    else if (user.role === "superadmin") navigate("/superadmin-dashboard");
+    if (user.role === "admin" || user.role === "superadmin")
+      navigate("/admin-dashboard");
     else navigate("/dashboard");
   };
 
@@ -184,70 +180,6 @@ const ArabicNavbar = () => {
             >
               <Menu size={24} />
             </button>
-
-            {/* Login/Register button for mobile */}
-            {isLogin ? (
-              <div
-                className="cursor-pointer relative"
-                onClick={() => setIsOpen((prev) => !prev)}
-              >
-                <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center">
-                  <img
-                    src={avatarUrl}
-                    alt={FirstName}
-                    className="rounded-full"
-                  />
-                </div>
-
-                {isOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50">
-                    <p className="text-center text mt-2 mb-2 text-gray-700 font-bold">
-                      Hello, {FirstName} {LastName}
-                    </p>
-                    {user.role !== "user" && (
-                      <button
-                        onClick={handleDashboardRedirect}
-                        className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      >
-                        <LayoutDashboard />
-                        لوحة التحكم
-                      </button>
-                    )}
-                    <button
-                      onClick={() => navigate("/profile")}
-                      className="flex items-center gap-3 w-full text-right px-4 py-4 hover:bg-gray-100 cursor-pointer border-b"
-                    >
-                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
-                        </svg>
-                      </div>
-                      الصفحة الشخصية
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-3 w-full text-right px-4 py-3 text-red-600 hover:bg-gray-100 hover:rounded-xl cursor-pointer"
-                    >
-                      <LogOut />
-                      تسجيل الخروج
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button
-                onClick={() => navigate("/login")}
-                className="bg-blue-800 text-white font-bold py-2 px-4 rounded me-5 cursor-pointer"
-              >
-                تسجيل دخول
-              </button>
-            )}
           </div>
           {/* Logo */}
           <div className="flex items-center">
@@ -267,7 +199,6 @@ const ArabicNavbar = () => {
           <Box
             sx={{ width: 250 }}
             role="presentation"
-            onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
             dir="rtl"
           >
@@ -283,11 +214,89 @@ const ArabicNavbar = () => {
                   key={index}
                   to={item.href}
                   className={`text-gray-700 hover:text-blue-800 font-bold px-3 ms-2 NavLinks`}
+                  onClick={toggleDrawer(false)}
                 >
                   {item.text}
                 </Link>
               ))}
             </div>
+            {/* Login/Register button for mobile */}
+            {isLogin ? (
+              <div
+                className="cursor-pointer relative"
+                onClick={() => setIsOpen((prev) => !prev)}
+              >
+                <div className="flex items-center gap-2 ms-3 mt-4">
+                  <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center">
+                    <img
+                      src={avatarUrl}
+                      alt={FirstName}
+                      className="rounded-full"
+                    />
+                  </div>
+                  <p className="text-center text mt-2 mb-2 text-gray-700 font-bold">
+                    {FirstName} {LastName}
+                  </p>
+                </div>
+
+                {isOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg z-50">
+                    {user.role !== "user" && (
+                      <button
+                        onClick={() => {
+                          handleDashboardRedirect();
+                          toggleDrawer(false)();
+                        }}
+                        className="flex items-center gap-3 w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        <LayoutDashboard />
+                        لوحة التحكم
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        navigate("/profile");
+                        toggleDrawer(false)();
+                      }}
+                      className="flex items-center gap-3 w-full text-right px-4 py-4 hover:bg-gray-100 cursor-pointer border-b"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                        </svg>
+                      </div>
+                      الصفحة الشخصية
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        toggleDrawer(false)();
+                      }}
+                      className="flex items-center gap-3 w-full text-right px-4 py-3 text-red-600 hover:bg-gray-100 hover:rounded-xl cursor-pointer"
+                    >
+                      <LogOut />
+                      تسجيل الخروج
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  navigate("/login");
+                  toggleDrawer(false)();
+                }}
+                className="bg-blue-800 text-white font-bold py-2 px-4 rounded cursor-pointer ms-3 mt-4"
+              >
+                تسجيل دخول
+              </button>
+            )}
           </Box>
         </Drawer>
       </nav>

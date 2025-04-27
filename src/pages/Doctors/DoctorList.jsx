@@ -114,27 +114,6 @@ const DoctorList = () => {
                     <p className="text-blue-900 font-bold">
                       {doctor.specialization || "غير محدد"}
                     </p>
-
-                    <div className="flex justify-center gap-3 my-3">
-                      <Link
-                        to={doctor.linkedin || "#"}
-                        className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"
-                      >
-                        <Linkedin size={14} />
-                      </Link>
-                      <Link
-                        to={doctor.facebook || "#"}
-                        className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"
-                      >
-                        <Facebook size={14} />
-                      </Link>
-                      <Link
-                        to={doctor.instagram || "#"}
-                        className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-2 rounded-full w-8 h-8 flex items-center justify-center"
-                      >
-                        <Instagram size={14} />
-                      </Link>
-                    </div>
                   </div>
 
                   <Link

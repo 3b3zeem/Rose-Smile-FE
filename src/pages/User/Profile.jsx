@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from "react";
+
+import { UserRoundPen } from "lucide-react";
 import {
-  useUserProfile,
-  useUploadAvatar,
   useChangePassword,
+  useUploadAvatar,
+  useUserProfile,
 } from "../../hooks/User/UseProfile";
-import { LockKeyhole, UserRoundPen } from "lucide-react";
-import ForgotPasswordModal from "../../components/Auth/ForgotPasswordModal";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 const Profile = () => {
   const {
     userData,
     loading: profileLoading,
     error: profileError,
+    updateUser,
+    updateLoading,
+    updateError,
   } = useUserProfile();
   const {
     uploadAvatar,
     loading: uploadLoading,
     error: uploadError,
   } = useUploadAvatar();
-  const { changePassword, changePasswordLoading, changePasswordError } =
-    useChangePassword();
-  const [city, setCity] = useState("");
+  const { changePassword, changePasswordLoading, changePasswordError } = useChangePassword();
+  const [city, setCity] = useState(userData?.city || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,11 +33,26 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState(
     userData?.image?.url || "../../assets/Iamges/user.png"
   );
-  const [showForgot, setShowForgot] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    // email: "",
+    // city: "",
+  });
 
   useEffect(() => {
-    if (userData?.image?.url) {
-      setAvatarUrl(userData.image.url);
+    if (userData) {
+      setAvatarUrl(userData.image?.url || "../../assets/Iamges/user.png");
+      setCity(userData.city || "");
+      setFormData({
+        firstName: userData.firstName || "",
+        lastName: userData.lastName || "",
+        phone: userData.phone || "",
+        // email: userData.email || "",
+        // city: userData.city || "",
+      });
     }
   }, [userData]);
 
@@ -55,7 +72,6 @@ const Profile = () => {
     );
   }
 
-  // * Handle file change for avatar upload
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -67,22 +83,50 @@ const Profile = () => {
         if (result.image?.url) {
           setAvatarUrl(result.image.url);
         }
-        toast.success("تم تحميل الصورة بنجاح!");
+        toast.success("تم تحميل الصورة بنجاح", {
+          position: "top-right",
+          style: {
+            fontFamily: "Arial, sans-serif",
+            direction: "rtl",
+            textAlign: "right",
+          },
+        });
       } else {
         setAvatarUrl(userData?.image?.url || "../../assets/Iamges/user.png");
-        toast.error("فشل تحميل الصورة!");
+        toast.error(uploadError || "فشل تحميل الصورة", {
+          position: "top-right",
+          style: {
+            fontFamily: "Arial, sans-serif",
+            direction: "rtl",
+            textAlign: "right",
+          },
+        });
       }
     }
   };
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
-      toast.warning("يجب أن تتطابق كلمة المرور الجديدة مع تأكيد كلمة المرور");
+      toast.error("كلمة المرور الجديدة وتأكيد كلمة المرور لا تتطابق", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
       return;
     }
 
     if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.warning("يرجى ملء جميع حقول كلمة المرور!");
+      toast.error("يرجى ملء جميع حقول كلمة المرور!", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
       return;
     }
 
@@ -93,33 +137,222 @@ const Profile = () => {
     });
 
     if (result) {
-      toast.success("تم تغيير كلمة المرور بنجاح!");
+      toast.success("تم تغيير كلمة المرور بنجاح", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } else {
-      toast.error(changePasswordError || "فشل تغيير كلمة المرور!");
+      alert(changePasswordError || "Failed to change password");
     }
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleUpdateProfile = async () => {
+    const { firstName, lastName, phone } = formData;
+    if (!firstName || !lastName || !phone) {
+      toast.error("يرجى ملء جميع الحقول!", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
+      return;
+    }
+
+    const result = await updateUser(formData);
+    if (result) {
+      toast.success("تم تحديث الملف الشخصي بنجاح", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
+      setIsPopupOpen(false);
+    } else {
+      toast.error(updateError || "فشل تحديث الملف الشخصي", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
+    }
+  };
+
+  const openPopup = () => {
+    if (!userData) {
+      toast.warning("فشل تحميل بيانات المستخدم", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
+      return;
+    }
+    setFormData({
+      firstName: userData.firstName || "",
+      lastName: userData.lastName || "",
+      phone: userData.phone || "",
+      // email: userData.email || "",
+      // city: userData.city || "",
+    });
+    setIsPopupOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center items-start p-6">
-      <ToastContainer position="top-right" rtl theme="colored" />
       <div className="bg-white rounded-lg shadow-sm w-full p-8">
         {/* Profile Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">
             اعدادات الملف الشخصي
           </h1>
-          <button className="text-purple-600 flex items-center gap-1 text-sm font-medium hover:underline cursor-pointer">
+          <button
+            onClick={openPopup}
+            className="text-purple-600 flex items-center gap-1 text-sm font-medium hover:underline cursor-pointer"
+          >
             <UserRoundPen />
             تعديل الملف الشخصي
           </button>
         </div>
 
+        {/* Edit Modal */}
+        {isPopupOpen && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                تعديل الملف الشخصي
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    الاسم الأول
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleFormChange}
+                    className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    الاسم الأخير
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleFormChange}
+                    className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    الموبايل
+                  </label>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    maxLength={13}
+                    onChange={handleFormChange}
+                    className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                  />
+                </div>
+                {/* <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    البريد الإلكتروني
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                    className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                  />
+                </div> */}
+                {/* <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    المدينة
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleFormChange}
+                    className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                  />
+                </div> */}
+              </div>
+              <div className="flex justify-end gap-2 mt-6">
+                <button
+                  onClick={() => setIsPopupOpen(false)}
+                  className="px-4 py-2 rounded-md text-gray-600 bg-gray-200 hover:bg-gray-300"
+                >
+                  إلغاء
+                </button>
+                <button
+                  onClick={handleUpdateProfile}
+                  disabled={updateLoading}
+                  className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                    updateLoading
+                      ? "bg-purple-400 cursor-not-allowed"
+                      : "bg-purple-600 hover:bg-purple-700"
+                  }`}
+                >
+                  {updateLoading ? (
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-5 h-5 animate-spin"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                      جاري الحفظ...
+                    </div>
+                  ) : (
+                    "حفظ التغييرات"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Profile Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="flex flex-col items-start gap-4">
+          <div className="flex items-center gap-4">
             <div className="relative">
               <img
                 src={avatarUrl}
@@ -145,7 +378,7 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            <label className="text-purple-600 flex items-center gap-1 text-sm font-medium cursor-pointer border border-purple-600 rounded-md px-4 py-2 hover:bg-purple-50 transition duration-200">
+            <label className="text-purple-600 flex items-center gap-1 text-sm font-medium cursor-pointer border border-purple-600 rounded-md px-3 py-2 hover:bg-purple-50 transition duration-200">
               <UserRoundPen />
               اضافة صورة شخصية
               <input
@@ -185,10 +418,11 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                value={userData.city || "City"}
+                value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Enter your city"
-                className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                disabled
+                className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700 text-sm focus:outline-none"
               />
             </div>
           </div>
@@ -223,7 +457,20 @@ const Profile = () => {
         {/* Change Password */}
         <div>
           <h2 className="text-lg font-semibold text-purple-600 mb-4 flex items-center gap-2">
-            <LockKeyhole />
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 11c0-1.104-.896-2-2-2s-2 .896-2 2c0 .738.402 1.376 1 1.723V15a1 1 0 001 1h2a1 1 0 001-1v-2.277c.598-.347 1-.985 1-1.723zm9 1c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z"
+              ></path>
+            </svg>
             تغيير كلمة المرور
           </h2>
           <div className="space-y-4">
@@ -279,13 +526,6 @@ const Profile = () => {
                     ></path>
                   </svg>
                 )}
-              </button>
-              <button
-                type="button"
-                className="text-purple-600 hover:underline text-md cursor-pointer"
-                onClick={() => setShowForgot(true)}
-              >
-                نسيت كلمة المرور؟
               </button>
             </div>
             <div className="relative">
@@ -400,7 +640,7 @@ const Profile = () => {
               <button
                 onClick={handleChangePassword}
                 disabled={changePasswordLoading}
-                className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 cursor-pointer ${
+                className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 ${
                   changePasswordLoading
                     ? "bg-purple-400 cursor-not-allowed"
                     : "bg-purple-600 hover:bg-purple-700"
@@ -422,20 +662,16 @@ const Profile = () => {
                         d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    حفظ...
+                    جاري الحفظ...
                   </div>
                 ) : (
-                  "حفظ التغييرات"
+                  "تغيير كلمة المرور"
                 )}
               </button>
             </div>
           </div>
         </div>
       </div>
-      <ForgotPasswordModal
-        isOpen={showForgot}
-        onClose={() => setShowForgot(false)}
-      />
     </div>
   );
 };

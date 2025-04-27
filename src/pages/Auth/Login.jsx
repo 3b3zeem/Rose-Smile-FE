@@ -46,10 +46,8 @@ const Login = () => {
         const user = res?.user || JSON.parse(localStorage.getItem("user"));
       
         setTimeout(() => {
-          if (user?.role === "admin") {
+          if (user?.role === "admin" || user?.role === "superadmin") {
             navigate("/admin-dashboard");
-          } else if (user?.role === "superadmin") {
-            navigate("/superadmin-dashboard");
           } else {
             navigate("/");
           }
