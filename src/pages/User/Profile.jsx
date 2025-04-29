@@ -310,14 +310,14 @@ const Profile = () => {
               <div className="flex justify-end gap-2 mt-6">
                 <button
                   onClick={() => setIsPopupOpen(false)}
-                  className="px-4 py-2 rounded-md text-gray-600 bg-gray-200 hover:bg-gray-300"
+                  className="px-4 py-2 rounded-md text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer transition-all duration-200"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={handleUpdateProfile}
                   disabled={updateLoading}
-                  className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                  className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer transition-all duration-200 ${
                     updateLoading
                       ? "bg-purple-400 cursor-not-allowed"
                       : "bg-purple-600 hover:bg-purple-700"
@@ -352,7 +352,7 @@ const Profile = () => {
 
         {/* Profile Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-start gap-4">
             <div className="relative">
               <img
                 src={avatarUrl}
@@ -640,7 +640,7 @@ const Profile = () => {
               <button
                 onClick={handleChangePassword}
                 disabled={changePasswordLoading}
-                className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                className={`px-4 py-2 rounded-md text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer transition-all duration-150 ${
                   changePasswordLoading
                     ? "bg-purple-400 cursor-not-allowed"
                     : "bg-purple-600 hover:bg-purple-700"
