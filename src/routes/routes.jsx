@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import LayOut from "../layouts/Layout.jsx";
+import AdminLayout from "../dashboard/layouts/Layout.jsx";
 import { lazy, Suspense } from "react";
 import NotFound from "../components/NotFound/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import AdminLayout from "../dashboard/layouts/Layout.jsx";
 
 const Loader = lazy(() => import("../layouts/Loader.jsx"));
 const Home = lazy(() => import("../pages/Home/Home.jsx"));
@@ -24,8 +24,11 @@ const Register = lazy(() => import("../pages/Auth/Register.jsx"));
 const Login = lazy(() => import("../pages/Auth/Login.jsx"));
 const ResetPassword = lazy(() => import("../pages/Auth/ResetPassword.jsx"));
 const Profile = lazy(() => import("../pages/User/Profile.jsx"));
+
+// * Admin
 const Dashboard = lazy(() => import("../dashboard/pages/Home/Dashboard.jsx"));
 const Users = lazy(() => import("../dashboard/pages/Users/Users.jsx"));
+const AdminServices = lazy(() => import("../dashboard/pages/Services/AdminServices.jsx"));
 
 const routes = createBrowserRouter([
   {
@@ -162,14 +165,14 @@ const routes = createBrowserRouter([
           //     </Suspense>
           //   ),
           // },
-          // {
-          //   path: "services", // /admin-dashboard/services
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <AdminServices />
-          //     </Suspense>
-          //   ),
-          // },
+          {
+            path: "services", // /admin-dashboard/services
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AdminServices />
+              </Suspense>
+            ),
+          },
         ],
       },
       { path: "*", element: <NotFound /> },
