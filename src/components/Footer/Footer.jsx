@@ -72,7 +72,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center text-sm">
-          <Link to={"/PrivacyPolicy"}>© جميع الحقوق محفوظة بواسطة</Link>
+          <Link to={"/PrivacyPolicy"} className="NavLinks">الشروط و الأحكام</Link>
         </div>
       </div>
     </footer>

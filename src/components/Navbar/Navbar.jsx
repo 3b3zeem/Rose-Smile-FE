@@ -82,7 +82,8 @@ const ArabicNavbar = () => {
     { text: "خدماتنا", href: "/Services" },
     { text: "الاقسام المتاحة", href: "/sections" },
     { text: "آخر الأخبار", href: "#" },
-    { text: "تواصل معنا", href: "#" },
+    // { text: "تواصل معنا", href: "#" },
+    { text: "الخصوصية", href: "/PrivacyPolicy" },
   ];
 
   return (
@@ -234,9 +235,9 @@ const ArabicNavbar = () => {
                       className="rounded-full"
                     />
                   </div>
-                  <p className="text-center text mt-2 mb-2 text-gray-700 font-bold">
+                  {/* <p className="text-center text mt-2 mb-2 text-gray-700 font-bold">
                     {FirstName} {LastName}
-                  </p>
+                  </p> */}
                 </div>
 
                 {isOpen && (

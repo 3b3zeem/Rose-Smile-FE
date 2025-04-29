@@ -1,6 +1,5 @@
 .NavLinks {
   position: relative;
-  display: inline-block;
 }
 
 .NavLinks::after {
