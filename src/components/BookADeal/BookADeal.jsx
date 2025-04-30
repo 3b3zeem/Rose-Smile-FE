@@ -22,55 +22,59 @@ const BookADeal = () => {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dir-rtl font-['Cairo',sans-serif] text-right">
-      <div className="container mx-auto px-6 py-12">
-        <div className="flex flex-col lg:flex-row items-start gap-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-gray-200 dir-rtl font-['Cairo',sans-serif] text-right">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
           {/* Left Column: Enhanced Text Content and Image */}
-          <div className="lg:w-1/2 w-full">
-            <div className="bg-white rounded-md shadow-md p-8 mb-6 border border-gray-200">
+          <div className="lg:w-[320px] w-full">
+            <div className="flex flex-col gap-6 bg-white rounded border border-gray-100">
+              {/* Image Section */}
+              <div className="overflow-hidden rounded-t">
+                <img
+                  src={data.image.backgroundLarge}
+                  alt="Service"
+                  aria-label="Service image"
+                  className="w-full h-64 object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
               {/* Title Section */}
-              <div className="mb-8 border-b pb-4 border-gray-300">
-                <h3 className="text-sm font-semibold text-gray-500 mb-1">
-                  العنوان
-                </h3>
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 leading-tight mb-1">
+              <div className="px-6 pb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 leading-tight border-b border-gray-200 pb-3 mb-4">
                   {data.title}
                 </h1>
-                {/* {data.subTitle && (
-                  <h2 className="text-lg sm:text-xl font-medium text-gray-600">
+                {data.subTitle && (
+                  <h2 className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
                     {data.subTitle}
                   </h2>
-                )} */}
+                )}
+                <div className="flex flex-col gap-2 items-end mt-4">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm text-gray-600">
+                      آخر تحديث:{" "}
+                      {new Date(data.updatedAt).toLocaleDateString("ar-EG", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <Calendar size={18} className="text-gray-600" />
+                  </div>
+                </div>
               </div>
-
-              {/* Section Info */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-500 mb-2">
-                  القسم
-                </h3>
-                <p className="text-lg text-gray-800">{data.sectionId.title}</p>
-              </div>
-            </div>
-
-            {/* Image */}
-            <div className="overflow-hidden rounded-md shadow-lg">
-              <img
-                src={data.image.backgroundLarge}
-                alt="Service"
-                className="w-full h-[400px] object-cover"
-              />
             </div>
           </div>
 
           {/* Right Column: Booking Form */}
-          <div className="lg:w-1/2 w-full">
-            <BookingForm
-              serviceData={{ id: data._id, title: data.title }}
-              sectionData={{
-                id: data.sectionId._id,
-                title: data.sectionId.title,
-              }}
-            />
+          <div className="lg:w-2/3 w-full">
+            <div className="bg-white border border-gray-100 p-6 sm:p-8">
+              <BookingForm
+                serviceData={{ id: data._id, title: data.title }}
+                sectionData={{
+                  id: data.sectionId._id,
+                  title: data.sectionId.title,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
