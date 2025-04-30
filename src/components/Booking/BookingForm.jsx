@@ -34,19 +34,11 @@ export default function BookingForm({ serviceData, sectionData }) {
   });
 
   useEffect(() => {
-    if (serviceData) {
-      setFormData((prev) => ({
-        ...prev,
-        service: serviceData._id || "",
-        section: serviceData.sectionId?._id || "",
-      }));
-    } else if (sectionData) {
-      setFormData((prev) => ({
-        ...prev,
-        section: sectionData._id || "",
-        service: "",
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      service: serviceData?.id || "",
+      section: sectionData?.id || "",
+    }));
   }, [serviceData, sectionData]);
 
   useEffect(() => {
@@ -86,136 +78,150 @@ export default function BookingForm({ serviceData, sectionData }) {
         name: "",
         phone: "",
         city: "",
-        service: serviceData?._id || "",
-        section: serviceData?.sectionId?._id || sectionData?._id || "",
+        service: serviceData?.id || "",
+        section: sectionData?.id || "",
       });
     }
   };
 
-  const isServiceDisabled = !!serviceData?._id || servicesLoading || submitLoading;
-  const isSectionDisabled =
-    !!serviceData?.sectionId?._id ||
-    !!sectionData?._id ||
-    sectionsLoading ||
-    submitLoading;
+  const isServiceDisabled = true;
+  const isSectionDisabled = true;
 
   return (
     <>
       <Toaster />
-      <form onSubmit={handleSubmit}>
-        {submitSuccess && (
-          <Typography
-            color="success.main"
-            sx={{ marginBottom: "15px", textAlign: "right" }}
-          >
-            {submitSuccess}
-          </Typography>
-        )}
-        {submitError && (
-          <Typography
-            color="error"
-            sx={{ marginBottom: "15px", textAlign: "right" }}
-          >
-            {submitError}
-          </Typography>
-        )}
-        <TextField
-          fullWidth
-          label="الاسم"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          sx={{ marginBottom: "15px", direction: "rtl" }}
-          required
-          disabled={submitLoading}
-        />
-        <TextField
-          fullWidth
-          label="رقم الهاتف"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          sx={{ marginBottom: "15px", direction: "rtl" }}
-          required
-          disabled={submitLoading}
-        />
-        <TextField
-          fullWidth
-          label="المدينة"
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          sx={{ marginBottom: "15px", direction: "rtl" }}
-          required
-          disabled={submitLoading}
-        />
-        <FormControl
-          fullWidth
-          sx={{ marginBottom: "15px" }}
-          disabled={servicesLoading || isServiceDisabled || submitLoading}
+      <div className="bg-white rounded-2xl shadow-md p-8">
+        <span className="text-2xl text-gray-600">احجز موعدك</span>
+        <form
+          onSubmit={handleSubmit}
+          className="p-8"
         >
-          <InputLabel id="service-label">الخدمة</InputLabel>
-          <Select
-            labelId="service-label"
-            name="service"
-            value={formData.service}
+          {submitSuccess && (
+            <Typography
+              color="success.main"
+              sx={{ marginBottom: "15px", textAlign: "right" }}
+            >
+              {submitSuccess}
+            </Typography>
+          )}
+          {submitError && (
+            <Typography
+              color="error"
+              sx={{ marginBottom: "15px", textAlign: "right" }}
+            >
+              {submitError}
+            </Typography>
+          )}
+          <TextField
+            fullWidth
+            label="الاسم"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
-          >
-            {services?.map((service) => (
-              <MenuItem key={service.id} value={service.id}>
-                {service.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl
-          fullWidth
-          sx={{ marginBottom: "15px" }}
-          disabled={sectionsLoading || isSectionDisabled || submitLoading}
-        >
-          <InputLabel id="section-label">القسم</InputLabel>
-          <Select
-            labelId="section-label"
-            name="section"
-            value={formData.section}
-            onChange={handleChange}
-          >
-            {sections?.map((section) => (
-              <MenuItem key={section.id} value={section.id}>
-                {section.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <CardActions
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginTop: "15px",
-          }}
-        >
-          <Button
-            type="submit"
-            sx={{
-              backgroundColor: "#314DDF",
-              color: "white",
-              padding: "10px",
-              fontSize: "20px",
-              "&:hover": {
-                backgroundColor: "#253276",
-              },
-            }}
-            size="large"
+            sx={{ marginBottom: "15px", direction: "rtl" }}
+            required
             disabled={submitLoading}
+          />
+          <TextField
+            fullWidth
+            label="رقم الهاتف"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            sx={{ marginBottom: "15px", direction: "rtl" }}
+            required
+            disabled={submitLoading}
+          />
+          <TextField
+            fullWidth
+            label="المدينة"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            sx={{ marginBottom: "15px", direction: "rtl" }}
+            required
+            disabled={submitLoading}
+          />
+          <FormControl
+            fullWidth
+            sx={{ marginBottom: "15px" }}
+            disabled={isServiceDisabled || submitLoading}
           >
-            {submitLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "احجز ميعادك"
-            )}
-          </Button>
-        </CardActions>
-      </form>
+            <InputLabel id="service-label">الخدمة</InputLabel>
+            <Select
+              labelId="service-label"
+              name="service"
+              value={formData.service}
+              onChange={handleChange}
+            >
+              {services?.length > 0 ? (
+                services.map((service) => (
+                  <MenuItem key={service.id} value={service.id}>
+                    {service.title}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value={formData.service}>
+                  {serviceData?.title || "جاري التحميل..."}
+                </MenuItem>
+              )}
+            </Select>
+          </FormControl>
+          <FormControl
+            fullWidth
+            sx={{ marginBottom: "15px" }}
+            disabled={isSectionDisabled || submitLoading}
+          >
+            <InputLabel id="section-label">القسم</InputLabel>
+            <Select
+              labelId="section-label"
+              name="section"
+              value={formData.section}
+              onChange={handleChange}
+            >
+              {sections?.length > 0 ? (
+                sections.map((section) => (
+                  <MenuItem key={section.id} value={section.id}>
+                    {section.title}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value={formData.section}>
+                  {sectionData?.title || "جاري التحميل..."}
+                </MenuItem>
+              )}
+            </Select>
+          </FormControl>
+          <CardActions
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "15px",
+            }}
+          >
+            <Button
+              type="submit"
+              sx={{
+                backgroundColor: "#314DDF",
+                color: "white",
+                padding: "10px",
+                fontSize: "20px",
+                "&:hover": {
+                  backgroundColor: "#253276",
+                },
+              }}
+              size="large"
+              disabled={submitLoading}
+            >
+              {submitLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "احجز ميعادك"
+              )}
+            </Button>
+          </CardActions>
+        </form>
+      </div>
     </>
   );
 }

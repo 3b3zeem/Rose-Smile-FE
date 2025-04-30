@@ -4,6 +4,7 @@ import AdminLayout from "../dashboard/layouts/Layout.jsx";
 import { lazy, Suspense } from "react";
 import NotFound from "../components/NotFound/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import BookADeal from "../components/BookADeal/BookADeal.jsx";
 
 const Loader = lazy(() => import("../layouts/Loader.jsx"));
 const Home = lazy(() => import("../pages/Home/Home.jsx"));
@@ -56,6 +57,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loader />}>
             <ServiceId />
+          </Suspense>
+        ),
+      },
+      {
+        path: "BookADeal/:reference",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <BookADeal />
           </Suspense>
         ),
       },

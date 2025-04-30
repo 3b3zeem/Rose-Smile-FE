@@ -20,7 +20,12 @@ const useAdminServices = () => {
       const response = await axios.get(
         `${BaseURL}/?page=${page}&size=${size}&search=${searchTerm}`
       );
-      setServices(response.data.services || []);
+      const normalizedServices = (response.data.services || []).map(service => ({
+        ...service,
+        description: Array.isArray(service.description) ? service.description : [],
+        features: Array.isArray(service.features) ? service.features : [],
+      }));
+      setServices(normalizedServices);
       setTotal(response.data.totalServices || 0);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -31,7 +36,7 @@ const useAdminServices = () => {
 
   const addService = async (formData) => {
     try {
-      await axios.post('http://localhost:5000/api/v1/service/', formData, {
+      await axios.post(`${BaseURL}/`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -41,6 +46,35 @@ const useAdminServices = () => {
       return true;
     } catch (error) {
       console.error('Error adding service:', error);
+      throw error;
+    }
+  };
+
+  const updateService = async (id, data) => {
+    try {
+      await axios.put(`${BaseURL}/${id}`, data, {
+        withCredentials: true,
+      });
+      await fetchServices();
+      return true;
+    } catch (error) {
+      console.error('Error updating service:', error);
+      throw error;
+    }
+  };
+
+  const updateServiceImage = async (id, formData) => {
+    try {
+      await axios.put(`${BaseURL}/${id}`, formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      await fetchServices();
+      return true;
+    } catch (error) {
+      console.error('Error updating service image:', error);
       throw error;
     }
   };
@@ -79,7 +113,9 @@ const useAdminServices = () => {
     totalPages: Math.ceil(total / size),
     handlePageChange,
     addService,
+    updateService,
     deleteService,
+    updateServiceImage,
   };
 };
 
