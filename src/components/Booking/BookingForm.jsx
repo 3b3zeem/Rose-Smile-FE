@@ -90,7 +90,7 @@ export default function BookingForm({ serviceData, sectionData }) {
   return (
     <>
       <Toaster />
-      <div className="bg-white rounded-2xl shadow-md p-8">
+      <div className="bg-white rounded-2xl p-8">
         <span className="text-2xl text-gray-600">احجز موعدك</span>
         <form
           onSubmit={handleSubmit}
