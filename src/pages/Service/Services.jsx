@@ -115,29 +115,40 @@ const Services = () => {
               <span>{getSortLabel()}</span>
               <ChevronDown
                 size={20}
-                className={`transition-transform duration-200 ${isSortOpen ? "rotate-180" : ""}`}
+                className={`transition-transform duration-200 ${
+                  isSortOpen ? "rotate-180" : ""
+                }`}
               />
             </button>
             {isSortOpen && (
-              <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+              <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-1000">
                 <button
                   onClick={() => handleSortChange("")}
-                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${!sortOption ? "bg-blue-100 text-blue-700 font-semibold" : "text-gray-700 hover:bg-blue-100"
-                    }`}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${
+                    !sortOption
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "text-gray-700 hover:bg-blue-100"
+                  }`}
                 >
                   الكل
                 </button>
                 <button
                   onClick={() => handleSortChange("createdAt:desc")}
-                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${sortOption === "createdAt:desc" ? "bg-blue-100 text-blue-700 font-semibold" : "text-gray-700 hover:bg-blue-100"
-                    }`}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${
+                    sortOption === "createdAt:desc"
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "text-gray-700 hover:bg-blue-100"
+                  }`}
                 >
                   ترتيب بالأحدث
                 </button>
                 <button
                   onClick={() => handleSortChange("title:asc")}
-                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${sortOption === "title:asc" ? "bg-blue-100 text-blue-700 font-semibold" : "text-gray-700 hover:bg-blue-100"
-                    }`}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${
+                    sortOption === "title:asc"
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "text-gray-700 hover:bg-blue-100"
+                  }`}
                 >
                   ترتيب بالأسماء
                 </button>
@@ -149,14 +160,95 @@ const Services = () => {
 
       {/* Main Content */}
       <div className="flex flex-col md:flex-row gap-6">
+        {/* Toggle Filter Button (Mobile) */}
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="md:hidden flex items-center justify-end gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+        >
+          <Briefcase size={20} />
+          <span>الاقسام</span>
+        </button>
+
+        {/* Services Grid */}
+        <div className="flex-1">
+          {error ? (
+            <div className="text-center p-8 text-red-600">{error}</div>
+          ) : services.length === 0 ? (
+            <div className="text-center p-8 text-gray-600">
+              لا توجد خدمات مطابقة
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {services.map((service) => (
+                  <div
+                    key={service._id}
+                    className="bg-white rounded-lg shadow-lg overflow-hidden h-96 flex flex-col"
+                  >
+                    <img
+                      src={service.image.url}
+                      alt={service.title}
+                      className="w-full h-48 object-cover"
+                      loading="lazy"
+                    />
+                    <div className="p-4 flex flex-col flex-1">
+                      <h3 className="text-lg text-right font-bold text-blue-800 mb-2 truncate">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-600 text-right text-sm flex-1 line-clamp-3 truncate">
+                        {service.subTitle}
+                      </p>
+                      <div className="flex gap-2 mt-4 justify-between">
+                        <Link to={`/BookADeal/${service._id}`} className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-500 transition-all duration-200">
+                          احجز موعد
+                        </Link>
+                        <Link
+                          to={`/service/${service._id}`}
+                          className="bg-gray-200 text-gray-800 py-2 px-4 rounded cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                        >
+                          التفاصيل
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {pagination && pagination.totalPages > 1 && (
+                <div className="flex justify-center gap-4 mt-8 items-center">
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === pagination.totalPages || loading}
+                    className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+                  >
+                    التالي
+                  </button>
+                  <span className="text-gray-600">
+                    الصفحة {page} من {pagination.totalPages}
+                  </span>
+
+                  <button
+                    onClick={() => handlePageChange(Math.max(page - 1, 1))}
+                    disabled={page === 1 || loading}
+                    className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+                  >
+                    السابق
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
         {/* Filter Sidebar (Hidden on mobile by default) */}
         <div
-          className={`fixed md:static inset-0 top-0 left-0 z-50 w-64 bg-white/80 backdrop-blur-md border-r border-gray-200 p-6 transform transition-transform duration-300 md:w-1/4 md:transform-none ${isFilterOpen
-              ? "translate-x-0"
-              : "-translate-x-full md:translate-x-0"
-            }`}
+          className={`fixed md:static inset-0 top-0 right-0 z-50 w-64 bg-white/80 backdrop-blur-md border-l border-gray-200 p-6 transform transition-transform duration-300 md:w-1/4 md:transform-none ${
+            isFilterOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
+          }`}
+          dir="rtl"
         >
-          <div className="flex justify-end items-center mb-6 md:hidden mt-20">
+          <div className="flex justify-start items-center mb-6 md:hidden mt-20">
             <button
               onClick={() => setIsFilterOpen(false)}
               className="text-gray-600 cursor-pointer"
@@ -206,86 +298,6 @@ const Services = () => {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Toggle Filter Button (Mobile) */}
-        <button
-          onClick={() => setIsFilterOpen(true)}
-          className="md:hidden flex items-center justify-end gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 cursor-pointer hover:bg-blue-500 transition-all duration-200"
-        >
-          <Briefcase size={20} />
-          <span>الاقسام</span>
-        </button>
-
-        {/* Services Grid */}
-        <div className="flex-1">
-          {error ? (
-            <div className="text-center p-8 text-red-600">{error}</div>
-          ) : services.length === 0 ? (
-            <div className="text-center p-8 text-gray-600">
-              لا توجد خدمات مطابقة
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {services.map((service) => (
-                  <div
-                    key={service._id}
-                    className="bg-white rounded-lg shadow-lg overflow-hidden h-96 flex flex-col transition-transform duration-200 hover:scale-103"
-                  >
-                    <img
-                      src={service.image.url}
-                      alt={service.title}
-                      className="w-full h-48 object-cover"
-                      loading="lazy"
-                    />
-                    <div className="p-4 flex flex-col flex-1">
-                      <h3 className="text-lg font-bold text-blue-800 mb-2 truncate">
-                        {service.title}
-                      </h3>
-                      <p className="text-gray-600 text-sm flex-1 line-clamp-3 truncate">
-                        {service.desc}
-                      </p>
-                      <div className="flex gap-2 mt-4 justify-between">
-                        <button className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-500 transition-all duration-200">
-                          احجز موعد
-                        </button>
-                        <Link
-                          to={`/service/${service._id}`}
-                          className="bg-gray-200 text-gray-800 py-2 px-4 rounded cursor-pointer hover:bg-gray-300 transition-all duration-200"
-                        >
-                          التفاصيل
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <div className="flex justify-center gap-4 mt-8 items-center">
-                  <button
-                    onClick={() => handlePageChange(Math.max(page - 1, 1))}
-                    disabled={page === 1 || loading}
-                    className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
-                  >
-                    السابق
-                  </button>
-                  <span className="text-gray-600">
-                    الصفحة {page} من {pagination.totalPages}
-                  </span>
-                  <button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === pagination.totalPages || loading}
-                    className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
-                  >
-                    التالي
-                  </button>
-                </div>
-              )}
-            </>
-          )}
         </div>
       </div>
     </div>

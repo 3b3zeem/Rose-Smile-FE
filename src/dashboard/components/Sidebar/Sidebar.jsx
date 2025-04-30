@@ -8,6 +8,9 @@ import {
   LogOut,
   Menu,
   X,
+  Stethoscope,
+  FileText,
+  Megaphone,
 } from "lucide-react";
 
 import logo from "../../../assets/Iamges/logo.png";
@@ -15,6 +18,9 @@ import { useState } from "react";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const isLogin = localStorage.getItem("isLogin");
+  const user = isLogin ? JSON.parse(localStorage.getItem("user")) : null;
+  const superAdmin = user.role === "superadmin";
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -24,10 +30,12 @@ const Sidebar = () => {
     <NavLink
       to={to}
       className={({ isActive }) =>
-      `flex items-center gap-3 px-3 py-2 rounded transition cursor-pointer ${
-        isActive ? "bg-gray-800 text-blue-50 font-semibold" : "hover:bg-gray-200"
-      } ${className}`
-    }
+        `flex items-center gap-3 px-3 py-2 rounded transition cursor-pointer ${
+          isActive
+            ? "bg-gray-800 text-blue-50 font-semibold"
+            : "hover:bg-gray-200"
+        } ${className}`
+      }
     >
       {icon}
       {isOpen && <span className="text-sm">{label}</span>}
@@ -37,13 +45,16 @@ const Sidebar = () => {
   return (
     <>
       <div
-      className={`${
-        isOpen ? "w-64" : "w-16"
-      } h-screen bg-gray-100 text-gray-900 flex flex-col transition-all duration-300 sticky top-0 border-r border-gray-300`}
-    >
+        className={`${
+          isOpen ? "w-64" : "w-16"
+        } h-screen bg-gray-100 text-gray-900 flex flex-col transition-all duration-300 sticky top-0 border-r border-gray-300`}
+      >
         {/* Toggle button */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-400">
-          <button onClick={toggleSidebar} className="cursor-pointer hover:bg-gray-300 p-1 transition-all duration-200">
+          <button
+            onClick={toggleSidebar}
+            className="cursor-pointer hover:bg-gray-300 p-1 transition-all duration-200"
+          >
             <Menu />
           </button>
           {isOpen && <span className="font-bold">القائمة</span>}
@@ -118,30 +129,58 @@ const Sidebar = () => {
             label="لوحة التحكم"
             isOpen={isOpen}
           />
-          <SidebarItem
-            to="/admin-dashboard/users"
-            icon={<Users />}
-            label="المستخدمين"
-            isOpen={isOpen}
-          />
-          <SidebarItem
-            to="/admin-dashboard/offers"
-            icon={<Tag />}
-            label="العروض"
-            isOpen={isOpen}
-          />
-          <SidebarItem
-            to="/admin-dashboard/services"
-            icon={<Briefcase />}
-            label="الخدمات"
-            isOpen={isOpen}
-          />
-          <SidebarItem
-            to="/admin-dashboard/categories"
-            icon={<Layers />}
-            label="الأقسام"
-            isOpen={isOpen}
-          />
+          {superAdmin && (
+            <>
+              <SidebarItem
+                to="/admin-dashboard/categories"
+                icon={<Layers />}
+                label="الرئيسية"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/users"
+                icon={<Users />}
+                label="المستخدمين"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/doctors"
+                icon={<Stethoscope />}
+                label="الدكاترة"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/offers"
+                icon={<Tag />}
+                label="العروض"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/services"
+                icon={<Briefcase />}
+                label="الخدمات"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/categories"
+                icon={<Layers />}
+                label="الأقسام"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/categories"
+                icon={<FileText />}
+                label="شيتات"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/categories"
+                icon={<Megaphone />}
+                label="الاعلانات"
+                isOpen={isOpen}
+              />
+            </>
+          )}
         </nav>
 
         <div className="p-2 border-t border-gray-700">

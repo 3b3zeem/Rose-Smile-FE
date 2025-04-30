@@ -6,11 +6,14 @@ import {
   Loader2,
   Trash2,
   Plus,
+  Pencil,
+  Minus,
 } from "lucide-react";
 import useAdminServices from "../../hooks/Services/useAdminService";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useSectionTitles } from "../../../hooks/Sections/UseSections";
+import { motion, AnimatePresence } from "framer-motion";
 
 const AdminServices = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,12 +26,20 @@ const AdminServices = () => {
     totalPages,
     handlePageChange,
     addService,
+    updateService,
     deleteService,
+    updateServiceImage,
   } = useAdminServices();
   const searchTerm = searchParams.get("search") || "";
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [currentService, setCurrentService] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // Separate state for Add Service modal
+  const [addFormData, setAddFormData] = useState({
     title: "",
     subTitle: "",
     sectionId: "",
@@ -37,50 +48,73 @@ const AdminServices = () => {
     features: [""],
   });
 
-  const handleInputChange = (e, field, index = null) => {
+  // Separate state for Edit Service modal
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    subTitle: "",
+    sectionId: "",
+    description: [""],
+    features: [""],
+  });
+
+  const handleAddInputChange = (e, field, index = null) => {
     if (index !== null) {
-      const updatedArray = [...formData[field]];
+      const updatedArray = [...addFormData[field]];
       updatedArray[index] = e.target.value;
-      setFormData({ ...formData, [field]: updatedArray });
+      setAddFormData({ ...addFormData, [field]: updatedArray });
     } else {
-      setFormData({ ...formData, [field]: e.target.value });
+      setAddFormData({ ...addFormData, [field]: e.target.value });
+    }
+  };
+
+  const handleEditInputChange = (e, field, index = null) => {
+    if (index !== null) {
+      const updatedArray = [...editFormData[field]];
+      updatedArray[index] = e.target.value;
+      setEditFormData({ ...editFormData, [field]: updatedArray });
+    } else {
+      setEditFormData({ ...editFormData, [field]: e.target.value });
     }
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+    setAddFormData({ ...addFormData, image: e.target.files[0] });
   };
 
-  const addField = (field) => {
+  const handleImageFileChange = (e) => {
+    setSelectedImage(e.target.files[0]);
+  };
+
+  const addField = (formData, setFormData, field) => {
     setFormData({ ...formData, [field]: [...formData[field], ""] });
   };
 
-  const removeField = (field, index) => {
+  const removeField = (formData, setFormData, field, index) => {
     const updatedArray = formData[field].filter((_, i) => i !== index);
     setFormData({ ...formData, [field]: updatedArray });
   };
 
-  const handleSubmit = async (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append("title", formData.title);
-    data.append("subTitle", formData.subTitle);
-    data.append("sectionId", formData.sectionId);
-    if (formData.image) {
-      data.append("image", formData.image);
+    data.append("title", addFormData.title);
+    data.append("subTitle", addFormData.subTitle);
+    data.append("sectionId", addFormData.sectionId);
+    if (addFormData.image) {
+      data.append("image", addFormData.image);
     }
-    formData.description.forEach((desc, index) => {
+    addFormData.description.forEach((desc, index) => {
       if (desc) data.append(`description[${index}]`, desc);
     });
-    formData.features.forEach((feature, index) => {
+    addFormData.features.forEach((feature, index) => {
       if (feature) data.append(`features[${index}]`, feature);
     });
 
     try {
       await addService(data);
       toast.success("تم إضافة الخدمة بنجاح");
-      setIsModalOpen(false);
-      setFormData({
+      setIsAddModalOpen(false);
+      setAddFormData({
         title: "",
         subTitle: "",
         sectionId: "",
@@ -89,7 +123,77 @@ const AdminServices = () => {
         features: [""],
       });
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "فشل في إضافة الخدمة");
+    }
+  };
+
+  const handleEditClick = (service) => {
+    setCurrentService(service);
+    setEditFormData({
+      title: service.title || "",
+      subTitle: service.subTitle || "",
+      sectionId: service.section?._id || "",
+      description: service.description.length > 0 ? service.description : [""],
+      features: service.features.length > 0 ? service.features : [""],
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      title: editFormData.title,
+      subTitle: editFormData.subTitle,
+      sectionId: editFormData.sectionId,
+      description: editFormData.description.filter(
+        (desc) => desc.trim() !== ""
+      ),
+      features: editFormData.features.filter(
+        (feature) => feature.trim() !== ""
+      ),
+    };
+
+    try {
+      await updateService(currentService._id, data);
+      toast.success("تم تحديث الخدمة بنجاح");
+      setIsEditModalOpen(false);
+      setCurrentService(null);
+      setEditFormData({
+        title: "",
+        subTitle: "",
+        sectionId: "",
+        description: [""],
+        features: [""],
+      });
+    } catch (error) {
+      toast.error(error.message || "فشل في تحديث الخدمة");
+    }
+  };
+
+  const handleImageClick = (service) => {
+    setCurrentService(service);
+    setSelectedImage(null);
+    setIsImageModalOpen(true);
+  };
+
+  const handleImageSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedImage) {
+      toast.error("يرجى اختيار صورة للتحديث");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", selectedImage);
+
+    try {
+      await updateServiceImage(currentService._id, formData);
+      toast.success("تم تحديث الصورة بنجاح");
+      setIsImageModalOpen(false);
+      setCurrentService(null);
+      setSelectedImage(null);
+    } catch (error) {
+      toast.error(error.message || "فشل في تحديث الصورة");
     }
   };
 
@@ -98,11 +202,10 @@ const AdminServices = () => {
       await deleteService(id);
       toast.success("تم حذف الخدمة بنجاح");
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "فشل في حذف الخدمة");
     }
   };
 
-  // * Search term state
   const handleSearch = (e) => {
     const newSearchTerm = e.target.value;
     setSearchParams((prev) => {
@@ -135,7 +238,7 @@ const AdminServices = () => {
             />
           </div>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsAddModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-200 w-full sm:w-auto"
           >
             <Plus size={20} />
@@ -143,199 +246,474 @@ const AdminServices = () => {
           </button>
         </div>
 
-        {/* Modal for Adding Service */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-100 p-4 mt-20">
-            <div className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl overflow-y-auto max-h-[90vh]">
-              <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
-                إضافة خدمة جديدة
-              </h2>
-              <form
-                onSubmit={handleSubmit}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        {/* Add Service Modal */}
+        <AnimatePresence>
+          {isAddModalOpen && (
+            <motion.div
+              key="Add-Service-Modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-500 p-4 mt-20"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl overflow-y-auto max-h-[90vh]"
               >
-                {/* العنوان */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 text-right">
-                    العنوان
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => handleInputChange(e, "title")}
-                    className="mt-1 block w-full p-2 border-gray-300 rounded shadow-sm text-right focus:outline-none"
-                    required
-                  />
-                </div>
-
-                {/* العنوان الفرعي */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 text-right">
-                    العنوان الفرعي
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.subTitle}
-                    onChange={(e) => handleInputChange(e, "subTitle")}
-                    className="mt-1 block w-full p-2 border-gray-300 rounded shadow-sm text-right focus:outline-none"
-                  />
-                </div>
-
-                {/* القسم */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 text-right">
-                    القسم
-                  </label>
-                  <select
-                    value={formData.sectionId}
-                    onChange={(e) => handleInputChange(e, "sectionId")}
-                    className="mt-1 block w-full p-2 border-gray-300 rounded shadow-sm text-right focus:outline-none"
-                    required
-                  >
-                    <option value="">اختر قسمًا</option>
-                    {sections.map((section) => (
-                      <option key={section.id} value={section.id}>
-                        {section.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* الصورة */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 text-right">
-                    الصورة
-                  </label>
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    className="mt-1 block w-full p-2 border-gray-300 rounded shadow-sm text-right focus:outline-none"
-                    accept="image/*"
-                  />
-                </div>
-
-                {/* الوصف */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 text-right">
-                    الوصف
-                  </label>
-                  {formData.description.map((desc, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
+                <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
+                  إضافة خدمة جديدة
+                </h2>
+                <form
+                  onSubmit={handleAddSubmit}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      العنوان الفرعي
+                    </label>
+                    <input
+                      type="text"
+                      value={addFormData.subTitle}
+                      onChange={(e) => handleAddInputChange(e, "subTitle")}
+                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      العنوان
+                    </label>
+                    <input
+                      type="text"
+                      value={addFormData.title}
+                      onChange={(e) => handleAddInputChange(e, "title")}
+                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      الصورة
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="mt-1 block w-full p-2 border border-gray-500 hover:bg-gray-100 transition-all duration-200 cursor-pointer rounded-md focus:outline-none text-right"
+                      accept="image/*"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      القسم
+                    </label>
+                    <select
+                      value={addFormData.sectionId}
+                      onChange={(e) => handleAddInputChange(e, "sectionId")}
+                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                      required
                     >
-                      <input
-                        type="text"
-                        value={desc}
-                        onChange={(e) =>
-                          handleInputChange(e, "description", index)
-                        }
-                        className="mt-1 block w-full p-2 border-gray-300 rounded shadow-sm text-right focus:outline-none"
-                      />
-                      {formData.description.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeField("description", index)}
-                          className="text-red-600 hover:text-red-800 whitespace-nowrap cursor-pointer"
+                      <option value="">اختر قسمًا</option>
+                      {sections.map((section) => (
+                        <option key={section.id} value={section.id}>
+                          {section.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      الوصف
+                    </label>
+                    <AnimatePresence>
+                      {addFormData.description.map((desc, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
                         >
-                          حذف
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => addField("description")}
-                    className="mt-2 text-blue-600 hover:text-blue-800 cursor-pointer"
-                  >
-                    إضافة وصف آخر
-                  </button>
-                </div>
-
-                {/* المميزات */}
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 text-right">
-                    المميزات
-                  </label>
-                  {formData.features.map((feature, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
+                          <input
+                            type="text"
+                            value={desc}
+                            onChange={(e) =>
+                              handleAddInputChange(e, "description", index)
+                            }
+                            className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                          />
+                          {addFormData.description.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeField(
+                                  addFormData,
+                                  setAddFormData,
+                                  "description",
+                                  index
+                                )
+                              }
+                              className="text-red-600 hover:text-red-800 whitespace-nowrap"
+                            >
+                              <Minus />
+                            </button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addField(addFormData, setAddFormData, "description")
+                      }
+                      className="mt-2 text-blue-600 hover:text-blue-800"
                     >
-                      <input
-                        type="text"
-                        value={feature}
-                        onChange={(e) =>
-                          handleInputChange(e, "features", index)
-                        }
-                        className="mt-1 block w-full p-2 border-gray-300 rounded shadow-sm text-right focus:outline-none"
-                      />
-                      {formData.features.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeField("features", index)}
-                          className="text-red-600 hover:text-red-800 whitespace-nowrap cursor-pointer"
+                      <Plus />
+                    </button>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      المميزات
+                    </label>
+                    <AnimatePresence>
+                      {addFormData.features.map((feature, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
                         >
-                          حذف
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => addField("features")}
-                    className="mt-2 text-blue-600 hover:text-blue-800 cursor-pointer"
-                  >
-                    إضافة ميزة أخرى
-                  </button>
-                </div>
+                          <input
+                            type="text"
+                            value={feature}
+                            onChange={(e) =>
+                              handleAddInputChange(e, "features", index)
+                            }
+                            className="block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                          />
+                          {addFormData.features.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeField(
+                                  addFormData,
+                                  setAddFormData,
+                                  "features",
+                                  index
+                                )
+                              }
+                              className="text-red-600 hover:text-red-800 whitespace-nowrap"
+                            >
+                              <Minus />
+                            </button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addField(addFormData, setAddFormData, "features")
+                      }
+                      className="mt-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <Plus />
+                    </button>
+                  </div>
+                  <div className="md:col-span-2 flex justify-end gap-2 space-x-reverse mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsAddModalOpen(false)}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 cursor-pointer"
+                    >
+                      إلغاء
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer"
+                    >
+                      إضافة
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-                <div className="md:col-span-2 flex justify-end gap-2 space-x-reverse mt-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 cursor-pointer transition-all duration-200"
-                  >
-                    إلغاء
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-200"
-                  >
-                    إضافة
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        {/* Edit Service Modal */}
+        <AnimatePresence>
+          {isEditModalOpen && (
+            <motion.div
+              key="Edit-Service-Modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-500 p-4 md:mt-20"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl overflow-y-auto max-h-[90vh]"
+              >
+                <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
+                  تعديل الخدمة
+                </h2>
+                <form
+                  onSubmit={handleEditSubmit}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      العنوان الفرعي
+                    </label>
+                    <input
+                      type="text"
+                      value={editFormData.subTitle}
+                      onChange={(e) => handleEditInputChange(e, "subTitle")}
+                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      العنوان
+                    </label>
+                    <input
+                      type="text"
+                      value={editFormData.title}
+                      onChange={(e) => handleEditInputChange(e, "title")}
+                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                      required
+                    />
+                  </div>
+                  <div></div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      القسم
+                    </label>
+                    <select
+                      value={editFormData.sectionId}
+                      onChange={(e) => handleEditInputChange(e, "sectionId")}
+                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right cursor-pointer"
+                      required
+                    >
+                      <option value="">اختر قسمًا</option>
+                      {sections.map((section) => (
+                        <option key={section.id} value={section.id}>
+                          {section.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      الوصف
+                    </label>
+                    <AnimatePresence>
+                      {editFormData.description.map((desc, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
+                        >
+                          <input
+                            type="text"
+                            value={desc}
+                            onChange={(e) =>
+                              handleEditInputChange(e, "description", index)
+                            }
+                            className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                          />
+                          {editFormData.description.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeField(
+                                  editFormData,
+                                  setEditFormData,
+                                  "description",
+                                  index
+                                )
+                              }
+                              className="text-red-600 hover:text-red-800 whitespace-nowrap"
+                            >
+                              <Minus />
+                            </button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addField(editFormData, setEditFormData, "description")
+                      }
+                      className="mt-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <Plus />
+                    </button>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      المميزات
+                    </label>
+                    <AnimatePresence>
+                      {editFormData.features.map((feature, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
+                        >
+                          <input
+                            type="text"
+                            value={feature}
+                            onChange={(e) =>
+                              handleEditInputChange(e, "features", index)
+                            }
+                            className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                          />
+                          {editFormData.features.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                removeField(
+                                  editFormData,
+                                  setEditFormData,
+                                  "features",
+                                  index
+                                )
+                              }
+                              className="text-red-600 hover:text-red-800 whitespace-nowrap"
+                            >
+                              <Minus />
+                            </button>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addField(editFormData, setEditFormData, "features")
+                      }
+                      className="mt-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <Plus />
+                    </button>
+                  </div>
+                  <div className="md:col-span-2 flex justify-end gap-2 space-x-reverse mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsEditModalOpen(false)}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 cursor-pointer"
+                    >
+                      إلغاء
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer"
+                    >
+                      حفظ التعديلات
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Image Update Overlay */}
+        <AnimatePresence>
+          {isImageModalOpen && (
+            <motion.div
+              key="image-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md"
+              >
+                <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
+                  تحديث الصورة
+                </h2>
+                <form onSubmit={handleImageSubmit}>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 text-right">
+                      اختر صورة جديدة
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleImageFileChange}
+                      className="mt-3 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right cursor-pointer hover:bg-gray-200 transition-all duration-200"
+                      accept="image/*"
+                      required
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2 space-x-reverse mt-4">
+                    <button
+                      type="button"
+                      onClick={() => setIsImageModalOpen(false)}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 cursor-pointer"
+                    >
+                      إلغاء
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer"
+                    >
+                      تحديث
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="animate-spin text-blue-500" size={32} />
           </div>
         ) : (
-          <>
+          <React.Fragment>
             <div className="bg-white shadow-md rounded-lg overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 text-right">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
                       الصورة
                     </th>
-                    <th className="px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
                       العنوان
                     </th>
-                    <th className="px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                      العنوان الفرعي
-                    </th>
-                    <th className="px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
                       القسم
                     </th>
-                    <th className="px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
                       تاريخ الإنشاء
                     </th>
-                    <th className="px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                    <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
                       الإجراءات
                     </th>
                   </tr>
@@ -344,18 +722,16 @@ const AdminServices = () => {
                   {services.length > 0 ? (
                     services.map((service) => (
                       <tr key={service._id}>
-                        <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                           <img
                             src={service.image.thumbnailMedium}
                             alt={service.title}
-                            className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded"
+                            className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer mx-auto"
+                            onClick={() => handleImageClick(service)}
                           />
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[150px] sm:max-w-[200px] truncate">
                           {service.title}
-                        </td>
-                        <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[150px] sm:max-w-[200px] truncate">
-                          {service.subTitle}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] truncate">
                           {service.section.title}
@@ -365,15 +741,20 @@ const AdminServices = () => {
                             "ar-EG"
                           )}
                         </td>
-                        <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm">
+                        <td className="px-2 sm:px-4 py-8 whitespace-nowrap text-sm flex gap-5 items-center justify-center">
                           <button
-                            onClick={() =>
-                              handleDelete(service._id, service.title)
-                            }
+                            onClick={() => handleEditClick(service)}
+                            className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                            title="تعديل الخدمة"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(service._id)}
                             className="text-red-600 hover:text-red-800 cursor-pointer"
                             title="حذف الخدمة"
                           >
-                            <Trash2 size={16} className="sm:w-20" />
+                            <Trash2 size={16} />
                           </button>
                         </td>
                       </tr>
@@ -419,7 +800,7 @@ const AdminServices = () => {
                 </div>
               </div>
             </div>
-          </>
+          </React.Fragment>
         )}
       </div>
     </div>
