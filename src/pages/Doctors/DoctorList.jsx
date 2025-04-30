@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Stethoscope } from "lucide-react";
+import { Stethoscope } from "lucide-react";
 import useDoctors from "../../hooks/Doctors/useDoctor";
 
 const DoctorList = () => {
@@ -27,22 +27,14 @@ const DoctorList = () => {
   const filtersAreActive = search.trim() !== "";
 
   return (
-    <div
-      className="min-h-screen max-w-6xl mx-auto px-4 py-12 text-center"
-      dir="rtl"
-    >
-      <div className="flex flex-col justify-center items-center">
-        <span className="text-4xl font-bold text-[#E6F6F4] mb-6 bg-[#BF3F7E] py-3 px-7 ">
-          فريق الأطباء
-        </span>
-        <p className="text-gray-700 mb-10 w-[70%]">
-          في مجمع ابتسامة الورود، نفخر بفريقنا الطبي المميز من أطباء الأسنان ذوي
-          الخبرة والكفاءة العالية. نحرص على اختيار أفضل الكفاءات في مختلف تخصصات
-          طب الأسنان، ليضمن لك كل طبيب أفضل رعاية و أفضل النتائج.
-        </p>
-      </div>
+    <div className="min-h-screen max-w-6xl mx-auto px-4 py-12 text-center" dir="rtl">
+      <h2 className="text-4xl font-bold text-blue-800 mb-6">فريق الأطباء</h2>
+      <p className="text-gray-700 mb-10 w-full md:w-[70%] mx-auto">
+        في ابتسامة الورود، نفخر بفريقنا الطبي المميز من أطباء الأسنان ذوي الخبرة والكفاءة العالية.
+        نحرص على اختيار أفضل الكفاءات في مختلف تخصصات طب الأسنان، ليضمن لك كل طبيب أفضل رعاية وأفضل نتائج.
+      </p>
 
-      {/* Mobile search toggle */}
+      {/* Mobile Search Toggle */}
       <div className="md:hidden text-right mb-4">
         <button
           onClick={() => setShowFilters(!showFilters)}
@@ -97,32 +89,25 @@ const DoctorList = () => {
         </div>
       ) : (
         <>
+          {/* Doctor Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {doctors.map((doctor) => (
-              <div key={doctor._id} className="px-2">
-                <div className="bg-white rounded-lg overflow-hidden shadow-md h-[600px] flex flex-col">
-                  <div className="h-full overflow-hidden hover:scale-105 duration-700 transition-all cursor-pointer">
-                    <img
-                      src={doctor.image.url}
-                      alt={doctor.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  <div className="bg-pink-100 p-4 text-center flex-grow flex flex-col justify-center">
-                    <h3 className="text-lg font-medium">{doctor.name}</h3>
-                    <p className="text-blue-900 font-bold">
-                      {doctor.specialization || "غير محدد"}
-                    </p>
-                  </div>
-
+              <div key={doctor._id}
+                className="bg-white shadow-lg rounded-lg overflow-hidden text-center hover:shadow-xl transition"
+              > 
+                <img
+                  src={doctor.image.url}
+                  alt={doctor.name}
+                  className="w-full object-cover"
+                />
+                <div className="p-4 bg-blue-50">
+                  <h3 className="text-blue-800 font-semibold text-lg">{doctor.name}</h3>
+                  <p className="text-gray-600">{doctor.specialization || "غير محدد"}</p>
                   <Link
                     to={`/doctor/${doctor._id}`}
-                    className="font-medium cursor-pointer"
+                    className="mt-4 inline-flex items-center justify-center bg-blue-800 text-white px-5 py-2.5 rounded-full font-medium shadow hover:bg-blue-900 transition-all duration-300 ease-in-out"
                   >
-                    <div className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-4 text-center cursor-pointer relative">
-                      View Profile
-                    </div>
+                    عرض الصفحة الشخصية
                   </Link>
                 </div>
               </div>
@@ -140,21 +125,19 @@ const DoctorList = () => {
                 السابق
               </button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (pageNum) => (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`px-4 py-2 rounded ${
-                      currentPage === pageNum
-                        ? "bg-blue-800 text-white"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                )
-              )}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`px-4 py-2 rounded ${
+                    currentPage === pageNum
+                      ? "bg-blue-800 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              ))}
 
               <button
                 disabled={currentPage === totalPages}
