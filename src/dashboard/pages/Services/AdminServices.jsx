@@ -37,6 +37,7 @@ const AdminServices = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currentService, setCurrentService] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Separate state for Add Service modal
   const [addFormData, setAddFormData] = useState({
@@ -82,7 +83,11 @@ const AdminServices = () => {
   };
 
   const handleImageFileChange = (e) => {
-    setSelectedImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setPreviewImage(URL.createObjectURL(file));
+      setSelectedImage(file);
+    }
   };
 
   const addField = (formData, setFormData, field) => {
@@ -654,9 +659,20 @@ const AdminServices = () => {
                 transition={{ duration: 0.3 }}
                 className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-md"
               >
-                <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
-                  تحديث الصورة
-                </h2>
+                <div className="flex justify-between">
+                  <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right order-2">
+                    تحديث الصورة
+                  </h2>
+                  {previewImage && (
+                    <div className="flex justify-start mb-4 sm:w-50 m:h-50">
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="w-24 h-24 sm:w-full sm:h-full object-cover rounded border border-gray-300"
+                      />
+                    </div>
+                  )}
+                </div>
                 <form onSubmit={handleImageSubmit}>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 text-right">
