@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Stethoscope } from "lucide-react";
 import useDoctors from "../../hooks/Doctors/useDoctor";
+import { ArrowLeft } from "lucide-react";
 
 const DoctorList = () => {
   const [search, setSearch] = useState("");
@@ -95,20 +96,25 @@ const DoctorList = () => {
               <div key={doctor._id}
                 className="bg-white shadow-lg rounded-lg overflow-hidden text-center hover:shadow-xl transition"
               > 
-                <img
-                  src={doctor.image.url}
-                  alt={doctor.name}
-                  className="w-full object-cover"
-                />
+               <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden">
+                  <img
+                    src={doctor.image?.url}
+                    alt={doctor.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+
                 <div className="p-4 bg-blue-50">
                   <h3 className="text-blue-800 font-semibold text-lg">{doctor.name}</h3>
                   <p className="text-gray-600">{doctor.specialization || "غير محدد"}</p>
-                  <Link
-                    to={`/doctor/${doctor._id}`}
-                    className="mt-4 inline-flex items-center justify-center bg-blue-800 text-white px-5 py-2.5 rounded-full font-medium shadow hover:bg-blue-900 transition-all duration-300 ease-in-out"
-                  >
-                    عرض الصفحة الشخصية
-                  </Link>
+                  
+                    <Link
+                      to={`/doctor/${doctor._id}`}
+                      className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors duration-200 font-medium"
+                    >
+                      <span>عرض الملف الشخصي</span>
+                      <ArrowLeft className="w-4 h-4" />
+                    </Link>
                 </div>
               </div>
             ))}
