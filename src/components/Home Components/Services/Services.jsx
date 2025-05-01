@@ -1,17 +1,35 @@
 import React from "react";
 import Slider from "react-slick";
-import { Calendar, Info, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Calendar,
+  Info,
+  ChevronLeft,
+  ChevronRight,
+  ArrowLeft,
+} from "lucide-react";
 import { useSomeServices } from "../../../hooks/Services/useServices";
 import { Link } from "react-router-dom";
 
 const Services = () => {
   const { data: services, loading, error } = useSomeServices();
 
+  const truncateText = (text, maxLength = 100) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const truncateTitle = (text, maxLength = 50) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute top-1/3 -right-4 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute top-1/2 -right-4 -translate-y-1/2 bg-white hover:bg-gray-50 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer border border-gray-200"
     >
       <ChevronRight size={20} />
     </button>
@@ -20,7 +38,7 @@ const Services = () => {
   const PrevArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute top-1/3 -left-4 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute top-1/2 -left-4 -translate-y-1/2 bg-white hover:bg-gray-50 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer border border-gray-200"
     >
       <ChevronLeft size={20} />
     </button>
@@ -63,51 +81,75 @@ const Services = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 font-sans">
+    <div className="max-w-6xl mx-auto px-4 py-16 font-sans">
       {/* Header Section */}
-      <div className="text-center mb-8 md:mb-12 rtl">
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-800 mb-3 md:mb-4">
+      <div className="text-center mb-12 rtl">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
           خدماتنا
         </h2>
-        <p className="text-md md:text-lg text-gray-700 max-w-3xl mx-auto">
+        <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-pink-500 mx-auto mb-8 rounded-full"></div>
+        <p className="md:text-lg text-md text-gray-600 max-w-2xl mx-auto leading-relaxed">
           نحن نوفر لك رعاية متكاملة لصحة فمك وأسنانك، من خلال مجموعة واسعة من
-          الخدمات التي تضمن لك الابتسامة المثالية. فريقنا من الأطباء المتخصصين
-          يستخدم أحدث التقنيات لضمان راحة وأمان جميع مرضانا.
+          الخدمات التي تضمن لك الابتسامة المثالية.
         </p>
       </div>
 
       {/* Services Slider */}
       <div className="px-2 md:px-4">
         {loading ? (
-          <p className="text-center text-lg text-blue-700 font-bold">
-            جارٍ تحميل العروض...
+          <p className="text-center text-lg text-gray-600">
+            جارٍ تحميل الخدمات...
           </p>
         ) : !services.length ? (
-          <p className="text-center text-gray-500">لا توجد عروض متاحة حالياً.</p>
+          <p className="text-center text-gray-500">
+            لا توجد خدمات متاحة حالياً.
+          </p>
         ) : (
           <Slider {...settings}>
             {services.map((service) => (
-              <div key={service._id} className="p-2 md:p-3">
-                <div className="flex flex-col items-center text-center h-100">
-                  <div className="w-full h-60 rounded-lg overflow-hidden mb-2 md:mb-4">
+              <div key={service._id} className="p-2 md:p-3 h-full">
+                <div className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                  <div className="relative h-48 overflow-hidden">
                     <img
-                      src={service.image.url}
+                      src={service.image.cardImage}
                       alt={service.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
                   </div>
-                  {/* Title */}
-                  <h3 className="text-lg md:text-xl font-bold text-pink-500 mb-2 truncate w-full">
-                    {service.title}
-                  </h3>
-                  {/* Buttons */}
-                  <div className="flex flex-col md:flex-row gap-2 md:gap-4 w-full justify-end mt-4">
-                    <Link to={`/service/${service._id}`} className="bg-blue-600 text-white py-2 px-3 md:px-4 rounded flex items-center justify-center gap-2 w-full md:w-auto search cursor-pointer">
-                      <span className="flex items-center gap-2">
+
+                  <div className="p-4 flex flex-col flex-grow rtl">
+                    <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-200 min-h-[28px] overflow-hidden whitespace-nowrap text-ellipsis">
+                      {truncateTitle(service.title)}
+                    </h3>
+                    <p
+                      className="text-gray-600 text-sm mb-4 flex-grow min-h-[48px] overflow-hidden text-right"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: "2",
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      {truncateText(service.description)}
+                    </p>
+                    <div className="flex gap-2 mt-auto">
+                      <Link
+                        to={`/book/${service._id}`}
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 text-sm"
+                      >
+                        <Calendar size={16} />
+                        <span>احجز الان</span>
+                        <ArrowLeft size={14} />
+                      </Link>
+                      <Link
+                        to={`/service/${service._id}`}
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-pink-50 hover:bg-pink-100 text-pink-600 py-2 px-3 rounded-lg transition-colors duration-200 text-sm border border-pink-200"
+                      >
                         <Info size={16} />
                         <span>التفاصيل</span>
-                      </span>
-                    </Link>
+                        <ArrowLeft size={14} />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

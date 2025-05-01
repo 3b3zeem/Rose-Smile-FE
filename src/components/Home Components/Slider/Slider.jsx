@@ -1,7 +1,13 @@
 import React from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, CircleCheckBig } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  CircleCheckBig,
+  ArrowLeft,
+  Calendar,
+} from "lucide-react";
 import useHero from "../../../hooks/Hero/useHero";
 import "./Slider.css";
 
@@ -11,7 +17,7 @@ const DentalClinicSlider = () => {
   const NextArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute right-[-10px] md:right-[-15px] top-1/2 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute right-[-10px] md:right-[-15px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer border border-gray-200"
     >
       <ChevronRight size={20} />
     </button>
@@ -20,7 +26,7 @@ const DentalClinicSlider = () => {
   const PrevArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute left-[-10px] md:left-[-15px] top-1/2 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute left-[-10px] md:left-[-15px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer border border-gray-200"
     >
       <ChevronLeft size={20} />
     </button>
@@ -30,65 +36,50 @@ const DentalClinicSlider = () => {
     dots: true,
     infinite: heroes.length > 1,
     speed: 500,
-    slidesToShow: Math.min(heroes.length, 1),
+    slidesToShow: 1,
     slidesToScroll: 1,
-    nextArrow: heroes.length > 1 ? <NextArrow /> : null,
-    prevArrow: heroes.length > 1 ? <PrevArrow /> : null,
     rtl: true,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    pauseOnHover: true,
+    arrows: false,
     dotsClass: "slick-dots custom-dots",
-    customPaging: (i) => <div className="dot"></div>,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: Math.min(heroes.length, 2),
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
+    customPaging: () => <div className="dot"></div>,
   };
 
-  if (loading) return <p className="text-center">Loading slider...</p>;
+  if (loading)
+    return <p className="text-center text-gray-600">جاري التحميل...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="container mx-auto py-12 px-4 sm:px-6" dir="rtl">
+    <div className="container mx-auto -mt-4" dir="rtl">
       <Slider {...settings}>
         {heroes.map((hero) => (
           <div key={hero._id}>
             <div
-              className="relative h-[70vh] sm:h-[80vh] md:h-[550px] bg-cover bg-center rounded-md overflow-hidden"
+              className="relative h-[85vh] md:h-[85vh] bg-cover bg-center bg-no-repeat overflow-hidden shadow-lg group"
               style={{
-                backgroundImage: `url(${hero.image?.heroBanner})`,
+                backgroundImage: `url(${hero.image?.backgroundLarge})`,
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-blue-900/80"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/80 transition-opacity duration-300 group-hover:opacity-90"></div>
 
-              {/* Content */}
-              <div className="relative z-20 h-full flex flex-col justify-center items-end text-right p-4 sm:p-8 md:p-16 md:max-w-2xl md:ml-auto">
-                <h2 className="text-2xl sm:text-3xl md:text-6xl text-white font-bold mb-3 sm:mb-4">
+              <div className="relative z-20 h-full flex flex-col justify-center items-end text-right p-6 sm:p-8 md:p-16 md:max-w-2xl md:ml-auto">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl text-white font-bold mb-3 sm:mb-4 group-hover:text-blue-100 transition-colors duration-300">
                   {hero.title}
                 </h2>
-                <p className="text-sm sm:text-lg md:text-xl text-pink-200 mb-6 sm:mb-8 leading-relaxed">
+                <p className="text-sm sm:text-base md:text-lg text-gray-200 mb-6 sm:mb-8 leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
                   {hero.subtitle}
                 </p>
                 <Link
                   to={hero.buttonLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 sm:py-3 sm:px-6 rounded-md transition duration-300 flex items-center justify-center w-full sm:w-auto search cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-5 rounded-lg transition-colors duration-200 text-sm sm:text-base"
                 >
-                  <span className="flex gap-2 items-center">
-                    <CircleCheckBig size={16} />
-                    {hero.buttonText}
-                  </span>
+                  <CircleCheckBig size={18} />
+                  <span>{hero.buttonText}</span>
+                  <ArrowLeft size={16} />
                 </Link>
               </div>
             </div>

@@ -1,6 +1,12 @@
 import React from "react";
 import Slider from "react-slick";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  ArrowLeft,
+  Info,
+} from "lucide-react";
 
 import useOffers from "../../../hooks/HomeComponents/useOffers";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +20,23 @@ const Offers = () => {
     navigate(path);
   };
 
+  const truncateText = (text, maxLength = 100) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const truncateTitle = (text, maxLength = 50) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute top-1/2 -right-4 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute top-1/2 -right-4 -translate-y-1/2 bg-white hover:bg-gray-50 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer border border-gray-200"
     >
       <ChevronRight size={20} />
     </button>
@@ -27,7 +45,7 @@ const Offers = () => {
   const PrevArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute top-1/2 -left-4 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute top-1/2 -left-4 -translate-y-1/2 bg-white hover:bg-gray-50 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer border border-gray-200"
     >
       <ChevronLeft size={20} />
     </button>
@@ -62,11 +80,14 @@ const Offers = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 font-sans">
+    <div className="max-w-6xl mx-auto px-4 py-16 font-sans">
       {/* Header Section */}
       <div className="text-center mb-12 rtl">
-        <h2 className="text-4xl font-bold text-blue-800 mb-4">عروضنا</h2>
-        <p className="md:text-lg text-md text-gray-700 max-w-2xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          عروضنا
+        </h2>
+        <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-pink-500 mx-auto mb-8 rounded-full"></div>
+        <p className="md:text-lg text-md text-gray-600 max-w-2xl mx-auto leading-relaxed">
           نهتم بابتسامتك ونوفر لك أفضل العروض على خدمات العناية بالأسنان. لتتمكن
           من الحصول على رعاية متكاملة بأسعار تنافسية. لا تفوت الفرصة واستفد من
           خصوماتنا الحصرية!
@@ -76,7 +97,7 @@ const Offers = () => {
       {/* Services Slider */}
       <div className="px-2 md:px-4">
         {loading ? (
-          <p className="text-center text-lg text-blue-700 font-bold">
+          <p className="text-center text-lg text-gray-600">
             جارٍ تحميل العروض...
           </p>
         ) : !offers.length ? (
@@ -87,36 +108,52 @@ const Offers = () => {
           <Slider {...settings}>
             {offers.map((offer) => (
               <div key={offer.id} className="p-2 md:p-3 h-full">
-                <div className="relative bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-80 md:h-96">
-                  {/* Image covering entire card */}
-                  <img
-                    src={offer.image.backgroundLarge}
-                    alt={offer.title}
-                    className="w-full h-full object-cover aspect-[4/3] md:aspect-auto"
-                  />
+                <div className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={offer.image.cardImage}
+                      alt={offer.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                  </div>
 
-                  {/* Gradient overlay for better text visibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70"></div>
-
-                  {/* Text content overlay */}
-                  <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-end items-end">
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">
-                      {offer.title}
+                  <div className="p-4 flex flex-col flex-grow rtl">
+                    <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-200 min-h-[28px] overflow-hidden whitespace-nowrap text-ellipsis">
+                      {truncateTitle(offer.title)}
                     </h3>
-                    <p className="text-gray-100 text-sm md:text-base mb-4 md:mb-6">
-                      {offer.desc}
-                    </p>
-                    <button
-                      onClick={() =>
-                        handleNavigate(offer.type, offer.reference)
-                      }
-                      className="bg-blue-600 text-white py-2 px-4 md:px-6 rounded w-full md:w-fit search cursor-pointer"
+                    <p
+                      className="text-gray-600 text-sm mb-4 flex-grow min-h-[48px] overflow-hidden text-right"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: "2",
+                        WebkitBoxOrient: "vertical",
+                      }}
                     >
-                      <span className="flex items-center gap-2 justify-center">
+                      {truncateText(offer.desc)}
+                    </p>
+                    <div className="flex gap-2 mt-auto">
+                      <button
+                        onClick={() =>
+                          handleNavigate(offer.type, offer.reference)
+                        }
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 text-sm"
+                      >
                         <Calendar size={16} />
-                        احجـز موعدك
-                      </span>
-                    </button>
+                        <span>احجز الان</span>
+                        <ArrowLeft size={14} />
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleNavigate(offer.type, offer.reference)
+                        }
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-pink-50 hover:bg-pink-100 text-pink-600 py-2 px-3 rounded-lg transition-colors duration-200 text-sm border border-pink-200"
+                      >
+                        <Info size={16} />
+                        <span>التفاصيل</span>
+                        <ArrowLeft size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
