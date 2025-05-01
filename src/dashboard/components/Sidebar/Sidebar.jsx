@@ -64,64 +64,6 @@ const Sidebar = () => {
           <img src={logo} alt="logo" width={100} />
         </div>
 
-        {/* <nav className="flex-1 p-4 flex flex-col gap-4">
-          <NavLink
-            to="/admin-dashboard"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-200 transition ${
-                isActive ? "bg-gray-200" : ""
-              }`
-            }
-          >
-            <LayoutDashboard />
-            لوحة التحكم
-          </NavLink>
-          <NavLink
-            to="/admin-dashboard/users"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-200 transition ${
-                isActive ? "bg-gray-200" : ""
-              }`
-            }
-          >
-            <Users size={20} />
-            المستخدمين
-          </NavLink>
-          <NavLink
-            to="/admin-dashboard/offers"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-200 transition ${
-                isActive ? "bg-gray-200" : ""
-              }`
-            }
-          >
-            <Tag size={20} />
-            العروض
-          </NavLink>
-          <NavLink
-            to="/admin-dashboard/services"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-200 transition ${
-                isActive ? "bg-gray-200" : ""
-              }`
-            }
-          >
-            <Briefcase size={20} />
-            الخدمات
-          </NavLink>
-          <NavLink
-            to="/admin-dashboard/sections"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-gray-200 transition ${
-                isActive ? "bg-gray-200" : ""
-              }`
-            }
-          >
-            <Layers size={20} />
-            الأقسام
-          </NavLink>
-        </nav> */}
-
         <nav className="flex-1 p-2 flex flex-col gap-2 mt-2">
           <SidebarItem
             to="/admin-dashboard"
