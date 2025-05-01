@@ -35,7 +35,7 @@ const DoctorsTeam = () => {
     dots: false,
     infinite: doctors.length > 1,
     speed: 500,
-    slidesToShow: Math.min(doctors.length, 3),
+    slidesToShow: Math.min(doctors.length, 4),
     slidesToScroll: 1,
     nextArrow: doctors.length > 1 ? <NextArrow /> : null,
     prevArrow: doctors.length > 1 ? <PrevArrow /> : null,
@@ -60,7 +60,7 @@ const DoctorsTeam = () => {
 
   return (
     <div className="bg-gray-50 py-16 px-4 md:px-8 text-right" dir="rtl">
-      <div className="max-w-6xl mx-auto text-center">
+      <div className="max-w-[90rem] mx-auto text-center px-4 lg:px-12">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
           فريق الأطباء
         </h2>

@@ -49,7 +49,7 @@ const Services = () => {
     dots: false,
     infinite: services.length > 1,
     speed: 500,
-    slidesToShow: Math.min(services.length, 3),
+    slidesToShow: Math.min(services.length, 4),
     slidesToScroll: 1,
     nextArrow: services.length > 1 ? <NextArrow /> : null,
     prevArrow: services.length > 1 ? <PrevArrow /> : null,
@@ -81,8 +81,8 @@ const Services = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16 font-sans">
-      {/* Header Section */}
+<div className="max-w-[90rem] mx-auto px-4 lg:px-8 py-16 font-sans">
+    {/* Header Section */}
       <div className="text-center mb-12 rtl">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
           خدماتنا

@@ -56,7 +56,7 @@ const Offers = () => {
     dots: false,
     infinite: offers.length > 1,
     speed: 500,
-    slidesToShow: Math.min(offers.length, 3),
+    slidesToShow: Math.min(offers.length, 4),
     slidesToScroll: 1,
     nextArrow: offers.length > 1 ? <NextArrow /> : null,
     prevArrow: offers.length > 1 ? <PrevArrow /> : null,
@@ -80,7 +80,7 @@ const Offers = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16 font-sans">
+      <div className="max-w-[90rem] mx-auto px-4 lg:px-8 py-16 font-sans">
       {/* Header Section */}
       <div className="text-center mb-12 rtl">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
