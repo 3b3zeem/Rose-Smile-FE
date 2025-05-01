@@ -1,12 +1,13 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import useServiceDetails from "../../../hooks/Services/useServices";
+import { Calendar, Clock, CheckCircle, Star, ArrowLeft } from "lucide-react";
 
 export default function Service() {
   const { reference } = useParams();
   const { data, loading, error } = useServiceDetails(reference);
 
-  // Loading state
+
   if (loading)
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50 text-2xl font-bold text-gray-600 font-[Cairo] direction-rtl">

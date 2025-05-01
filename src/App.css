@@ -1,7 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  --color-primary: #4f46e5;
+  --color-primary-light: #6366f1;
+  --color-primary-dark: #4338ca;
+  --color-pink: oklch(0.656 0.241 354.3);
+  --color-pink-light: oklch(0.75 0.2 354.3);
+  --color-pink-dark: oklch(0.55 0.25 354.3);
+}
+
 ::selection {
-  background-color: #4f46e5;
+  background-color: var(--color-primary);
   color: white;
 }
 
@@ -10,8 +19,108 @@
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #4f46e5;
+  background-color: var(--color-primary);
 }
 ::-webkit-scrollbar-track {
   background-color: #f3f4f6;
+}
+
+/* Custom gradient backgrounds */
+.bg-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-pink) 100%
+  );
+}
+
+.bg-gradient-light {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-light) 0%,
+    var(--color-pink-light) 100%
+  );
+}
+
+/* Custom text colors */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-pink {
+  color: var(--color-pink);
+}
+
+/* Custom border colors */
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-pink {
+  border-color: var(--color-pink);
+}
+
+/* Custom hover effects */
+.hover-primary:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.hover-pink:hover {
+  color: var(--color-pink);
+}
+
+/* Custom focus rings */
+.focus-ring-primary:focus {
+  ring-color: var(--color-primary);
+}
+
+.focus-ring-pink:focus {
+  ring-color: var(--color-pink);
+}
+
+/* Minimal pink accents */
+.hover-pink:hover {
+  color: var(--color-pink);
+}
+
+/* Arabic text handling */
+[dir="rtl"] .list-disc {
+  padding-right: 1.5rem;
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+[dir="rtl"] .list-disc li {
+  position: relative;
+  padding-right: 0;
+  text-align: right;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+}
+
+[dir="rtl"] .list-disc li::before {
+  content: "•";
+  position: relative;
+  margin-right: 0.5rem;
+  color: var(--color-primary);
+  order: 2;
+}
+
+[dir="rtl"] .list-disc li span {
+  order: 1;
+}
+
+/* Ensure text wrapping maintains RTL direction */
+[dir="rtl"] .leading-relaxed {
+  text-align: right;
+  unicode-bidi: plaintext;
+}
+
+/* Handle long Arabic text wrapping */
+[dir="rtl"] .text-wrap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
