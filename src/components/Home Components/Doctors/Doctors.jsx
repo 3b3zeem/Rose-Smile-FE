@@ -3,22 +3,20 @@ import Slider from "react-slick";
 import {
   ChevronLeft,
   ChevronRight,
-  Facebook,
-  Instagram,
-  Linkedin,
+  User,
+  Stethoscope,
+  ArrowLeft,
 } from "lucide-react";
-
 import { Link } from "react-router-dom";
 import { useSomeDoctors } from "../../../hooks/Doctors/useDoctor";
 
 const DoctorsTeam = () => {
   const { doctors, loading, error } = useSomeDoctors({ page: 1, size: 5 });
 
-  // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute right-[-10px] md:right-[-15px] top-1/2 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute right-[-10px] md:right-[-15px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer"
     >
       <ChevronRight size={20} />
     </button>
@@ -27,13 +25,12 @@ const DoctorsTeam = () => {
   const PrevArrow = ({ onClick }) => (
     <button
       onClick={onClick}
-      className="absolute left-[-10px] md:left-[-15px] top-1/2 -translate-y-1/2 bg-blue-600 hover:opacity-90 transition-all duration-200 text-white rounded p-2 shadow-lg z-10 cursor-pointer"
+      className="absolute left-[-10px] md:left-[-15px] top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 transition-all duration-200 text-gray-600 rounded-full p-2 shadow-lg z-10 cursor-pointer"
     >
       <ChevronLeft size={20} />
     </button>
   );
 
-  // Slider settings
   const settings = {
     dots: false,
     infinite: doctors.length > 1,
@@ -64,11 +61,11 @@ const DoctorsTeam = () => {
   return (
     <div className="bg-white py-12 px-4 md:px-8 text-right" dir="rtl">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-6">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
           فريق الأطباء
         </h2>
 
-        <p className="text-gray-700 mb-10 text-lg px-4 md:px-16">
+        <p className="text-gray-600 mb-10 text-lg px-4 md:px-16">
           في مجمع التسليم المورد. نحن فخورون بفريقنا الطبي المميز من أطباء
           الأسنان ذوي الخبرة والكفاءة العالية. نحرص على اختيار أفضل الكفاءات في
           مختلف تخصصات طب الأسنان، ليضمن لك كل طبيب أفضل رعاية و أفضل النتائج.
@@ -85,30 +82,42 @@ const DoctorsTeam = () => {
             <Slider {...settings} className="doctors-slider">
               {doctors.map((doctor) => (
                 <div key={doctor._id} className="px-2">
-                  <div className="bg-white rounded-lg overflow-hidden shadow-md h-[600px] flex flex-col">
-                    <div className="h-full overflow-hidden hover:scale-110 duration-700 transition-all cursor-pointer">
-                      <img
-                        src={doctor.image.url || "/path/to/default-image.png"}
-                        alt={doctor.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    <div className="bg-pink-100 p-4 text-center flex-grow flex flex-col justify-center">
-                      <h3 className="text-lg font-medium">{doctor.name}</h3>
-                      <p className="text-blue-900 font-bold">
-                        {doctor.specialization || "غير محدد"}
-                      </p>
-                    </div>
-
-                    <Link
-                      to={`/doctor/${doctor._id}`}
-                      className="font-medium cursor-pointer"
-                    >
-                      <div className="bg-blue-900 hover:opacity-85 duration-200 transition-all text-white p-4 text-center cursor-pointer relative">
-                        View Profile
+                  <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300">
+                    <div className="p-6">
+                      <div className="flex items-center justify-center mb-4">
+                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-100 shadow-sm">
+                          <img
+                            src={doctor.image.url}
+                            alt={doctor.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                       </div>
-                    </Link>
+
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <User className="w-5 h-5 text-gray-600" />
+                          <h3 className="text-xl font-bold text-gray-800">
+                            {doctor.name}
+                          </h3>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          <Stethoscope className="w-5 h-5 text-gray-600" />
+                          <p className="text-gray-600">
+                            {doctor.specialization || "غير محدد"}
+                          </p>
+                        </div>
+
+                        <Link
+                          to={`/doctor/${doctor._id}`}
+                          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                        >
+                          <span>عرض الملف الشخصي</span>
+                          <ArrowLeft className="w-4 h-4" />
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
