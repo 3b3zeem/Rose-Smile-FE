@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   ChevronLeft,
@@ -14,6 +14,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useSectionTitles } from "../../../hooks/Sections/UseSections";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
 
 const AdminServices = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,6 +23,10 @@ const AdminServices = () => {
     services,
     total,
     loading,
+    addLoading,
+    editLoading,
+    deleteLoading,
+    imageUploadLoading,
     page,
     totalPages,
     handlePageChange,
@@ -30,12 +35,13 @@ const AdminServices = () => {
     deleteService,
     updateServiceImage,
   } = useAdminServices();
-  const searchTerm = searchParams.get("search") || "";
-
+  const initialSearchTerm = searchParams.get("search") || "";
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currentService, setCurrentService] = useState(null);
+  const [deletingServiceId, setDeletingServiceId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -87,6 +93,7 @@ const AdminServices = () => {
     if (file) {
       setPreviewImage(URL.createObjectURL(file));
       setSelectedImage(file);
+      setAddFormData({ ...addFormData, image: e.target.files[0] });
     }
   };
 
@@ -116,8 +123,12 @@ const AdminServices = () => {
     });
 
     try {
-      await addService(data);
-      toast.success("تم إضافة الخدمة بنجاح");
+      const result = await addService(data);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
       setIsAddModalOpen(false);
       setAddFormData({
         title: "",
@@ -127,8 +138,9 @@ const AdminServices = () => {
         description: [""],
         features: [""],
       });
+      setPreviewImage(null);
     } catch (error) {
-      toast.error(error.message || "فشل في إضافة الخدمة");
+      toast.error(error.message);
     }
   };
 
@@ -159,8 +171,12 @@ const AdminServices = () => {
     };
 
     try {
-      await updateService(currentService._id, data);
-      toast.success("تم تحديث الخدمة بنجاح");
+      const result = await updateService(currentService._id, data);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
       setIsEditModalOpen(false);
       setCurrentService(null);
       setEditFormData({
@@ -171,7 +187,7 @@ const AdminServices = () => {
         features: [""],
       });
     } catch (error) {
-      toast.error(error.message || "فشل في تحديث الخدمة");
+      toast.error(error.message);
     }
   };
 
@@ -192,27 +208,52 @@ const AdminServices = () => {
     formData.append("image", selectedImage);
 
     try {
-      await updateServiceImage(currentService._id, formData);
-      toast.success("تم تحديث الصورة بنجاح");
+      const result = await updateServiceImage(currentService._id, formData);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
       setIsImageModalOpen(false);
       setCurrentService(null);
       setSelectedImage(null);
+      setPreviewImage(null);
     } catch (error) {
-      toast.error(error.message || "فشل في تحديث الصورة");
+      toast.error(error.message);
     }
   };
 
   const handleDelete = async (id) => {
-    try {
-      await deleteService(id);
-      toast.success("تم حذف الخدمة بنجاح");
-    } catch (error) {
-      toast.error(error.message || "فشل في حذف الخدمة");
+    const result = await Swal.fire({
+      title: "هل أنت متأكد؟",
+      text: "لن تتمكن من التراجع عن هذا!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "نعم، احذف!",
+      cancelButtonText: "إلغاء",
+    });
+
+    if (result.isConfirmed) {
+      setDeletingServiceId(id);
+      try {
+        const response = await deleteService(id);
+        if (response.success) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+      } catch (error) {
+        toast.error(error.message || "حدث خطأ أثناء الحذف");
+      } finally {
+        setDeletingServiceId(null);
+      }
     }
   };
 
-  const handleSearch = (e) => {
-    const newSearchTerm = e.target.value;
+  const handleSearch = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
       if (newSearchTerm) {
@@ -225,13 +266,18 @@ const AdminServices = () => {
     });
   };
 
+  useEffect(() => {
+    const currentSearch = searchParams.get("search") || "";
+    setSearchTerm(currentSearch);
+  }, [searchParams]);
+
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
       <div className="overflow-x-auto">
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="relative w-full sm:w-auto sm:max-w-md">
+          <div className="relative w-full sm:w-auto sm:max-w-md" dir="rtl">
             <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               size={20}
             />
             <input
@@ -239,14 +285,19 @@ const AdminServices = () => {
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder="ابحث عن خدمات..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+              className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none text-right"
             />
           </div>
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-200 w-full sm:w-auto"
+            disabled={addLoading}
           >
-            <Plus size={20} />
+            {addLoading ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <Plus size={20} />
+            )}
             إضافة خدمة جديدة
           </button>
         </div>
@@ -260,192 +311,242 @@ const AdminServices = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-500 p-4 mt-20"
+              className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
             >
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
+                initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
+                exit={{ scale: 0.95, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl overflow-y-auto max-h-[90vh]"
+                className="bg-white rounded-xl shadow-2xl w-full h-full max-h-screen overflow-auto p-8 md:p-12"
+                dir="rtl"
               >
-                <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
+                <h2 className="text-3xl font-bold mb-8 text-right text-gray-800 border-b pb-4">
                   إضافة خدمة جديدة
                 </h2>
-                <form
-                  onSubmit={handleAddSubmit}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                >
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 text-right">
-                      العنوان الفرعي
-                    </label>
-                    <input
-                      type="text"
-                      value={addFormData.subTitle}
-                      onChange={(e) => handleAddInputChange(e, "subTitle")}
-                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 text-right">
-                      العنوان
-                    </label>
-                    <input
-                      type="text"
-                      value={addFormData.title}
-                      onChange={(e) => handleAddInputChange(e, "title")}
-                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 text-right">
-                      الصورة
-                    </label>
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      className="mt-1 block w-full p-2 border border-gray-500 hover:bg-gray-100 transition-all duration-200 cursor-pointer rounded-md focus:outline-none text-right"
-                      accept="image/*"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 text-right">
-                      القسم
-                    </label>
-                    <select
-                      value={addFormData.sectionId}
-                      onChange={(e) => handleAddInputChange(e, "sectionId")}
-                      className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
-                      required
-                    >
-                      <option value="">اختر قسمًا</option>
-                      {sections.map((section) => (
-                        <option key={section.id} value={section.id}>
-                          {section.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 text-right">
-                      الوصف
-                    </label>
-                    <AnimatePresence>
-                      {addFormData.description.map((desc, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                          className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
-                        >
-                          <input
-                            type="text"
-                            value={desc}
-                            onChange={(e) =>
-                              handleAddInputChange(e, "description", index)
-                            }
-                            className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
-                          />
-                          {addFormData.description.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                removeField(
-                                  addFormData,
-                                  setAddFormData,
-                                  "description",
-                                  index
-                                )
-                              }
-                              className="text-red-600 hover:text-red-800 whitespace-nowrap"
-                            >
-                              <Minus />
-                            </button>
-                          )}
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                    <button
-                      type="button"
+
+                <div className="flex flex-col lg:flex-row gap-10">
+                  {/* القسم الأيسر: صورة */}
+                  <div className="w-full lg:w-1/3 flex justify-center">
+                    <div
+                      className="relative w-full h-64 lg:h-full border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition"
                       onClick={() =>
-                        addField(addFormData, setAddFormData, "description")
+                        document.getElementById("imageUpload").click()
                       }
-                      className="mt-2 text-blue-600 hover:text-blue-800"
                     >
-                      <Plus />
-                    </button>
+                      {previewImage ? (
+                        <img
+                          src={previewImage}
+                          alt="Preview"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      ) : (
+                        <span className="text-gray-400 text-lg text-center">
+                          اضغط لرفع صورة
+                        </span>
+                      )}
+                      <input
+                        type="file"
+                        id="imageUpload"
+                        onChange={handleImageFileChange}
+                        className="hidden"
+                        accept="image/*"
+                        disabled={addLoading}
+                      />
+                    </div>
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 text-right">
-                      المميزات
-                    </label>
-                    <AnimatePresence>
-                      {addFormData.features.map((feature, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                          className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-2 space-x-reverse mt-1 gap-2"
-                        >
-                          <input
-                            type="text"
-                            value={feature}
-                            onChange={(e) =>
-                              handleAddInputChange(e, "features", index)
-                            }
-                            className="block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
-                          />
-                          {addFormData.features.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                removeField(
-                                  addFormData,
-                                  setAddFormData,
-                                  "features",
-                                  index
-                                )
+
+                  {/* القسم الأيمن: النموذج */}
+                  <form
+                    onSubmit={handleAddSubmit}
+                    className="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6"
+                  >
+                    {/* العنوان الفرعي */}
+                    <div>
+                      <label className="block mb-1 text-sm font-medium text-gray-700">
+                        العنوان الفرعي
+                      </label>
+                      <input
+                        type="text"
+                        value={addFormData.subTitle}
+                        onChange={(e) => handleAddInputChange(e, "subTitle")}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
+                        disabled={addLoading}
+                      />
+                    </div>
+
+                    {/* العنوان */}
+                    <div>
+                      <label className="block mb-1 text-sm font-medium text-gray-700">
+                        العنوان
+                      </label>
+                      <input
+                        type="text"
+                        value={addFormData.title}
+                        onChange={(e) => handleAddInputChange(e, "title")}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
+                        required
+                        disabled={addLoading}
+                      />
+                    </div>
+
+                    {/* القسم */}
+                    <div>
+                      <label className="block mb-1 text-sm font-medium text-gray-700">
+                        القسم
+                      </label>
+                      <select
+                        value={addFormData.sectionId}
+                        onChange={(e) => handleAddInputChange(e, "sectionId")}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
+                        required
+                        disabled={addLoading}
+                      >
+                        <option value="">اختر قسمًا</option>
+                        {sections.map((section) => (
+                          <option key={section.id} value={section.id}>
+                            {section.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* الوصف */}
+                    <div className="md:col-span-2" dir="rtl">
+                      <label className="block mb-1 text-sm font-medium text-gray-700">
+                        الوصف
+                      </label>
+                      <AnimatePresence>
+                        {addFormData.description.map((desc, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex items-start gap-2 mt-2"
+                          >
+                            <textarea
+                              rows={3}
+                              value={desc}
+                              onChange={(e) =>
+                                handleAddInputChange(e, "description", index)
                               }
-                              className="text-red-600 hover:text-red-800 whitespace-nowrap"
-                            >
-                              <Minus />
-                            </button>
-                          )}
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        addField(addFormData, setAddFormData, "features")
-                      }
-                      className="mt-2 text-blue-600 hover:text-blue-800"
-                    >
-                      <Plus />
-                    </button>
-                  </div>
-                  <div className="md:col-span-2 flex justify-end gap-2 space-x-reverse mt-4">
-                    <button
-                      type="button"
-                      onClick={() => setIsAddModalOpen(false)}
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 cursor-pointer"
-                    >
-                      إلغاء
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer"
-                    >
-                      إضافة
-                    </button>
-                  </div>
-                </form>
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 text-right focus:ring-blue-500 resize-none focus:outline-none"
+                              disabled={addLoading}
+                            />
+                            {addFormData.description.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  removeField(
+                                    addFormData,
+                                    setAddFormData,
+                                    "description",
+                                    index
+                                  )
+                                }
+                                className="text-red-600 hover:text-red-800 mt-1"
+                                disabled={addLoading}
+                              >
+                                <Minus />
+                              </button>
+                            )}
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          addField(addFormData, setAddFormData, "description")
+                        }
+                        className="mt-2 text-blue-600 hover:text-blue-800"
+                        disabled={addLoading}
+                      >
+                        <Plus />
+                      </button>
+                    </div>
+
+                    {/* المميزات */}
+                    <div className="md:col-span-2">
+                      <label className="block mb-1 text-sm font-medium text-gray-700">
+                        المميزات
+                      </label>
+                      <AnimatePresence>
+                        {addFormData.features.map((feature, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex items-center gap-2 mt-2"
+                          >
+                            <textarea
+                              rows={3}
+                              value={feature}
+                              onChange={(e) =>
+                                handleAddInputChange(e, "description", index)
+                              }
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 text-right focus:ring-blue-500 resize-none focus:outline-none"
+                              disabled={addLoading}
+                            />
+                            {addFormData.features.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  removeField(
+                                    addFormData,
+                                    setAddFormData,
+                                    "features",
+                                    index
+                                  )
+                                }
+                                className="text-red-600 hover:text-red-800"
+                                disabled={addLoading}
+                              >
+                                <Minus />
+                              </button>
+                            )}
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          addField(addFormData, setAddFormData, "features")
+                        }
+                        className="mt-2 text-blue-600 hover:text-blue-800"
+                        disabled={addLoading}
+                      >
+                        <Plus />
+                      </button>
+                    </div>
+
+                    {/* الأزرار */}
+                    <div className="md:col-span-2 flex justify-between items-center mt-8">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddModalOpen(false)}
+                        className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                        disabled={addLoading}
+                      >
+                        إلغاء
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                        disabled={addLoading}
+                      >
+                        {addLoading ? (
+                          <Loader2 className="animate-spin" size={20} />
+                        ) : (
+                          "إضافة"
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </motion.div>
             </motion.div>
           )}
@@ -485,6 +586,7 @@ const AdminServices = () => {
                       value={editFormData.subTitle}
                       onChange={(e) => handleEditInputChange(e, "subTitle")}
                       className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                      disabled={editLoading}
                     />
                   </div>
                   <div>
@@ -497,6 +599,7 @@ const AdminServices = () => {
                       onChange={(e) => handleEditInputChange(e, "title")}
                       className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
                       required
+                      disabled={editLoading}
                     />
                   </div>
                   <div></div>
@@ -509,6 +612,7 @@ const AdminServices = () => {
                       onChange={(e) => handleEditInputChange(e, "sectionId")}
                       className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right cursor-pointer"
                       required
+                      disabled={editLoading}
                     >
                       <option value="">اختر قسمًا</option>
                       {sections.map((section) => (
@@ -539,6 +643,7 @@ const AdminServices = () => {
                               handleEditInputChange(e, "description", index)
                             }
                             className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                            disabled={editLoading}
                           />
                           {editFormData.description.length > 1 && (
                             <button
@@ -552,6 +657,7 @@ const AdminServices = () => {
                                 )
                               }
                               className="text-red-600 hover:text-red-800 whitespace-nowrap"
+                              disabled={editLoading}
                             >
                               <Minus />
                             </button>
@@ -565,6 +671,7 @@ const AdminServices = () => {
                         addField(editFormData, setEditFormData, "description")
                       }
                       className="mt-2 text-blue-600 hover:text-blue-800"
+                      disabled={editLoading}
                     >
                       <Plus />
                     </button>
@@ -590,6 +697,7 @@ const AdminServices = () => {
                               handleEditInputChange(e, "features", index)
                             }
                             className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right"
+                            disabled={editLoading}
                           />
                           {editFormData.features.length > 1 && (
                             <button
@@ -603,6 +711,7 @@ const AdminServices = () => {
                                 )
                               }
                               className="text-red-600 hover:text-red-800 whitespace-nowrap"
+                              disabled={editLoading}
                             >
                               <Minus />
                             </button>
@@ -616,6 +725,7 @@ const AdminServices = () => {
                         addField(editFormData, setEditFormData, "features")
                       }
                       className="mt-2 text-blue-600 hover:text-blue-800"
+                      disabled={editLoading}
                     >
                       <Plus />
                     </button>
@@ -625,14 +735,20 @@ const AdminServices = () => {
                       type="button"
                       onClick={() => setIsEditModalOpen(false)}
                       className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 cursor-pointer"
+                      disabled={editLoading}
                     >
                       إلغاء
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer flex items-center gap-2"
+                      disabled={editLoading}
                     >
-                      حفظ التعديلات
+                      {editLoading ? (
+                        <Loader2 className="animate-spin" size={20} />
+                      ) : (
+                        "حفظ التعديلات"
+                      )}
                     </button>
                   </div>
                 </form>
@@ -684,6 +800,7 @@ const AdminServices = () => {
                       className="mt-3 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right cursor-pointer hover:bg-gray-200 transition-all duration-200"
                       accept="image/*"
                       required
+                      disabled={imageUploadLoading}
                     />
                   </div>
                   <div className="flex justify-end gap-2 space-x-reverse mt-4">
@@ -691,14 +808,20 @@ const AdminServices = () => {
                       type="button"
                       onClick={() => setIsImageModalOpen(false)}
                       className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all duration-200 cursor-pointer"
+                      disabled={imageUploadLoading}
                     >
                       إلغاء
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 cursor-pointer flex items-center gap-2"
+                      disabled={imageUploadLoading}
                     >
-                      تحديث
+                      {imageUploadLoading ? (
+                        <Loader2 className="animate-spin" size={20} />
+                      ) : (
+                        "تحديث"
+                      )}
                     </button>
                   </div>
                 </form>
@@ -762,15 +885,27 @@ const AdminServices = () => {
                             onClick={() => handleEditClick(service)}
                             className="text-blue-600 hover:text-blue-800 cursor-pointer"
                             title="تعديل الخدمة"
+                            disabled={editLoading}
                           >
-                            <Pencil size={16} />
+                            {editLoading &&
+                            currentService?._id === service._id ? (
+                              <Loader2 className="animate-spin" size={16} />
+                            ) : (
+                              <Pencil size={16} />
+                            )}
                           </button>
                           <button
                             onClick={() => handleDelete(service._id)}
                             className="text-red-600 hover:text-red-800 cursor-pointer"
                             title="حذف الخدمة"
+                            disabled={editLoading || deleteLoading}
                           >
-                            <Trash2 size={16} />
+                            {deleteLoading &&
+                            deletingServiceId === service._id ? (
+                              <Loader2 className="animate-spin" size={16} />
+                            ) : (
+                              <Trash2 size={16} />
+                            )}
                           </button>
                         </td>
                       </tr>

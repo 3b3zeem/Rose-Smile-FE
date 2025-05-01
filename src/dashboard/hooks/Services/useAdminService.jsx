@@ -6,6 +6,10 @@ const useAdminServices = () => {
   const [services, setServices] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [addLoading, setAddLoading] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const BaseURL = "http://localhost:5000/api/v1/service";
@@ -20,11 +24,15 @@ const useAdminServices = () => {
       const response = await axios.get(
         `${BaseURL}/?page=${page}&size=${size}&search=${searchTerm}`
       );
-      const normalizedServices = (response.data.services || []).map(service => ({
-        ...service,
-        description: Array.isArray(service.description) ? service.description : [],
-        features: Array.isArray(service.features) ? service.features : [],
-      }));
+      const normalizedServices = (response.data.services || []).map(
+        (service) => ({
+          ...service,
+          description: Array.isArray(service.description)
+            ? service.description
+            : [],
+          features: Array.isArray(service.features) ? service.features : [],
+        })
+      );
       setServices(normalizedServices);
       setTotal(response.data.totalServices || 0);
     } catch (error) {
@@ -35,60 +43,104 @@ const useAdminServices = () => {
   };
 
   const addService = async (formData) => {
+    setAddLoading(true);
     try {
-      await axios.post(`${BaseURL}/`, formData, {
+      const response = await axios.post(`${BaseURL}/`, formData, {
         withCredentials: true,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       await fetchServices();
-      return true;
+      return {
+        success: true,
+        message: response.data.message || "Service added successfully",
+      };
     } catch (error) {
-      console.error('Error adding service:', error);
-      throw error;
+      console.error("Error adding service:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Something went wrong while adding service",
+      };
+    } finally {
+      setAddLoading(false);
     }
   };
 
   const updateService = async (id, data) => {
+    setEditLoading(true);
     try {
-      await axios.put(`${BaseURL}/${id}`, data, {
+      const response = await axios.put(`${BaseURL}/${id}`, data, {
         withCredentials: true,
       });
       await fetchServices();
-      return true;
+      return {
+        success: true,
+        message: response.data.message || "Service updated successfully",
+      };
     } catch (error) {
-      console.error('Error updating service:', error);
-      throw error;
+      console.error("Error updating service:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Something went wrong while updating service",
+      };
+    } finally {
+      setEditLoading(false);
     }
   };
 
   const updateServiceImage = async (id, formData) => {
+    setImageUploadLoading(true);
     try {
-      await axios.put(`${BaseURL}/${id}`, formData, {
+      const response = await axios.put(`${BaseURL}/${id}`, formData, {
         withCredentials: true,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       await fetchServices();
-      return true;
+      return {
+        success: true,
+        message: response.data.message || "Image updated successfully",
+      };
     } catch (error) {
-      console.error('Error updating service image:', error);
-      throw error;
+      console.error("Error updating service image:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Something went wrong while updating image",
+      };
+    } finally {
+      setImageUploadLoading(false);
     }
   };
 
   const deleteService = async (id) => {
+    setDeleteLoading(true);
     try {
-      await axios.delete(`${BaseURL}/${id}`, {
+      const response = await axios.delete(`${BaseURL}/${id}`, {
         withCredentials: true,
       });
       await fetchServices();
-      return true;
+      return {
+        success: true,
+        message: response.data.message || "Service deleted successfully",
+      };
     } catch (error) {
-      console.error('Error deleting service:', error);
-      throw error;
+      console.error("Error deleting service:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Something went wrong while deleting service",
+      };
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -100,7 +152,7 @@ const useAdminServices = () => {
     setSearchParams({
       page: newPage.toString(),
       size: size.toString(),
-      searchTerm,
+      search: searchTerm,
     });
   };
 
@@ -108,6 +160,10 @@ const useAdminServices = () => {
     services,
     total,
     loading,
+    addLoading,
+    editLoading,
+    deleteLoading,
+    imageUploadLoading,
     page,
     size,
     totalPages: Math.ceil(total / size),
