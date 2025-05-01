@@ -52,41 +52,43 @@ const DentalClinicSlider = () => {
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="container mx-auto -mt-4" dir="rtl">
-      <Slider {...settings}>
-        {heroes.map((hero) => (
-          <div key={hero._id}>
-            <div
-              className="relative h-[85vh] md:h-[85vh] bg-cover bg-center bg-no-repeat overflow-hidden shadow-lg group"
-              style={{
-                backgroundImage: `url(${hero.image?.backgroundLarge})`,
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/80 transition-opacity duration-300 group-hover:opacity-90"></div>
-
-              <div className="relative z-20 h-full flex flex-col justify-center items-end text-right p-6 sm:p-8 md:p-16 md:max-w-2xl md:ml-auto">
-                <h2 className="text-2xl sm:text-3xl md:text-5xl text-white font-bold mb-3 sm:mb-4 group-hover:text-blue-100 transition-colors duration-300">
-                  {hero.title}
-                </h2>
-                <p className="text-sm sm:text-base md:text-lg text-gray-200 mb-6 sm:mb-8 leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
-                  {hero.subtitle}
-                </p>
-                <Link
-                  to={hero.buttonLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-5 rounded-lg transition-colors duration-200 text-sm sm:text-base"
-                >
-                  <CircleCheckBig size={18} />
-                  <span>{hero.buttonText}</span>
-                  <ArrowLeft size={16} />
-                </Link>
-              </div>
+    
+    <div className="w-full h-[75vh] px-4 md:px-12 overflow-hidden" dir="rtl">
+    <Slider {...settings}>
+      {heroes.map((hero) => (
+        <div key={hero._id}>
+          <div
+            className="relative h-[75vh] bg-cover bg-center bg-no-repeat overflow-hidden shadow-lg group rounded-xl"
+            style={{
+              backgroundImage: `url(${hero.image?.backgroundLarge})`,
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/80 transition-opacity duration-300 group-hover:opacity-90 rounded-xl"></div>
+  
+            <div className="relative z-20 h-full flex flex-col justify-center items-end text-right px-6 sm:px-10 md:px-16 max-w-2xl ml-auto">
+              <h2 className="text-2xl sm:text-3xl md:text-5xl text-white font-bold mb-3 sm:mb-4 group-hover:text-blue-100 transition-colors duration-300">
+                {hero.title}
+              </h2>
+              <p className="text-sm sm:text-base md:text-lg text-gray-200 mb-6 sm:mb-8 leading-relaxed group-hover:text-gray-100 transition-colors duration-300">
+                {hero.subtitle}
+              </p>
+              <Link
+                to={hero.buttonLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-5 rounded-lg transition-colors duration-200 text-sm sm:text-base"
+              >
+                <CircleCheckBig size={18} />
+                <span>{hero.buttonText}</span>
+                <ArrowLeft size={16} />
+              </Link>
             </div>
           </div>
-        ))}
-      </Slider>
-    </div>
+        </div>
+      ))}
+    </Slider>
+  </div>
+  
   );
 };
 
