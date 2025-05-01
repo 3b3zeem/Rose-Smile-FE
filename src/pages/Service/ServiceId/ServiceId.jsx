@@ -127,7 +127,7 @@ export default function Service() {
 
             {/* Booking Button */}
             <Link
-              to={`/service/${data._id}/book`}
+              to={`/BookADeal/${data._id}`}
               className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-4 px-6 rounded-xl font-bold text-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
             >
               احجز الآن

@@ -159,18 +159,132 @@ const Services = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Toggle Filter Button (Mobile) */}
-        <button
-          onClick={() => setIsFilterOpen(true)}
-          className="md:hidden flex items-center justify-end gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg mb-4 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+      <div className="flex flex-col lg:flex-row-reverse gap-6 relative">
+        {/* Filter Sidebar - Mobile */}
+        <div
+          className={`fixed lg:static inset-y-0 right-0 z-[100] w-80 max-w-[80%] bg-white shadow-xl lg:shadow-none lg:w-1/4 lg:bg-transparent p-6 transform transition-all duration-300 ease-in-out ${
+            isFilterOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+          }`}
+          style={{ top: "0" }}
+          dir="rtl"
         >
-          <Briefcase size={20} />
-          <span>الاقسام</span>
-        </button>
+          {/* Close button - Mobile */}
+          <div className="sticky top-0 flex justify-between items-center mb-8 lg:hidden bg-white pb-4 border-b border-gray-100">
+            <h3 className="text-lg font-semibold text-gray-800">الأقسام</h3>
+            <button
+              onClick={() => setIsFilterOpen(false)}
+              className="text-gray-600 hover:text-pink-500 transition-colors duration-200 cursor-pointer p-2 hover:bg-pink-50/50 rounded-full"
+            >
+              <X size={20} />
+            </button>
+          </div>
 
-        {/* Services Grid */}
+          {/* Search Input */}
+          <div className="relative mb-6">
+            <input
+              type="text"
+              placeholder="بحث في الأقسام..."
+              value={searchTerm}
+              onChange={handleSearch}
+              className="w-full py-2 px-4 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-100 text-right transition-all duration-200 text-sm"
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          </div>
+
+          {/* Sections List */}
+          <div className="h-full overflow-y-auto">
+            {sectionsError ? (
+              <div className="text-red-600">{sectionsError}</div>
+            ) : (
+              <div className="space-y-1.5">
+                {sections.map((section) => (
+                  <div
+                    key={section.id}
+                    className="flex items-center gap-3 text-right hover:bg-gray-50/80 p-2.5 rounded-lg transition-all duration-200 group"
+                  >
+                    <label className="relative flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={selectedSectionIds.includes(section.id)}
+                        onChange={() => handleCategoryChange(section.id)}
+                      />
+                      <div className="w-4.5 h-4.5 border-2 border-gray-300 rounded flex items-center justify-center peer-checked:border-pink-400 peer-checked:bg-gradient-to-r from-pink-400 to-pink-500 transition-all duration-200 group-hover:border-pink-300">
+                        <svg
+                          className="w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                    </label>
+                    <span
+                      className="flex-1 text-gray-600 group-hover:text-gray-900 transition-colors duration-200 cursor-pointer text-sm font-medium"
+                      onClick={() => handleCategoryChange(section.id)}
+                    >
+                      {section.title}
+                    </span>
+                    <span className="text-xs text-gray-400 group-hover:text-pink-400 transition-colors duration-200">
+                      {/* يمكنك إضافة عدد الخدمات في كل قسم هنا إذا كان متوفراً */}
+                      {/* {section.servicesCount} */}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Footer - Selected Filters Summary */}
+          {selectedSectionIds.length > 0 && (
+            <div className="mt-6 pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => {
+                    setSearchParams((prev) => {
+                      const newParams = new URLSearchParams(prev);
+                      newParams.delete("sectionIds");
+                      return newParams;
+                    });
+                  }}
+                  className="text-xs text-pink-500 hover:text-pink-600 transition-colors duration-200"
+                >
+                  مسح التصفية
+                </button>
+                <span className="text-xs text-gray-500">
+                  {selectedSectionIds.length} قسم محدد
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Overlay for mobile */}
+        {isFilterOpen && (
+          <div
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[90] lg:hidden"
+            onClick={() => setIsFilterOpen(false)}
+          />
+        )}
+
+        {/* Main Content Area */}
         <div className="flex-1">
+          {/* Toggle Filter Button (Mobile) */}
+          <button
+            onClick={() => setIsFilterOpen(true)}
+            className="lg:hidden flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg mb-4 cursor-pointer hover:bg-blue-700 transition-all duration-200 w-full"
+          >
+            <Briefcase size={20} />
+            <span className="text-base">عرض الأقسام</span>
+          </button>
+
+          {/* Services Grid */}
           {error ? (
             <div className="text-center p-8 text-red-600">{error}</div>
           ) : services.length === 0 ? (
@@ -179,32 +293,40 @@ const Services = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {services.map((service) => (
                   <div
                     key={service._id}
-                    className="bg-white rounded-lg shadow-lg overflow-hidden h-96 flex flex-col"
+                    className="bg-white rounded-lg shadow-lg overflow-hidden h-[380px] flex flex-col hover:shadow-xl transition-all duration-300"
                   >
-                    <img
-                      src={service.image.url}
-                      alt={service.title}
-                      className="w-full h-48 object-cover"
-                      loading="lazy"
-                    />
-                    <div className="p-4 flex flex-col flex-1">
-                      <h3 className="text-lg text-right font-bold text-blue-800 mb-2 truncate">
+                    <div className="relative h-40 overflow-hidden">
+                      <img
+                        src={service.image.url}
+                        alt={service.title}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div className="p-4 sm:p-5 flex flex-col flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-blue-800 mb-2 text-right line-clamp-2">
                         {service.title}
                       </h3>
-                      <p className="text-gray-600 text-right text-sm flex-1 line-clamp-3 truncate">
-                        {service.subTitle}
+                      <p className="text-gray-600 text-right text-sm flex-1 mb-3 leading-relaxed">
+                        {service.subTitle && service.subTitle.length > 100
+                          ? `${service.subTitle.substring(0, 100)}...`
+                          : service.subTitle || "لا يوجد وصف"}
                       </p>
-                      <div className="flex gap-2 mt-4 justify-between">
-                        <Link to={`/BookADeal/${service._id}`} className="bg-blue-600 text-white py-2 px-4 rounded cursor-pointer hover:bg-blue-500 transition-all duration-200">
+                      <div className="flex gap-2 sm:gap-3 justify-end mt-auto">
+                        <Link
+                          to={`/BookADeal/${service._id}`}
+                          className="bg-blue-600 text-white py-2 px-3 sm:px-4 rounded-lg cursor-pointer hover:bg-blue-700 transition-all duration-200 text-sm sm:text-base"
+                        >
                           احجز موعد
                         </Link>
                         <Link
                           to={`/service/${service._id}`}
-                          className="bg-gray-200 text-gray-800 py-2 px-4 rounded cursor-pointer hover:bg-gray-300 transition-all duration-200"
+                          className="bg-gray-100 text-gray-800 py-2 px-3 sm:px-4 rounded-lg cursor-pointer hover:bg-gray-200 transition-all duration-200 text-sm sm:text-base"
                         >
                           التفاصيل
                         </Link>
@@ -239,65 +361,6 @@ const Services = () => {
               )}
             </>
           )}
-        </div>
-
-        {/* Filter Sidebar (Hidden on mobile by default) */}
-        <div
-          className={`fixed md:static inset-0 top-0 right-0 z-50 w-64 bg-white/80 backdrop-blur-md border-l border-gray-200 p-6 transform transition-transform duration-300 md:w-1/4 md:transform-none ${
-            isFilterOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
-          }`}
-          dir="rtl"
-        >
-          <div className="flex justify-start items-center mb-6 md:hidden mt-20">
-            <button
-              onClick={() => setIsFilterOpen(false)}
-              className="text-gray-600 cursor-pointer"
-            >
-              <X size={24} />
-            </button>
-          </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              الأقسام
-            </h3>
-            {sectionsError ? (
-              <div className="text-red-600">{sectionsError}</div>
-            ) : (
-              <div className="space-y-2">
-                {sections.map((section) => (
-                  <div
-                    key={section.id}
-                    className="flex items-center gap-3 text-right"
-                  >
-                    <div className="checkbox-wrapper-23">
-                      <input
-                        type="checkbox"
-                        id={`check-23-${section.id}`}
-                        name="sectionIds"
-                        value={section.id}
-                        checked={selectedSectionIds.includes(section.id)}
-                        onChange={() => handleCategoryChange(section.id)}
-                      />
-                      <label
-                        htmlFor={`check-23-${section.id}`}
-                        style={{ "--size": "24px" }}
-                      >
-                        <svg viewBox="0,0,50,50">
-                          <path d="M5 30 L 20 45 L 45 5"></path>
-                        </svg>
-                      </label>
-                    </div>
-                    <span
-                      className="checkbox-label truncate"
-                      onClick={() => handleCategoryChange(section.id)}
-                    >
-                      {section.title}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>
