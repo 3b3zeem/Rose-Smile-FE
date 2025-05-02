@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import useSectionData from "../../../hooks/Sections/UseSections";
+import { Calendar, Clock, CheckCircle, Star, ArrowLeft } from "lucide-react";
 
 import Slider from "react-slick";
 
@@ -57,7 +58,16 @@ const SectionId = () => {
       },
     ],
   };
-  
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      calendar: "gregory", // Force Gregorian calendar
+    };
+    return new Date(dateString).toLocaleDateString("ar-SA", options);
+  };
 
   if (loading)
     return (
@@ -74,80 +84,137 @@ const SectionId = () => {
     );
 
   return (
-    <div className="bg-white max-w-6xl mx-auto">
-      {/* Main Section Content */}
-      <div className="flex flex-col md:flex-row p-4 md:p-8 gap-8">
-        <div className="lg:w-1/2">
-          <div className="bg-white rounded shadow-md p-6">
-            <h1 className="text-3xl font-semibold text-blue-900 mb-4 text-right">
-              {sectionData.title}
-            </h1>
-            <p className="text-lg text-gray-700 mb-6 text-right">
-              {sectionData.desc}
-            </p>
-            <img
-              src={
-                sectionData.image?.backgroundLarge || "/api/placeholder/450/400"
-              }
-              alt={sectionData.title}
-              className="w-full h-96 object-cover rounded-lg"
-            />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-gray-200 dir-rtl font-['Cairo',sans-serif] text-right">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
+        <Link
+          to="/sections"
+          className="inline-flex items-center gap-2 text-blue-600 hover-pink mb-8 transition-colors duration-200"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          العودة للأقسام
+        </Link>
+
+        <div className="flex flex-col lg:flex-row gap-12">
+          {/* Left Column: Image */}
+          <div className="lg:w-1/2">
+            <div className="relative">
+              <div className="overflow-hidden rounded-2xl shadow-xl aspect-[4/3]">
+                <img
+                  src={
+                    sectionData.image?.backgroundLarge ||
+                    "/api/placeholder/450/400"
+                  }
+                  alt={sectionData.title}
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                <h1 className="text-3xl font-bold text-white mb-2">
+                  {sectionData.title}
+                </h1>
+                <p className="text-gray-200">{sectionData.subTitle}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Section Details */}
+          <div className="lg:w-1/2 space-y-8">
+            {/* Section Info */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="space-y-6">
+                {/* Description */}
+                {sectionData.description &&
+                  sectionData.description.length > 0 && (
+                    <div>
+                      <h2 className="text-xl font-bold text-blue-900 mb-4">
+                        وصف القسم
+                      </h2>
+                      <div className="space-y-3">
+                        {sectionData.description.map((desc, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-end gap-3 bg-gray-50 p-4 rounded-lg"
+                          >
+                            <p className="text-gray-700 leading-relaxed">
+                              {desc}
+                            </p>
+                            <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Features */}
+                {sectionData.features && sectionData.features.length > 0 && (
+                  <div>
+                    <h2 className="text-xl font-bold text-blue-900 mb-4">
+                      لماذا تختار قسم {sectionData.title} في مجمع ابتسامة
+                      الورود؟
+                    </h2>
+                    <div className="space-y-3">
+                      {sectionData.features.map((feature, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-end gap-3 bg-blue-50 p-4 rounded-lg"
+                        >
+                          <p className="text-gray-700">{feature}</p>
+                          <Star className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Section Details */}
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-end gap-3 text-gray-700">
+                      <span>
+                        آخر تحديث: {formatDate(sectionData.updatedAt)}
+                      </span>
+                      <Calendar className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div className="flex items-center justify-end gap-3 text-gray-700">
+                      <span>قسم معتمد من قبل العيادة</span>
+                      <CheckCircle className="w-5 h-5 text-blue-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Booking Button */}
+            <Link
+              to={`/BookADeal/${sectionData._id}`}
+              className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-4 px-6 rounded-xl font-bold text-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
+            >
+              احجز الآن
+            </Link>
           </div>
         </div>
 
-        <div className="lg:w-1/2">
-          <div className="bg-white rounded shadow-md p-6">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4 text-right">
-              احجز موعدك الآن
-            </h2>
-            <BookingForm sectionData={sectionData} />
+        {/* Static Content - Moved to bottom on mobile */}
+        <div className="mt-12 lg:hidden">
+          <div className="bg-blue-50 rounded-2xl p-8 border border-blue-100">
+            <h3 className="text-xl font-bold text-blue-900 mb-4">
+              لماذا تختار أقسامنا؟
+            </h3>
+            <div className="space-y-4 text-gray-700">
+              <p className="leading-relaxed">
+                في عيادتنا، نقدم خدمات طبية متخصصة بأعلى معايير الجودة والرعاية.
+                فريقنا من الأطباء المتخصصين يعملون بجد لتقديم أفضل الخدمات
+                الطبية لمرضانا.
+              </p>
+              <p className="leading-relaxed">
+                نستخدم أحدث التقنيات والأجهزة الطبية لتقديم تشخيص دقيق وعلاج
+                فعال. نحن نؤمن بأن كل مريض يستحق رعاية شخصية واهتمام خاص.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Services Slider */}
-      {sectionData.services && sectionData.services.length > 0 && (
-        <div className="p-4 md:p-8">
-          <h2 className="text-xl md:text-2xl font-bold text-blue-800 text-right mb-6">
-            الخدمات المتاحة للقسم
-          </h2>
-          <Slider {...settings}>
-            {sectionData.services.map((service) => (
-              <div
-                key={service._id}
-                className="p-4 flex flex-col rounded hover:shadow-md transition-shadow duration-300 overflow-hidden"
-              >
-                <div className="rounded overflow-hidden">
-                  <img
-                    src={service.image?.url}
-                    alt={service.title}
-                    className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
-                  />
-                </div>
-
-                <div className="p-4 text-right flex flex-col gap-2">
-                  <h3 className="text-xl font-semibold text-blue-900">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {service.desc.slice(0, 150)}
-                    {service.desc.length > 150 && "..."}
-                  </p>
-                </div>
-
-                <div className="px-4 pb-4 mt-auto">
-                  <Link
-                    to={`/service/${service._id}`}
-                    className="block text-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-300 search"
-                  >
-                    <span>تفاصيل الخدمة</span>
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </Slider>
-        </div>
-      )}
     </div>
   );
 };
