@@ -147,52 +147,74 @@ const AddServiceModal = ({ isOpen, onClose, sections, addService }) => {
         </h2>
 
         <div className="flex flex-col lg:flex-row gap-10">
-          <div className="w-full lg:w-1/3 flex justify-center">
-            <div
-              className="relative w-full h-64 lg:h-full border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition"
-              onClick={() => document.getElementById("imageUpload").click()}
-            >
-              {previewImage ? (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              ) : (
-                <span className="text-gray-400 text-lg text-center">
-                  اضغط لرفع صورة
-                </span>
-              )}
-              <input
-                type="file"
-                id="imageUpload"
-                onChange={handleImageFileChange}
-                className="hidden"
-                accept="image/*"
-                disabled={addLoading}
-              />
-            </div>
-          </div>
-
           <form
             onSubmit={handleSubmit}
-            className="w-full lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6"
+            className="w-full grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                العنوان
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange(e, "title")}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
-                required
-                disabled={addLoading}
-              />
+            <div className="flex gap-10">
+              <div className="w-1/2">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  العنوان
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange(e, "title")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
+                  required
+                  disabled={addLoading}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  القسم
+                </label>
+                <select
+                  value={formData.sectionId}
+                  onChange={(e) => handleInputChange(e, "sectionId")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
+                  required
+                  disabled={addLoading}
+                >
+                  <option value="">اختر قسمًا</option>
+                  {sections.map((section) => (
+                    <option key={section.id} value={section.id}>
+                      {section.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <div>
+            <div className="md:col-span-1 row-span-3 flex justify-center">
+              <div
+                className="relative w-100 lg:h-70 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition"
+                onClick={() => document.getElementById("imageUpload").click()}
+              >
+                {previewImage ? (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                ) : (
+                  <span className="text-gray-400 text-lg text-center">
+                    اضغط لرفع صورة
+                  </span>
+                )}
+                <input
+                  type="file"
+                  id="imageUpload"
+                  onChange={handleImageFileChange}
+                  className="hidden"
+                  accept="image/*"
+                  disabled={addLoading}
+                />
+              </div>
+            </div>
+
+            <div className="w-full">
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 العنوان الفرعي
               </label>
@@ -205,27 +227,7 @@ const AddServiceModal = ({ isOpen, onClose, sections, addService }) => {
               />
             </div>
 
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">
-                القسم
-              </label>
-              <select
-                value={formData.sectionId}
-                onChange={(e) => handleInputChange(e, "sectionId")}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
-                required
-                disabled={addLoading}
-              >
-                <option value="">اختر قسمًا</option>
-                {sections.map((section) => (
-                  <option key={section.id} value={section.id}>
-                    {section.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="md:col-span-2" dir="rtl">
+            <div className="" dir="rtl">
               <label className="block mb-1 text-sm font-medium text-gray-700">
                 الوصف
               </label>
@@ -311,14 +313,14 @@ const AddServiceModal = ({ isOpen, onClose, sections, addService }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
                 disabled={addLoading}
               >
                 إلغاء
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
                 disabled={addLoading}
               >
                 {addLoading ? (
