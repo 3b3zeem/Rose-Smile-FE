@@ -39,11 +39,11 @@ const BookADeal = () => {
               </div>
               {/* Title Section */}
               <div className="px-6 pb-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 leading-tight border-b border-gray-200 pb-3 mb-4">
+                <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 border-b border-gray-200 pb-3 mb-4 leading-relaxed w-full break-words">
                   {data.title}
                 </h1>
                 {data.subTitle && (
-                  <h2 className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
+                  <h2 className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed w-full break-words">
                     {data.subTitle}
                   </h2>
                 )}
