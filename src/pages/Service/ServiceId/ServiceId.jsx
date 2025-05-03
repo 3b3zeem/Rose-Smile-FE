@@ -46,7 +46,7 @@ export default function Service() {
           {/* Left Column: Image */}
           <div className="lg:w-1/2">
             <div className="relative">
-              <div className="overflow-hidden rounded-2xl shadow-xl aspect-[4/3]">
+              <div className="overflow-hidden rounded-2xl shadow-md aspect-[4/3]">
                 <img
                   src={data.image.backgroundLarge}
                   alt={data.title}
@@ -65,7 +65,7 @@ export default function Service() {
           {/* Right Column: Service Details */}
           <div className="lg:w-1/2 space-y-8">
             {/* Service Info */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-md p-8">
               <div className="space-y-6">
                 {/* Description */}
                 {data.description && data.description.length > 0 && (
@@ -79,9 +79,9 @@ export default function Service() {
                           key={index}
                           className="flex items-center justify-end gap-3 bg-gray-50 p-4 rounded-lg"
                         >
-                          <p className="text-gray-700 leading-relaxed">
+                          <span className="text-gray-700 leading-relaxed w-full break-words">
                             {desc}
-                          </p>
+                          </span>
                           <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
                         </div>
                       ))}

@@ -5,7 +5,8 @@ import { lazy, Suspense } from "react";
 import NotFound from "../components/NotFound/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import BookADeal from "../components/BookADeal/BookADeal.jsx";
- 
+import NewsId from "../pages/News/NewsId/NewsId.jsx";
+
 const Loader = lazy(() => import("../layouts/Loader.jsx"));
 const Home = lazy(() => import("../pages/Home/Home.jsx"));
 const PrivacyPolicy = lazy(() =>
@@ -32,7 +33,9 @@ const Profile = lazy(() => import("../pages/User/Profile.jsx"));
 // * Admin
 const Dashboard = lazy(() => import("../dashboard/pages/Home/Dashboard.jsx"));
 const Users = lazy(() => import("../dashboard/pages/Users/Users.jsx"));
-const AdminServices = lazy(() => import("../dashboard/pages/Services/AdminServices.jsx"));
+const AdminServices = lazy(() =>
+  import("../dashboard/pages/Services/AdminServices.jsx")
+);
 
 const routes = createBrowserRouter([
   {
@@ -61,6 +64,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loader />}>
             <News />
+          </Suspense>
+        ),
+      },
+      {
+        path: "news/:newId",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <NewsId />
           </Suspense>
         ),
       },
