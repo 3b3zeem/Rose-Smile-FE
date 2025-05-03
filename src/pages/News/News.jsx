@@ -17,7 +17,11 @@ export default function News() {
   }
 
   if (error) {
-    return <div className="alert alert-danger text-center">حدث خطأ أثناء تحميل الأخبار</div>;
+    return (
+      <div className="alert alert-danger text-center">
+        حدث خطأ أثناء تحميل الأخبار
+      </div>
+    );
   }
 
   return (
@@ -38,12 +42,14 @@ export default function News() {
                   {new Date(news.createdAt).toLocaleDateString("ar-EG")}
                 </h6>
                 <h5 className="card-title fw-bold">{news.title}</h5>
-                <h6 className="text-secondary mb-2 truncate">{news.subTitle}</h6>
+                <h6 className="text-secondary mb-2 truncate">
+                  {news.subTitle}
+                </h6>
                 <Link
                   to={`/news/${news._id}`}
                   className="btn btn-outline-primary mt-auto"
                 >
-                  الذهاب إلى الخدمة المرتبطة
+                  تفاصيل الخبر
                 </Link>
               </div>
             </div>
