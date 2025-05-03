@@ -179,28 +179,17 @@ const Services = () => {
             </button>
           </div>
 
-          {/* Search Input */}
-          <div className="relative mb-6">
-            <input
-              type="text"
-              placeholder="بحث في الأقسام..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="w-full py-2 px-4 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-pink-300 focus:ring-2 focus:ring-pink-100 text-right transition-all duration-200 text-sm"
-            />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          </div>
-
           {/* Sections List */}
-          <div className="h-full overflow-y-auto">
+          <div className="h-full overflow-y-auto  border-l-[2px] border-gray-300">
             {sectionsError ? (
               <div className="text-red-600">{sectionsError}</div>
             ) : (
               <div className="space-y-1.5">
+                <span className="text-gray-700 text-xl">الاقسام</span>
                 {sections.map((section) => (
                   <div
                     key={section.id}
-                    className="flex items-center gap-3 text-right hover:bg-gray-50/80 p-2.5 rounded-lg transition-all duration-200 group"
+                    className="flex items-center gap-3 text-right hover:bg-gray-50/80 p-2.5 rounded-lg transition-all duration-200 group pt-5"
                   >
                     <label className="relative flex items-center cursor-pointer">
                       <input

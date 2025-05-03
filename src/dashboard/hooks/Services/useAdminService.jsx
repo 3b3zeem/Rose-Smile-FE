@@ -33,6 +33,8 @@ const useAdminServices = () => {
           features: Array.isArray(service.features) ? service.features : [],
         })
       );
+      console.log("data", normalizedServices);
+      
       setServices(normalizedServices);
       setTotal(response.data.totalServices || 0);
     } catch (error) {
@@ -98,9 +100,6 @@ const useAdminServices = () => {
     try {
       const response = await axios.put(`${BaseURL}/${id}`, formData, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       });
       await fetchServices();
       return {
