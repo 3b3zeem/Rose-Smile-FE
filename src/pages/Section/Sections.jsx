@@ -119,7 +119,7 @@ const Sections = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row-reverse gap-6 relative">
+      <div className="flex flex-col lg:flex-row-reverse gap-6 relative" dir="rtl">
         {/* Main Content Area */}
         <div className="flex-1">
           {/* Sections Grid */}
@@ -144,10 +144,10 @@ const Sections = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   </div>
                   <div className="p-4 flex flex-col flex-1">
-                    <h3 className="text-lg font-bold text-blue-800 mb-2 text-right line-clamp-2">
+                    <h3 className="text-lg font-bold text-blue-800 mb-2 text-right line-clamp-2 truncate">
                       {item.title}
                     </h3>
-                    <p className="text-gray-600 text-right text-sm flex-1 mb-3 leading-relaxed">
+                    <p className="text-gray-600 text-right text-sm flex-1 mb-3 leading-relaxed truncate">
                       {item.subTitle && item.subTitle.length > 100
                         ? `${item.subTitle.substring(0, 100)}...`
                         : item.subTitle || "لا يوجد وصف"}

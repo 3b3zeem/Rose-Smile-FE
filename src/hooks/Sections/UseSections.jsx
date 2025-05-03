@@ -8,10 +8,11 @@ export const useAllSections = () => {
   const [error, setError] = useState(null);
 
   const searchTerm = searchParams.get("search") || "";
+  const sort = searchParams.get("sort") || "createdAt:desc";
 
   const BASE_URL = useMemo(() => {
-    return `http://localhost:5000/api/v1/section?search=${searchTerm}`;
-  }, [searchTerm]);
+    return `http://localhost:5000/api/v1/section?search=${searchTerm}&sort=${sort}`;
+  }, [searchTerm, sort]);
 
   useEffect(() => {
     const fetchSections = async () => {

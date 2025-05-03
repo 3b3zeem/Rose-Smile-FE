@@ -38,12 +38,9 @@ export default function News() {
                   {new Date(news.createdAt).toLocaleDateString("ar-EG")}
                 </h6>
                 <h5 className="card-title fw-bold">{news.title}</h5>
-                <h6 className="text-secondary mb-2">{news.subTitle}</h6>
-                <p className="card-text text-muted" style={{ flexGrow: 1 }}>
-                  {news.desc}
-                </p>
+                <h6 className="text-secondary mb-2 truncate">{news.subTitle}</h6>
                 <Link
-                  to={`/service/${news.service._id}`}
+                  to={`/news/${news._id}`}
                   className="btn btn-outline-primary mt-auto"
                 >
                   الذهاب إلى الخدمة المرتبطة
