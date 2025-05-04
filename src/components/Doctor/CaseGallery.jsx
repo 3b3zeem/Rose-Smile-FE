@@ -38,17 +38,18 @@ const CaseGallery = ({ cases }) => {
         { url: afterImg },
       ];
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    rtl: true,
-    arrows: true,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
-  };
+      const settings = {
+        dots: imagesToDisplay.length > 1,
+        infinite: imagesToDisplay.length > 1,
+        arrows: imagesToDisplay.length > 1,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        rtl: true,
+        nextArrow: <NextArrow />,
+        prevArrow: <PrevArrow />,
+      };
+      
 
   return (
     <div className="mt-10 text-center max-w-2xl mx-auto relative">
