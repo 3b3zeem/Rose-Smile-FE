@@ -35,11 +35,9 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
       toast.error("يرجى اختيار صورة للتحديث");
       return;
     }
-
     setImageUploadLoading(true);
     const formData = new FormData();
     formData.append("image", selectedImage);
-
     try {
       const result = await updateDoctorImage(doctor._id, formData);
       if (result.success) {
@@ -54,9 +52,7 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
       setImageUploadLoading(false);
     }
   };
-
   if (!isOpen || !doctor) return null;
-
   return (
     <motion.div
       key="Update-Doctor-Image-Modal"
