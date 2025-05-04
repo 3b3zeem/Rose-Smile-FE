@@ -36,6 +36,18 @@ const Users = lazy(() => import("../dashboard/pages/Users/Users.jsx"));
 const AdminServices = lazy(() =>
   import("../dashboard/pages/Services/AdminServices.jsx")
 );
+// DashBoard Doctor
+const AdminDoctors = lazy(() =>
+  import("../dashboard/pages/Doctors/AdminDoctors.jsx")
+);
+const AddDoctor = lazy(() =>
+  import("../dashboard/pages/Doctors/AddDoctorModal.jsx")
+);
+const EditDoctor = lazy(() =>
+  import("../dashboard/pages/Doctors/EditDoctorModal.jsx")
+);
+
+
 
 const routes = createBrowserRouter([
   {
@@ -206,6 +218,31 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "doctors", // /admin-dashboard/doctors
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AdminDoctors />
+              </Suspense>
+            ),
+          },
+          {
+            path: "doctors/add", // /admin-dashboard/doctors/add
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AddDoctor />
+              </Suspense>
+            ),
+          },
+          {
+            path: "doctors/edit/:doctorId", // /admin-dashboard/doctors/edit/123
+            element: (
+              <Suspense fallback={<Loader />}>
+                <EditDoctor />
+              </Suspense>
+            ),
+          },
+          
         ],
       },
       { path: "*", element: <NotFound /> },
