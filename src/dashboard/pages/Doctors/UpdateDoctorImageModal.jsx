@@ -106,6 +106,7 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
             </div>
           </div>
 
+
           <div className="flex justify-between items-center gap-2 mt-4">
             <button
               type="button"
