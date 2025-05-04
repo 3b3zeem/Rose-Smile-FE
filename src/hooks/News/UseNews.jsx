@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 
-export default  function UseNews() {
+export default  function UseNews(page) {
   const BASE_URL = "http://localhost:5000/api/v1/news/";
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
@@ -12,7 +12,7 @@ export default  function UseNews() {
       try {
         setLoading(true);
         setError(null);
-        const res = await axios.get(`${BASE_URL}`);
+        const res = await axios.get(`${BASE_URL}?page=${page}`);
         setData(res.data.data || []);
         console.log(data);
       } catch (err) {
