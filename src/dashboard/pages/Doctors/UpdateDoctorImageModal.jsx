@@ -101,8 +101,6 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
               />
             </div>
           </div>
-
-
           <div className="flex justify-between items-center gap-2 mt-4">
             <button
               type="button"
@@ -110,7 +108,7 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
               className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
               disabled={imageUploadLoading}
             >
-              إلغاء
+             اغلاق
             </button>
 
             <button
