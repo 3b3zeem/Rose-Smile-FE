@@ -71,6 +71,46 @@ const useDoctorsActions = () => {
       setEditLoading(false);
     }
   };
+  // Add Doctor Cases
+  const addCaseToDoctor = async (doctorId, formData) => {
+    try {
+      const response = await axios.put(
+        `${BaseURL}/cases/${doctorId}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      await fetchDoctors();
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "فشل في إضافة الحالة",
+      };
+    }
+  };
+ //delete Doctor Case
+  const deleteDoctorCase = async (doctorId, caseId) => {
+    try {
+      const response = await axios.delete(
+        `${BaseURL}/cases/${doctorId}`,
+        {
+          data: { caseId },
+          withCredentials: true,
+        }
+      );
+      await fetchDoctors();
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "فشل في حذف الحالة",
+      };
+    }
+  };
+  
   // Update Doctor Image
   const updateDoctorImage = async (id, formData) => {
     setImageUploadLoading(true);
@@ -133,6 +173,8 @@ const useDoctorsActions = () => {
     updateDoctorImage,
     deleteDoctor,
     handlePageChange,
+    addCaseToDoctor,       
+    deleteDoctorCase 
   };
 };
 
