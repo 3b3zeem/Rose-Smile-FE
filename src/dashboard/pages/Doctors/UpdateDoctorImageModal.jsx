@@ -110,7 +110,7 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
             <button
               type="button"
               onClick={handleClose}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
               disabled={imageUploadLoading}
             >
               إلغاء
@@ -118,7 +118,7 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
 
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
               disabled={imageUploadLoading}
             >
               {imageUploadLoading ? (
