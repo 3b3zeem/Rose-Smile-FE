@@ -8,6 +8,7 @@ import {
   Trash2,
   Plus,
   Pencil,
+  FolderPlus,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -15,8 +16,8 @@ import Swal from "sweetalert2";
 import AddDoctorModal from "./AddDoctorModal";
 import EditDoctorModal from "./EditDoctorModal";
 import UpdateDoctorImageModal from "./UpdateDoctorImageModal";
-import useDoctorsActions from "../../hooks/Doctors/useDoctorsActions";
-
+import AddCaseModal from "./AddCaseModal";
+import useDoctorsActions from "../../hooks/Doctors/UseDoctorsActions";
 const AdminDoctors = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -30,6 +31,8 @@ const AdminDoctors = () => {
     updateDoctor,
     deleteDoctor,
     updateDoctorImage,
+    addCaseToDoctor,
+    deleteDoctorCase
   } = useDoctorsActions();
 
   const initialSearchTerm = searchParams.get("search") || "";
@@ -39,6 +42,13 @@ const AdminDoctors = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [currentDoctor, setCurrentDoctor] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [isCaseModalOpen, setIsCaseModalOpen] = useState(false);
+
+
+  const handleAddCase = (doctor) => {
+    setCurrentDoctor(doctor);
+    setIsCaseModalOpen(true);
+  };
   
 
   const handleEditClick = (doctor) => {
@@ -111,7 +121,7 @@ const AdminDoctors = () => {
           </div>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto transition"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto transition cursor-pointer"
           >
             <Plus size={20} />
             إضافة طبيب جديد
@@ -139,6 +149,14 @@ const AdminDoctors = () => {
           doctor={currentDoctor}
           updateDoctorImage={updateDoctorImage}
         />
+       <AddCaseModal
+          isOpen={isCaseModalOpen}
+          onClose={() => setIsCaseModalOpen(false)}
+          doctor={currentDoctor} 
+          addCase={addCaseToDoctor}
+          deleteCase={deleteDoctorCase}
+        />
+
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -185,6 +203,14 @@ const AdminDoctors = () => {
                           >
                             <Pencil size={16} />
                           </button>
+                          <button
+                            onClick={() => handleAddCase(doc)}
+                            className="text-green-600 hover:text-green-800 cursor-pointer mt-2"
+                            title="إدارة الحالات"
+                          >
+                          <span><FolderPlus size={18} /></span> 
+                          </button>
+
                           <button
                             onClick={() => handleDelete(doc._id)}
                             className="text-red-600 hover:text-red-800 cursor-pointer mt-2"
