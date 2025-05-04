@@ -245,10 +245,10 @@ const AddDoctorModal = ({ isOpen, onClose, addDoctor }) => {
     <button
       type="button"
       onClick={onClose}
-      className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+      className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
       disabled={addLoading}
     >
-      إلغاء
+      إغلاق
     </button>
 
     <button
@@ -263,7 +263,7 @@ const AddDoctorModal = ({ isOpen, onClose, addDoctor }) => {
         setPreviewImage(null);
         setCurrentDescription("");
       }}
-      className="px-6 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+      className="px-6 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition cursor-pointer"
       disabled={addLoading}
     >
       إعادة ضبط
@@ -271,10 +271,10 @@ const AddDoctorModal = ({ isOpen, onClose, addDoctor }) => {
 
     <button
       type="submit"
-      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
       disabled={addLoading}
     >
-      {addLoading ? <Loader2 className="animate-spin" size={20} /> : "إضافة"}
+      {addLoading ? <Loader2 className="animate-spin" size={20} /> : "تاكيد الإضافة"}
     </button>
   </div>
 </form>

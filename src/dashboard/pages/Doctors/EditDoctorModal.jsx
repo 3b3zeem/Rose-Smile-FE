@@ -207,14 +207,14 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
               disabled={editLoading}
             >
-              إلغاء
+           إغلاق
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
               disabled={editLoading}
             >
               {editLoading ? <Loader2 className="animate-spin" size={20} /> : "حفظ التعديلات"}
