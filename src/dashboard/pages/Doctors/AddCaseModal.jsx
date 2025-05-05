@@ -154,7 +154,7 @@ const AddCaseModal = ({ isOpen, onClose, doctor, addCase, deleteCase }) => {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-full max-h-[95vh] overflow-hidden p-8 md:p-10"
+          className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-full max-h-[95vh] min-h-[90vh] overflow-y-auto flex flex-col box-border p-8 md:p-10"
           dir="rtl"
         >
           <h2 className="text-2xl font-semibold mb-6 text-blue-900 border-b pb-4">

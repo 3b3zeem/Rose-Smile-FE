@@ -20,7 +20,9 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
       setFormData({
         name: doctor.name || "",
         specialization: doctor.specialization || "",
-        description: Array.isArray(doctor.description) ? doctor.description : [doctor.description],
+        description: Array.isArray(doctor.description)
+          ? doctor.description
+          : [doctor.description],
       });
     }
   }, [doctor]);
@@ -100,17 +102,18 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-white rounded-xl shadow-2xl w-full  max-w-5xl h-full max-h-[90vh]overflow-y-auto p-8 md:p-10"
-
+        className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[95vh] min-h-[90vh] overflow-y-auto flex flex-col box-border"
         dir="rtl"
       >
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4 px-8 pt-8">
           تعديل بيانات الطبيب
         </h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="flex-grow space-y-6 px-8">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">اسم الطبيب</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              اسم الطبيب
+            </label>
             <input
               type="text"
               value={formData.name}
@@ -122,7 +125,9 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">التخصص</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              التخصص
+            </label>
             <input
               type="text"
               value={formData.specialization}
@@ -133,8 +138,10 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
             />
           </div>
 
-                    <div className="md:col-span-2">
-            <label className="block mb-1 text-sm font-medium text-gray-700">الوصف</label>
+          <div className="md:col-span-2">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              الوصف
+            </label>
 
             <textarea
               rows={3}
@@ -148,36 +155,37 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
 
             {formData.description.length > 0 && (
               <div className="flex justify-between items-center mt-2">
-               <span className="text-sm text-gray-500">عدد: {formData.description.length}</span>
+                <span className="text-sm text-gray-500">
+                  عدد: {formData.description.length}
+                </span>
                 <button
-                type="button"
-                onClick={async () => {
-                  const result = await Swal.fire({
-                    title: "هل أنت متأكد؟",
-                    text: "سيتم مسح جميع الأوصاف المدخلة.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "نعم، امسح الكل",
-                    cancelButtonText: "إلغاء",
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                  });
+                  type="button"
+                  onClick={async () => {
+                    const result = await Swal.fire({
+                      title: "هل أنت متأكد؟",
+                      text: "سيتم مسح جميع الأوصاف المدخلة.",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "نعم، امسح الكل",
+                      cancelButtonText: "إلغاء",
+                      confirmButtonColor: "#d33",
+                      cancelButtonColor: "#3085d6",
+                    });
                 
-                  if (result.isConfirmed) {
-                    clearDescriptions();
-                  }
-                }}
+                    if (result.isConfirmed) {
+                      clearDescriptions();
+                    }
+                  }}
                 
-                className="text-red-600 hover:text-red-800 font-medium text-sm  cursor-pointer transition"
-                disabled={editLoading}
-              >
-               مسح الكل
-              </button>
-
+                  className="text-red-600 hover:text-red-800 font-medium text-sm cursor-pointer transition"
+                  disabled={editLoading}
+                >
+                  مسح الكل
+                </button>
               </div>
             )}
 
-        <div className="max-h-[400px] overflow-y-auto space-y-2 mt-2">
+            <div className="max-h-[300px] overflow-y-auto space-y-2 mt-2">
               <AnimatePresence>
                 {formData.description.map((desc, index) => (
                   <motion.div
@@ -203,27 +211,33 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
                 ))}
               </AnimatePresence>
             </div>
-          <div className="md:col-span-2 flex justify-between items-center mt-4">
+          </div>
+
+          <div className="mt-6 flex justify-between items-center">
             <button
               type="button"
               onClick={onClose}
               className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
               disabled={editLoading}
             >
-           إغلاق
+              إغلاق
             </button>
             <button
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
               disabled={editLoading}
             >
-              {editLoading ? <Loader2 className="animate-spin" size={20} /> : "حفظ التعديلات"}
+              {editLoading ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                "حفظ التعديلات"
+              )}
             </button>
           </div>
-
-
-          </div>
+        {/* Bottom white space */}
+        <div className="h-4"></div>
         </form>
+
       </motion.div>
     </motion.div>
   );
