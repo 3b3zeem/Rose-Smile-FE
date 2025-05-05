@@ -162,7 +162,7 @@ const Services = () => {
       <div className="flex flex-col lg:flex-row-reverse gap-6 relative">
         {/* Filter Sidebar - Mobile */}
         <div
-          className={`fixed lg:static inset-y-0 right-0 z-[100] w-80 max-w-[80%] bg-white shadow-xl lg:shadow-none lg:w-1/4 lg:bg-transparent p-6 transform transition-all duration-300 ease-in-out ${
+          className={`fixed lg:static inset-y-0 right-0 z-[50] w-80 max-w-[80%] bg-white shadow-sm lg:w-1/4 lg:bg-transparent p-6 transform transition-all duration-300 ease-in-out ${
             isFilterOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
           }`}
           style={{ top: "0" }}
@@ -180,7 +180,7 @@ const Services = () => {
           </div>
 
           {/* Sections List */}
-          <div className="h-full overflow-y-auto  border-l-[2px] border-gray-300">
+          <div className="h-full overflow-y-auto">
             {sectionsError ? (
               <div className="text-red-600">{sectionsError}</div>
             ) : (
@@ -286,7 +286,7 @@ const Services = () => {
                 {services.map((service) => (
                   <div
                     key={service._id}
-                    className="bg-white rounded-lg shadow-lg overflow-hidden h-[380px] flex flex-col hover:shadow-xl transition-all duration-300"
+                    className="bg-white rounded-lg shadow-md overflow-hidden h-[380px] flex flex-col transition-all duration-300"
                   >
                     <div className="relative h-40 overflow-hidden">
                       <img
@@ -308,7 +308,7 @@ const Services = () => {
                       </p>
                       <div className="flex gap-2 sm:gap-3 justify-end mt-auto">
                         <Link
-                          to={`/BookADeal/${service._id}`}
+                          to={`/BookADeal/service/${service._id}`}
                           className="bg-blue-600 text-white py-2 px-3 sm:px-4 rounded-lg cursor-pointer hover:bg-blue-700 transition-all duration-200 text-sm sm:text-base"
                         >
                           احجز موعد

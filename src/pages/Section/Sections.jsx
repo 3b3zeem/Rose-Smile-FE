@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
 import { useAllSections } from "../../hooks/Sections/UseSections";
 import { Link, useSearchParams } from "react-router-dom";
+import Loader from "../../layouts/Loader";
 
 const Sections = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,7 +13,7 @@ const Sections = () => {
 
   const { sections, loading, error, refetch } = useAllSections();
 
-  if (loading) return <div>جاري التحميل...</div>;
+  if (loading) return <Loader />;
   if (error) return <div>حدث خطأ: {error}</div>;
 
   const handleSearch = (value) => {
@@ -154,7 +155,7 @@ const Sections = () => {
                     </p>
                     <div className="flex gap-2 justify-end mt-auto">
                       <Link
-                        to={`/section/${item._id}`}
+                        to={`/BookADeal/section/${item._id}`}
                         className="bg-blue-600 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-700 transition-all duration-200 text-sm"
                       >
                         احجز موعد

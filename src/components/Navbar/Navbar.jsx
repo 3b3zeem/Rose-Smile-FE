@@ -86,7 +86,7 @@ const ArabicNavbar = () => {
   return (
     <React.Fragment>
       <nav
-        className="sticky top-0 bg-white shadow-md w-full py-3 px-6 flex flex-col justify-between z-50"
+        className="sticky top-0 right-0 bg-white shadow-md w-full py-3 px-6 flex flex-col justify-between z-500"
         dir="rtl"
       >
         <div className="flex items-center justify-between">
@@ -200,15 +200,15 @@ const ArabicNavbar = () => {
 
             <div className="p-4">
               {isLogin && (
-                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+                <div className="flex items-center gap-3 mb-6 border-b border-gray-100">
                   <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
                     {renderAvatar()}
                   </div>
-                  <div>
+                  <div className="flex flex-col mt-4">
+                    <p className="text-sm text-gray-500">مرحباً بك</p>
                     <p className="font-bold text-gray-800">
                       {FirstName} {LastName}
                     </p>
-                    <p className="text-sm text-gray-500">مرحباً بك</p>
                   </div>
                 </div>
               )}

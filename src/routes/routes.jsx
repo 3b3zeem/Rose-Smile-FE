@@ -102,10 +102,18 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: "BookADeal/:reference",
+        path: "BookADeal/service/:reference",
         element: (
           <Suspense fallback={<Loader />}>
-            <BookADeal />
+            <BookADeal type="service"/>
+          </Suspense>
+        ),
+      },
+      {
+        path: "BookADeal/section/:reference",
+        element: (
+          <Suspense fallback={<Loader />}>
+            <BookADeal type="section"/>
           </Suspense>
         ),
       },

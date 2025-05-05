@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useSomeServices } from "../../../hooks/Services/useServices";
 import { Link } from "react-router-dom";
+import Loader from "../../../layouts/Loader";
 
 const Services = () => {
   const { data: services, loading, error } = useSomeServices();
@@ -73,7 +74,7 @@ const Services = () => {
   };
 
   if (loading) {
-    return <div className="text-center p-8">جاري التحميل...</div>;
+    return <Loader />;
   }
 
   if (error) {

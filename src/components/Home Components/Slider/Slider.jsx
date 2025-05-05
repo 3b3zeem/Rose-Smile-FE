@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import useHero from "../../../hooks/Hero/useHero";
 import "./Slider.css";
+import Loader from "../../../layouts/Loader";
 
 const DentalClinicSlider = () => {
   const { heroes, loading, error } = useHero();
@@ -48,7 +49,7 @@ const DentalClinicSlider = () => {
   };
 
   if (loading)
-    return <p className="text-center text-gray-600">جاري التحميل...</p>;
+    return <Loader />;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (

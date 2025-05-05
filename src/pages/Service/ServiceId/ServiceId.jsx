@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import useServiceDetails from "../../../hooks/Services/useServices";
 import { Calendar, Clock, CheckCircle, Star, ArrowLeft } from "lucide-react";
+import Loader from "../../../layouts/Loader";
 
 export default function Service() {
   const { reference } = useParams();
@@ -19,9 +20,7 @@ export default function Service() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-screen text-2xl text-gray-600 font-bold font-['Cairo',sans-serif] dir-rtl">
-        جاري التحميل...
-      </div>
+      <Loader />
     );
   if (error)
     return (
@@ -127,7 +126,7 @@ export default function Service() {
 
             {/* Booking Button */}
             <Link
-              to={`/BookADeal/${data._id}`}
+              to={`/BookADeal/service/${data._id}`}
               className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-4 px-6 rounded-xl font-bold text-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
             >
               احجز الآن
