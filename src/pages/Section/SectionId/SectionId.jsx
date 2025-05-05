@@ -7,6 +7,7 @@ import Slider from "react-slick";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import BookingForm from "../../../components/Booking/BookingForm";
+import Loader from "../../../layouts/Loader";
 
 const SectionId = () => {
   const { reference } = useParams();
@@ -71,9 +72,7 @@ const SectionId = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-screen text-2xl text-gray-600 font-bold font-['Cairo',sans-serif] dir-rtl">
-        جاري التحميل...
-      </div>
+      <Loader />
     );
 
   if (error)
@@ -187,7 +186,7 @@ const SectionId = () => {
 
             {/* Booking Button */}
             <Link
-              to={`/BookADeal/${sectionData._id}`}
+              to={`/BookADeal/section/${sectionData._id}`}
               className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-4 px-6 rounded-xl font-bold text-lg transition-colors duration-200 shadow-lg hover:shadow-xl"
             >
               احجز الآن

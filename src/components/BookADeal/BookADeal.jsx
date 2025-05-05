@@ -1,18 +1,38 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import useServiceDetails from "../../hooks/Services/useServices";
+// import useServiceDetails from "../../hooks/Services/useServices";
 import BookingForm from "../Booking/BookingForm";
 import { Calendar, FileText, CheckCircle } from "lucide-react";
+import useServiceDetails from "../../hooks/Services/useServices";
+import useSectionData from "../../hooks/Sections/UseSections";
+import Loader from "../../layouts/Loader";
+// import useSectionData from "../../hooks/Sections/UseSections";
 
-const BookADeal = () => {
+const BookADeal = ({ type }) => {
   const { reference } = useParams();
-  const { data, loading, error } = useServiceDetails(reference);
+
+  const {
+    data: serviceData,
+    loading: serviceLoading,
+    error: serviceError,
+  } = type === "service"
+    ? useServiceDetails(reference)
+    : { data: null, loading: false, error: null };
+  const {
+    sectionData,
+    loading: sectionLoading,
+    error: sectionError,
+  } = type === "section"
+    ? useSectionData(reference)
+    : { sectionData: null, loading: false, error: null };
+
+  const data = type === "service" ? serviceData : sectionData;
+  const loading = type === "service" ? serviceLoading : sectionLoading;
+  const error = type === "service" ? serviceError : sectionError;
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-screen text-2xl text-gray-600 font-bold font-['Cairo',sans-serif] dir-rtl">
-        جاري التحميل...
-      </div>
+      <Loader />
     );
   if (error)
     return (
@@ -31,18 +51,20 @@ const BookADeal = () => {
               {/* Image Section */}
               <div className="overflow-hidden rounded-t">
                 <img
-                  src={data.image.backgroundLarge}
-                  alt="Service"
-                  aria-label="Service image"
+                  src={data?.image?.backgroundLarge}
+                  alt={type === "service" ? "Service" : "Section"}
+                  aria-label={
+                    type === "service" ? "Service image" : "Section image"
+                  }
                   className="w-full h-64 object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
               {/* Title Section */}
               <div className="px-6 pb-6">
                 <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 border-b border-gray-200 pb-3 mb-4 leading-relaxed w-full break-words">
-                  {data.title}
+                  {data?.title}
                 </h1>
-                {data.subTitle && (
+                {data?.subTitle && (
                   <h2 className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed w-full break-words">
                     {data.subTitle}
                   </h2>
@@ -51,7 +73,7 @@ const BookADeal = () => {
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-gray-600">
                       آخر تحديث:{" "}
-                      {new Date(data.updatedAt).toLocaleDateString("ar-EG", {
+                      {new Date(data?.updatedAt).toLocaleDateString("ar-EG", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -68,11 +90,24 @@ const BookADeal = () => {
           <div className="lg:w-2/3 w-full">
             <div className="bg-white border border-gray-100 p-6 sm:p-8">
               <BookingForm
-                serviceData={{ id: data._id, title: data.title }}
-                sectionData={{
-                  id: data.sectionId._id,
-                  title: data.sectionId.title,
-                }}
+                serviceData={
+                  type === "service"
+                    ? { id: data?._id, title: data?.title }
+                    : null
+                }
+                sectionData={
+                  type === "service"
+                    ? {
+                        id: data?.sectionId?._id,
+                        title: data?.sectionId?.title,
+                      }
+                    : {
+                        id: data?._id,
+                        title: data?.title,
+                        services: data?.services,
+                      }
+                }
+                isSectionBooking={type === "section"}
               />
             </div>
           </div>

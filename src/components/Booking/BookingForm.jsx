@@ -14,12 +14,15 @@ import { useSectionTitles } from "../../hooks/Sections/UseSections";
 import { useServiceTitles } from "../../hooks/Services/useServices";
 import useBookingSubmit from "../../hooks/Bookings/useBookingSubmit";
 import { Toaster, toast } from "react-hot-toast";
+import Loader from "../../layouts/Loader";
 
-export default function BookingForm({ serviceData, sectionData }) {
-  const { services, loading: servicesLoading } = useServiceTitles();
-  const { sections, loading: sectionsLoading } = useSectionTitles();
+export default function BookingForm({ serviceData, sectionData, isSectionBooking }) {
+  const { services: allServices } = useServiceTitles();
+  const { sections } = useSectionTitles();
   const {
     submitBooking,
+    fetchDefaultSheet,
+    defaultSheet,
     loading: submitLoading,
     error: submitError,
     success: submitSuccess,
@@ -31,12 +34,26 @@ export default function BookingForm({ serviceData, sectionData }) {
     city: "",
     service: "",
     section: "",
+    spreadsheetId: "",
   });
+
+  useEffect(() => {
+    fetchDefaultSheet();
+  }, []);
+
+  useEffect(() => {
+    if (defaultSheet?.sheet_id) {
+      setFormData((prev) => ({
+        ...prev,
+        spreadsheetId: defaultSheet.sheet_id,
+      }));
+    }
+  }, [defaultSheet]);
 
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      service: serviceData?.id || "",
+      service: serviceData?.id || "", // إذا كان serviceData موجود، نحدد الخدمة
       section: sectionData?.id || "",
     }));
   }, [serviceData, sectionData]);
@@ -71,8 +88,7 @@ export default function BookingForm({ serviceData, sectionData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { section, ...dataToSubmit } = formData;
-    await submitBooking(dataToSubmit);
+    await submitBooking(formData);
     if (!submitError) {
       setFormData({
         name: "",
@@ -80,22 +96,22 @@ export default function BookingForm({ serviceData, sectionData }) {
         city: "",
         service: serviceData?.id || "",
         section: sectionData?.id || "",
+        spreadsheetId: defaultSheet?.sheet_id || "",
       });
     }
   };
 
-  const isServiceDisabled = true;
+  const isServiceDisabled = !isSectionBooking;
   const isSectionDisabled = true;
+
+  const sectionServices = isSectionBooking ? sectionData?.services || [] : [];
 
   return (
     <>
       <Toaster />
       <div className="bg-white rounded-2xl p-8">
         <span className="text-2xl text-gray-600">احجز موعدك</span>
-        <form
-          onSubmit={handleSubmit}
-          className="p-8"
-        >
+        <form onSubmit={handleSubmit} className="p-8">
           {submitSuccess && (
             <Typography
               color="success.main"
@@ -154,15 +170,19 @@ export default function BookingForm({ serviceData, sectionData }) {
               value={formData.service}
               onChange={handleChange}
             >
-              {services?.length > 0 ? (
-                services.map((service) => (
-                  <MenuItem key={service.id} value={service.id}>
-                    {service.title}
-                  </MenuItem>
-                ))
+              {isSectionBooking ? (
+                sectionServices.length > 0 ? (
+                  sectionServices.map((service) => (
+                    <MenuItem key={service._id} value={service._id}>
+                      {service.title}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="">لا توجد خدمات متاحة</MenuItem>
+                )
               ) : (
                 <MenuItem value={formData.service}>
-                  {serviceData?.title || "جاري التحميل..."}
+                  {serviceData?.title || <Loader />}
                 </MenuItem>
               )}
             </Select>
@@ -187,7 +207,7 @@ export default function BookingForm({ serviceData, sectionData }) {
                 ))
               ) : (
                 <MenuItem value={formData.section}>
-                  {sectionData?.title || "جاري التحميل..."}
+                  {sectionData?.title || <Loader />}
                 </MenuItem>
               )}
             </Select>
@@ -214,7 +234,7 @@ export default function BookingForm({ serviceData, sectionData }) {
               disabled={submitLoading}
             >
               {submitLoading ? (
-                <CircularProgress size={24} color="inherit" />
+                <CircularProgress size={24} color={"#fff"} />
               ) : (
                 "احجز ميعادك"
               )}

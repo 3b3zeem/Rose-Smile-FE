@@ -4,13 +4,14 @@ import useDoctorDetails from "../../hooks/Doctors/useDoctorDetails";
 import CaseGallery from "../../components/Doctor/CaseGallery";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Loader from "../../layouts/Loader";
 
 const DoctorDetail = () => {
   const { doctorId } = useParams();
   const { doctor, loading, error } = useDoctorDetails(doctorId);
 
   if (loading)
-    return <div className="text-center mt-20 text-blue-600">جاري التحميل...</div>;
+    return <Loader />;
 
   if (error || !doctor) {
     return (
