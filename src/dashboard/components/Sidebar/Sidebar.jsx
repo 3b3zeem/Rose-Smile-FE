@@ -60,11 +60,11 @@ const Sidebar = () => {
           {isOpen && <span className="font-bold">القائمة</span>}
         </div>
 
-        <div className="hidden md:flex justify-center py-5 border-b border-gray-300">
+        <div className="hidden md:flex justify-center py-2 border-b border-gray-300">
           <img src={logo} alt="logo" width={100} />
         </div>
 
-        <nav className="flex-1 p-2 flex flex-col gap-2 mt-2">
+        <nav className="flex-1 p-2 flex flex-col gap-2">
           <SidebarItem
             to="/admin-dashboard"
             icon={<LayoutDashboard />}
