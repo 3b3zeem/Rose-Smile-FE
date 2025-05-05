@@ -102,7 +102,7 @@ const AddDoctorModal = ({ isOpen, onClose, addDoctor }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-500 p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -125,7 +125,7 @@ const AddDoctorModal = ({ isOpen, onClose, addDoctor }) => {
         type="text"
         value={formData.name}
         onChange={(e) => handleInputChange(e, "name")}
-        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right mt-2 "
+        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right mt-2 "
         required
         disabled={addLoading}
       />
@@ -137,7 +137,7 @@ const AddDoctorModal = ({ isOpen, onClose, addDoctor }) => {
         type="text"
         value={formData.specialization}
         onChange={(e) => handleInputChange(e, "specialization")}
-        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right mt-2 "
+        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right mt-2 "
         required
         disabled={addLoading}
       />

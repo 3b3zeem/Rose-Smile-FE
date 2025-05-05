@@ -147,21 +147,21 @@ const AddCaseModal = ({ isOpen, onClose, doctor, addCase, deleteCase }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        className="fixed inset-0 bg-black/60 flex items-center justify-center z-500 p-4"
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-full max-h-[95vh] min-h-[90vh] overflow-y-auto flex flex-col box-border p-8 md:p-10"
+          className="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-full max-h-[100vh] min-h-[90vh] overflow-y-auto flex flex-col box-border p-8 md:p-10"
           dir="rtl"
         >
           <h2 className="text-2xl font-semibold mb-6 text-blue-900 border-b pb-4">
             إدارة الحالات للطبيب: {fullDoctor.name}
           </h2>
 
-          <div className="overflow-y-auto max-h-[500px] mb-10 pr-1">
+          <div className="overflow-y-auto h-full pr-1">
             {fullDoctor.cases?.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {fullDoctor.cases.map((c, i) => (
@@ -186,8 +186,7 @@ const AddCaseModal = ({ isOpen, onClose, doctor, addCase, deleteCase }) => {
             )}
           </div>
 
-          <div className="bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-5 mb-6 flex flex-col md:flex-row items-center gap-6">
-
+          <div className="bg-white border border-gray-300 rounded-lg shadow-sm px-6 py-2 mb-6 flex flex-col md:flex-row items-center gap-6">
             <label className="cursor-pointer text-blue-700 text-sm">
               {previewUrl ? (
                 <img
@@ -210,11 +209,11 @@ const AddCaseModal = ({ isOpen, onClose, doctor, addCase, deleteCase }) => {
             </label>
 
             <div className="flex-1 w-full flex flex-col gap-2">
-              <div className="flex gap-3">
+              <div className="flex flex-col items-end justify-between gap-3">
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm transition cursor-pointer"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm transition cursor-pointer"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin mx-auto" size={18} /> : "تأكيد الإضافة"}
                 </button>
@@ -222,7 +221,7 @@ const AddCaseModal = ({ isOpen, onClose, doctor, addCase, deleteCase }) => {
                 {previewUrl && (
                   <button
                     onClick={handleClearSelection}
-                    className="flex-1 bg-gray-200 text-gray-700 py-2 rounded text-sm hover:bg-gray-300 transition cursor-pointer"
+                    className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded text-sm hover:bg-gray-300 transition cursor-pointer"
                   >
                     مسح الصورة
                   </button>

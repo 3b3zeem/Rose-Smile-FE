@@ -17,7 +17,7 @@ import AddDoctorModal from "./AddDoctorModal";
 import EditDoctorModal from "./EditDoctorModal";
 import UpdateDoctorImageModal from "./UpdateDoctorImageModal";
 import AddCaseModal from "./AddCaseModal";
-import useDoctorsActions from "../../hooks/Doctors/UseDoctorsActions";
+import useDoctorsActions from './../../hooks/Doctors/useDoctorsActions';
 const AdminDoctors = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
