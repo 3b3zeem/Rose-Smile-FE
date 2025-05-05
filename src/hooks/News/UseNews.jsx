@@ -24,7 +24,7 @@ export default  function UseNews(page) {
     };
 
     fetchNews();
-  }, []);
+  }, [page]);
   return { data, loading, error };
 }
 

@@ -10,7 +10,7 @@ export default function News() {
   const [searchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page")) || 1;
   const { data, error, loading } = UseNews(page);
-  
+
   useEffect(() => {
     if (data) {
       setFilteredData(data);
@@ -23,20 +23,20 @@ export default function News() {
       news.title.toLowerCase().includes(searchValue)
     );
     setFilteredData(filtered);
-  } 
+  };
 
   const handlePageChange = (newPage) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.set("page", newPage);
-  
-  }
+    window.history.pushState({}, "", `?${newSearchParams.toString()}`);
+  };
+
   const pagination = {
     currentPage: page,
     totalPages: Math.ceil(data.length / 3), // Assuming 3 items per page
     totalItems: data.length,
   };
 
-  
   if (loading) {
     return (
       <div className="text-center my-5">
@@ -64,7 +64,7 @@ export default function News() {
               placeholder="بحث عن خبر"
               aria-label="Search"
               aria-describedby="button-addon2"
-             onChange={handleChange}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -96,35 +96,31 @@ export default function News() {
             </div>
           </div>
         ))}
-
-
       </div>
 
-                    {/* Pagination */}
-                    {pagination && pagination.totalPages > 1 && (
-                <div className="flex justify-center gap-4 mt-8 items-center">
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex justify-center gap-4 mt-8 items-center">
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page === pagination.totalPages || loading}
+            className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+          >
+            التالي
+          </button>
+          <span className="text-gray-600">
+            الصفحة {page} من {pagination.totalPages}
+          </span>
 
-                  <button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === pagination.totalPages || loading}
-                    className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
-                  >
-                    التالي
-                  </button>
-                  <span className="text-gray-600">
-                    الصفحة {page} من {pagination.totalPages}
-                  </span>
-
-                  <button
-                    onClick={() => handlePageChange(Math.max(page - 1, 1))}
-                    disabled={page === 1 || loading}
-                    className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
-                  >
-                    السابق
-                  </button>
-                </div>
-              )}
-
+          <button
+            onClick={() => handlePageChange(Math.max(page - 1, 1))}
+            disabled={page === 1 || loading}
+            className="bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50 cursor-pointer hover:bg-blue-500 transition-all duration-200"
+          >
+            السابق
+          </button>
+        </div>
+      )}
     </div>
   );
 }

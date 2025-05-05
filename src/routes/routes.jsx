@@ -36,6 +36,11 @@ const Users = lazy(() => import("../dashboard/pages/Users/Users.jsx"));
 const AdminServices = lazy(() =>
   import("../dashboard/pages/Services/AdminServices.jsx")
 );
+
+//DashBoard Section
+const AdminSection = lazy(() =>
+  import("../dashboard/pages/Sections/AdminSection.jsx")
+);
 // DashBoard Doctor
 const AdminDoctors = lazy(() =>
   import("../dashboard/pages/Doctors/AdminDoctors.jsx")
@@ -194,6 +199,7 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
+          
           {
             path: "users", // /admin-dashboard/users
             element: (
@@ -202,6 +208,7 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
+
           // {
           //   path: "offers", // /admin-dashboard/offers
           //   element: (
@@ -210,6 +217,16 @@ const routes = createBrowserRouter([
           //     </Suspense>
           //   ),
           // },
+
+          {
+            path: "sections", // /admin-dashboard/Sections
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AdminSection/>
+              </Suspense>
+            ),
+          },
+          
           {
             path: "services", // /admin-dashboard/services
             element: (
@@ -218,6 +235,8 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
+
+
           {
             path: "doctors", // /admin-dashboard/doctors
             element: (
