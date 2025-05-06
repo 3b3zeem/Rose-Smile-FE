@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import { useServiceTitles } from "../../../hooks/Services/useServices.jsx";
 
 const AddOffersModal = ({ isOpen, onClose, addOffer }) => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ const AddOffersModal = ({ isOpen, onClose, addOffer }) => {
     reference: "",
     image: null,
   });
+
+  const { services } = useServiceTitles();
 
   const [previewImage, setPreviewImage] = useState(null);
   const [addLoading, setAddLoading] = useState(false);

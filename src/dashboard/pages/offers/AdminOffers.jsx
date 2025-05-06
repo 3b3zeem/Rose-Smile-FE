@@ -44,26 +44,16 @@ const AdminOffers = () => {
 
   const handleEditClick = (offer) => {
     setCurrentOffer(offer);
+    console.log(offer, isImageModalOpen, isEditModalOpen);
+
+    setIsEditModalOpen(true);
+    console.log(isEditModalOpen , isImageModalOpen);
+    
   };
 
-  const handleUpdate = async (updatedData) => {
-    try {
-      await updateOffer(updatedData);
-      setCurrentOffer(null);
-      fetchOffers();
-    } catch (error) {
-      console.error("Error updating offer:", error);
-    }
-  };
-
-  const handleImageUpdate = async (imageData) => {
-    try {
-      await updateOfferImage(imageData);
-      setSelectedOffer(null);
-      fetchOffers();
-    } catch (error) {
-      console.error("Error updating offer image:", error);
-    }
+  const handleImageClick = (offer) => {
+    setCurrentOffer(offer);
+    setIsImageModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -155,9 +145,10 @@ const AdminOffers = () => {
         {/* Edit Modal */}
         {currentOffer && (
           <EditOfferModal
-            offer={currentOffer}
+            isOpen={isEditModalOpen}
             onClose={() => setCurrentOffer(null)}
-            onUpdate={handleUpdate}
+            offer={currentOffer}
+            updateOffer={updateOffer}
           />
         )}
 
@@ -201,6 +192,7 @@ const AdminOffers = () => {
                               src={offer.image?.url || "/placeholder.png"}
                               alt={offer.title}
                               className="w-full h-full object-cover"
+                              onClick={() => handleImageClick(offer)}
                             />
                           </div>
                         </td>
