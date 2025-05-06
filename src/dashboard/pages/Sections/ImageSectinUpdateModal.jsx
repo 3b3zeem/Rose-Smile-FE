@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 
-const ImageUpdateModal = ({ isOpen, onClose, service, updateServiceImage }) => {
+const ImageUpdateModal = ({ isOpen, onClose, section,updatesectionImage}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
@@ -28,7 +28,7 @@ const ImageUpdateModal = ({ isOpen, onClose, service, updateServiceImage }) => {
     formData.append("image", selectedImage);
 
     try {
-      const result = await updateServiceImage(service._id, formData);
+      const result = await updatesectionImage(section._id, formData);
       if (result.success) {
         toast.success(result.message);
       } else {

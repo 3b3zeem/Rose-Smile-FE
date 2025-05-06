@@ -3,17 +3,16 @@ import { Loader2, Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 
-const EditServiceModal = ({
+const EditSectionModal = ({
   isOpen,
   onClose,
   sections,
-  service,
-  updateService,
+  section,
+  updatesection,
 }) => {
   const [formData, setFormData] = useState({
     title: "",
     subTitle: "",
-    sectionId: "",
     description: [],
     features: [],
   });
@@ -22,16 +21,15 @@ const EditServiceModal = ({
   const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
-    if (service) {
+    if (section) {
       setFormData({
-        title: service.title || "",
-        subTitle: service.subTitle || "",
-        sectionId: service.section?._id || "",
-        description: service.description?.length > 0 ? service.description : [],
-        features: service.features?.length > 0 ? service.features : [],
+        title: section.title || "",
+        subTitle: section.subTitle || "",
+        description: section.description?.length > 0 ? section.description : [],
+        features: section.features?.length > 0 ? section.features : [],
       });
     }
-  }, [service]);
+  }, [section]);
 
   const handleInputChange = (e, field) => {
     setFormData({ ...formData, [field]: e.target.value });
@@ -82,7 +80,6 @@ const EditServiceModal = ({
     const data = {
       title: formData.title,
       subTitle: formData.subTitle,
-      sectionId: formData.sectionId,
       description: [
         ...formData.description.filter((desc) => desc.trim() !== ""),
         ...(currentDescription.trim() ? [currentDescription.trim()] : []),
@@ -94,7 +91,7 @@ const EditServiceModal = ({
     };
 
     try {
-      const result = await updateService(service._id, data);
+      const result = await updatesection(section._id, data);
       if (result.success) {
         toast.success(result.message);
         onClose();
@@ -110,7 +107,7 @@ const EditServiceModal = ({
     }
   };
 
-  if (!isOpen || !service) {
+  if (!isOpen || !section) {
     return null;
   }
 
@@ -131,7 +128,7 @@ const EditServiceModal = ({
         className="bg-white rounded-xl shadow-2xl w-full h-full max-h-screen overflow-auto p-8 md:p-12"
       >
         <h2 className="text-lg sm:text-xl font-semibold mb-6 text-right">
-          تعديل الخدمة
+          تعديل  القـســـم
         </h2>
         <form
           onSubmit={handleSubmit}
@@ -163,25 +160,6 @@ const EditServiceModal = ({
             />
           </div>
           <div></div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 text-right">
-              القسم
-            </label>
-            <select
-              value={formData.sectionId}
-              onChange={(e) => handleInputChange(e, "sectionId")}
-              className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right cursor-pointer"
-              required
-              disabled={editLoading}
-            >
-              <option value="">اختر قسمًا</option>
-              {sections.map((section) => (
-                <option key={section.id} value={section.id}>
-                  {section.title}
-                </option>
-              ))}
-            </select>
-          </div>
           <div className="md:col-span-2" dir="rtl">
             <label className="block mb-1 text-sm font-medium text-gray-700">
               الوصف
@@ -289,4 +267,4 @@ const EditServiceModal = ({
   );
 };
 
-export default EditServiceModal;
+export default EditSectionModal;

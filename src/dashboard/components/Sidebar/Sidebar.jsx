@@ -104,7 +104,7 @@ const Sidebar = () => {
                 isOpen={isOpen}
               />
               <SidebarItem
-                to="/admin-dashboard/categories"
+                to="/admin-dashboard/sections"
                 icon={<Layers />}
                 label="الأقسام"
                 isOpen={isOpen}

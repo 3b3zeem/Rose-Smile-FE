@@ -15,7 +15,7 @@ export default function useSections() {
 
   const BaseURL = "http://localhost:5000/api/v1/section";
 
-  const fetchService = async () => {
+  const fetchsection = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
@@ -36,11 +36,11 @@ export default function useSections() {
   const addSection = async (formData) => {
     setLoading(true);
     try {
-      const response = await axios.post(BaseURL, formData, {
+      const response = await axios.post(`${BaseURL}/add`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-    await fetchService();
+    await fetchsection();
       return { success: true, message: response.data.section };
     } catch (error) {
       return {
@@ -55,14 +55,35 @@ export default function useSections() {
   const updateSection = async (id, data) => {
     setLoading(true);
     try {
-      const response = await axios.put(
+      const response = await axios.patch(
         `${BaseURL}/update?sectionId=${id}`,
         data,
         {
           withCredentials: true,
         }
       );
-      await fetchService();
+      await fetchsection();
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "خطأ أثناء التحديث",
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+  const updatesectionImage = async (id, data) => {
+    setLoading(true);
+    try {
+      const response = await axios.patch(
+        `${BaseURL}/update?sectionId=${id}`,
+        data,
+        {
+          withCredentials: true,
+        }
+      );
+      await fetchsection();
       return { success: true, message: response.data.message };
     } catch (error) {
       return {
@@ -74,13 +95,15 @@ export default function useSections() {
     }
   };
 
+
+
   const deleteSection = async (id) => {
     setLoading(true);
     try {
       const response = await axios.delete(`${BaseURL}/${id}`, {
         withCredentials: true, // Include credentials in the request
       });
-      await fetchService();
+      await fetchsection();
       return { success: true, message: response.data.message };
     } catch (error) {
       return {
@@ -92,8 +115,10 @@ export default function useSections() {
     }
   };
 
+
+
   useEffect(() => {
-    fetchService();
+    fetchsection();
   }, [page, size, search]);
 
 
@@ -101,9 +126,10 @@ export default function useSections() {
         sections,
         loading,
         total,
-        fetchService,
+        fetchsection,
         addSection,
         updateSection,
+        updatesectionImage,
         deleteSection,
         setSearchParams,
     };

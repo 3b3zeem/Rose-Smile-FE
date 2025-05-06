@@ -3,11 +3,10 @@ import { Loader2, Minus, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 
-const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
+const AddSectionModal = ({ isOpen, onClose, sections, addsection }) => {
   const [formData, setFormData] = useState({
     title: "",
     subTitle: "",
-    sectionId: "",
     image: null,
     description: [],
     features: [],
@@ -74,7 +73,6 @@ const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
     const data = new FormData();
     data.append("title", formData.title);
     data.append("subTitle", formData.subTitle);
-    data.append("sectionId", formData.sectionId);
     if (formData.image) {
       data.append("image", formData.image);
     }
@@ -98,7 +96,9 @@ const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
     }
 
     try {
-      const result = await addService(data);
+      const result = await addsection(data);
+        console.log(result);
+    
       if (result.success) {
         toast.success(result.message);
         onClose();
@@ -114,10 +114,10 @@ const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
         setCurrentDescription("");
         setCurrentFeature("");
       } else {
-        toast.error(result.message || "حدث خطأ أثناء إضافة الخدمة");
+        toast.error(result.errors.message || "حدث خطأ أثناء إضافة القسم");
       }
     } catch (error) {
-      toast.error(error.message || "حدث خطأ أثناء إضافة الخدمة");
+      toast.error(error.message || "حدث خطأ أثناء إضافة القسم");
     } finally {
       setAddLoading(false);
     }
@@ -143,10 +143,11 @@ const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
         dir="rtl"
       >
         <h2 className="text-3xl font-bold mb-8 text-right text-gray-800 border-b pb-4">
-          إضافة خدمة جديدة
+          إضافة قســم جديدة
         </h2>
 
         <div className="flex flex-col lg:flex-row gap-10">
+
           <form
             onSubmit={handleSubmit}
             className="w-full grid grid-cols-1 md:grid-cols-2 gap-6"
@@ -166,25 +167,7 @@ const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
                 />
               </div>
 
-              <div className="w-1/2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  القسم
-                </label>
-                <select
-                  value={formData.sectionId}
-                  onChange={(e) => handleInputChange(e, "sectionId")}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
-                  required
-                  disabled={addLoading}
-                >
-                  <option value="">اختر قسمًا</option>
-                  {sections.map((section) => (
-                    <option key={section.id} value={section.id}>
-                      {section.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
+
             </div>
 
             <div className="md:col-span-1 row-span-3 flex justify-center">
@@ -330,6 +313,7 @@ const AddSectionModal = ({ isOpen, onClose, sections, addService }) => {
                 )}
               </button>
             </div>
+
           </form>
         </div>
       </motion.div>

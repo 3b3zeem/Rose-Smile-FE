@@ -13,7 +13,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import AddSectionModal from "./AddSectionModal";
 import EditsectionModal from "./EditSectionModal";
-import ImageUpdateModal from "./ImageSectinUpdateModal";
+import ImageSectinUpdateModal from "./ImageSectinUpdateModal";
 import Swal from "sweetalert2";
 import useSections from "../../hooks/Sections/useSections";
 
@@ -22,11 +22,13 @@ const AdminSection = () => {
   const {
     page,
     sections,
+
     loading,
     total,
     fetchsection,
     addSection,
     updateSection,
+    updatesectionImage,
     deleteSection,
   } = useSections();
   const initialSearchTerm = searchParams.get("search") || "";
@@ -62,7 +64,7 @@ const AdminSection = () => {
     if (result.isConfirmed) {
       setDeletingsectionId(id);
       try {
-        const response = await deletesection(id);
+        const response = await deleteSection(id);
         if (response.success) {
           toast.success(response.message);
         } else {
@@ -108,7 +110,7 @@ const AdminSection = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="ابحث عن خدمات..."
+              placeholder="ابحث عن اقسام..."
               className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none text-right"
             />
           </div>
@@ -117,8 +119,8 @@ const AdminSection = () => {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-200 w-full sm:w-auto"
           >
             <Plus size={20} />
-            إضافة خدمة جديدة
-          </button>
+            إضافة قســم جديدة
+            </button>
         </div>
 
         {/* EXPLAIN THIS CODE */}
@@ -137,12 +139,12 @@ const AdminSection = () => {
           updatesection={updateSection}
         />
 
-        {/* <ImageUpdateModal
+        <ImageSectinUpdateModal
           isOpen={isImageModalOpen}
           onClose={() => setIsImageModalOpen(false)}
           section={currentsection}
           updatesectionImage={updatesectionImage}
-        /> */}
+        />
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -187,7 +189,7 @@ const AdminSection = () => {
                           {section.title}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] truncate">
-                          {section.title}
+                          {section.subTitle}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                           {new Date(section.createdAt).toLocaleDateString(
