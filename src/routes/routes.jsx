@@ -52,7 +52,9 @@ const EditDoctor = lazy(() =>
   import("../dashboard/pages/Doctors/EditDoctorModal.jsx")
 );
 
-
+const AdminOffers = lazy(() =>
+  import("../dashboard/pages/offers/AdminOffers.jsx")
+);
 
 const routes = createBrowserRouter([
   {
@@ -105,7 +107,7 @@ const routes = createBrowserRouter([
         path: "BookADeal/service/:reference",
         element: (
           <Suspense fallback={<Loader />}>
-            <BookADeal type="service"/>
+            <BookADeal type="service" />
           </Suspense>
         ),
       },
@@ -113,7 +115,7 @@ const routes = createBrowserRouter([
         path: "BookADeal/section/:reference",
         element: (
           <Suspense fallback={<Loader />}>
-            <BookADeal type="section"/>
+            <BookADeal type="section" />
           </Suspense>
         ),
       },
@@ -207,7 +209,7 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
-          
+
           {
             path: "users", // /admin-dashboard/users
             element: (
@@ -217,24 +219,24 @@ const routes = createBrowserRouter([
             ),
           },
 
-          // {
-          //   path: "offers", // /admin-dashboard/offers
-          //   element: (
-          //     <Suspense fallback={<Loader />}>
-          //       <Offers />
-          //     </Suspense>
-          //   ),
-          // },
+          {
+            path: "offers", // /admin-dashboard/offers
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AdminOffers />
+              </Suspense>
+            ),
+          },
 
           {
             path: "sections", // /admin-dashboard/Sections
             element: (
               <Suspense fallback={<Loader />}>
-                <AdminSection/>
+                <AdminSection />
               </Suspense>
             ),
           },
-          
+
           {
             path: "services", // /admin-dashboard/services
             element: (
@@ -243,7 +245,6 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
-
 
           {
             path: "doctors", // /admin-dashboard/doctors
@@ -269,7 +270,6 @@ const routes = createBrowserRouter([
               </Suspense>
             ),
           },
-          
         ],
       },
       { path: "*", element: <NotFound /> },
