@@ -29,7 +29,6 @@ const AdminOffers = () => {
     addOffer,
     updateOffer,
     deleteOffer,
-    fetchOffers,
     updateOfferImage,
   } = useOffersActions();
 
