@@ -55,7 +55,9 @@ const EditDoctor = lazy(() =>
 const AdminOffers = lazy(() =>
   import("../dashboard/pages/offers/AdminOffers.jsx")
 );
-
+const AdminHero = lazy(() =>
+  import("../dashboard/pages/Heros/AdminHero.jsx")
+);
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -224,6 +226,15 @@ const routes = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminOffers />
+              </Suspense>
+            ),
+          },
+
+          {
+            path: "heroes", // /admin-dashboard/heroes
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AdminHero />
               </Suspense>
             ),
           },

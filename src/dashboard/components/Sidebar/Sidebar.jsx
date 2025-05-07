@@ -74,7 +74,7 @@ const Sidebar = () => {
           {superAdmin && (
             <>
               <SidebarItem
-                to="/admin-dashboard/categories"
+                to="/admin-dashboard/heroes"
                 icon={<Layers />}
                 label="الرئيسية"
                 isOpen={isOpen}

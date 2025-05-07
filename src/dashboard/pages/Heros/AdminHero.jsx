@@ -12,44 +12,44 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
-import AddOffersModal from "./AddOffersModal";
-import EditOfferModal from "./EditOfferModal";
-import useOffersActions from "../../hooks/offers/useOfferssActions";
-import UpdateOfferImageModal from "./UpdateOfferImageModal";
+import AddHeroModal from "./AddHerosModel";
+import EditHeroModal from "./EditHeroModal";
+import useHeroActions from "../../hooks/Hero/useHeroActions";
+import UpdateHeroImageModal from "./UpdateHeroImageModal";
 
-const AdminOffers = () => {
+const AdminHero = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
-    offers,
+    heroes,
     total,
     loading,
+    error,
     page,
     totalPages,
     handlePageChange,
-    addOffer,
-    updateOffer,
-    deleteOffer,
-    updateOfferImage,
-  } = useOffersActions();
+    addHero,
+    updateHero,
+    deleteHero,
+    updateHeroImage,
+  } = useHeroActions();
 
   const initialSearchTerm = searchParams.get("search") || "";
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [currentOffer, setCurrentOffer] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
-  const [selectedOffer, setSelectedOffer] = useState(null);
+  const [selectedHero, setSelectedHero] = useState(null);
 
-  const handleEditClick = (offer) => {
-    setCurrentOffer(offer);
-    setIsEditModalOpen(true);    
+  const handleEditClick = (hero) => {
+    setSelectedHero(hero);
+    setIsEditModalOpen(true);
   };
 
-  const handleImageClick = (offer) => {
-  setSelectedOffer(offer); // ← هذا هو المهم
-  setIsImageModalOpen(true);
-  setIsEditModalOpen(false);
+  const handleImageClick = (hero) => {
+    setSelectedHero(hero);
+    setIsImageModalOpen(true);
+    setIsEditModalOpen(false);
   };
 
   const handleDelete = async (id) => {
@@ -67,7 +67,7 @@ const AdminOffers = () => {
     if (result.isConfirmed) {
       setDeletingId(id);
       try {
-        const response = await deleteOffer(id);
+        const response = await deleteHero(id);
         if (response.success) toast.success(response.message);
         else toast.error(response.message);
       } catch (err) {
@@ -96,6 +96,12 @@ const AdminOffers = () => {
     setSearchTerm(searchParams.get("search") || "");
   }, [searchParams]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
       <div className="overflow-x-auto">
@@ -109,7 +115,7 @@ const AdminOffers = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="ابحث عن عرض..."
+              placeholder="ابحث عن صورة رئيسية..."
               className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none text-right"
             />
           </div>
@@ -118,33 +124,33 @@ const AdminOffers = () => {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full sm:w-auto transition cursor-pointer"
           >
             <Plus size={20} />
-            إضافة عرض جديد
+            إضافة صورة رئيسية جديد
           </button>
         </div>
 
-        <AddOffersModal
+        <AddHeroModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
-          addOffer={addOffer}
+          addHero={addHero}
         />
 
         {/* Update Image Modal */}
-        {selectedOffer && (
-          <UpdateOfferImageModal
+        {selectedHero && (
+          <UpdateHeroImageModal
             isOpen={isImageModalOpen}
             onClose={() => setIsImageModalOpen(false)}
-            offer={selectedOffer}
-            updateOfferImage={updateOfferImage}
+            hero={selectedHero}
+            updateHeroImage={updateHeroImage}
           />
         )}
 
         {/* Edit Modal */}
-        {currentOffer && (
-          <EditOfferModal
+        {selectedHero && (
+          <EditHeroModal
             isOpen={isEditModalOpen}
-            onClose={() => setCurrentOffer(null)}
-            offer={currentOffer}
-            updateOffer={updateOffer}
+            onClose={() => setSelectedHero(null)}
+            hero={selectedHero}
+            updateHero={updateHero}
           />
         )}
 
@@ -162,13 +168,13 @@ const AdminOffers = () => {
                       الصورة
                     </th>
                     <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      تفاصيل العرض
+                      التفاصيل
+                    </th>
+                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
+                      زر الرابط
                     </th>
                     <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
                       تاريخ الإنشاء
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      متاح للعرض
                     </th>
                     <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
                       الإجراءات
@@ -176,37 +182,55 @@ const AdminOffers = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {offers.length > 0 ? (
-                    offers.map((offer) => (
-                      <tr key={offer._id}>
+                  {heroes.length > 0 ? (
+                    heroes.map((hero) => (
+                      <tr key={hero._id}>
                         <td className="px-4 py-3 text-center">
                           <div
                             className="relative aspect-square w-16 mx-auto bg-gray-100 overflow-hidden rounded-lg shadow-md cursor-pointer hover:opacity-90 transition"
-                            onClick={() => setSelectedOffer(offer)}
+                            onClick={() => setSelectedHero(hero)}
                           >
                             <img
                               src={
-                                offer.image?.thumbnailMedium ||
+                                hero.image?.thumbnailMedium ||
+                                hero.image?.url ||
                                 "/placeholder.png"
                               }
-                              alt={offer.title}
+                              alt={hero.title}
                               className="w-full h-full object-cover"
-                              onClick={() => handleImageClick(offer)}
+                              onClick={() => handleImageClick(hero)}
                             />
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="max-w-xl">
-                            <h3 className="text-sm font-medium text-gray-900 mb-1">
-                              {offer.title}
+                          <div className="max-w-xl space-y-2">
+                            <h3 className="text-base font-semibold text-gray-900">
+                              {hero.title || "لا يوجد عنوان"}
                             </h3>
-                            <p className="text-sm text-gray-500 line-clamp-2">
-                              {offer.desc}
+                            <p className="text-sm text-gray-600 line-clamp-3">
+                              {hero.subtitle || "لا يوجد وصف"}
                             </p>
                           </div>
                         </td>
+                        <td className="px-4 py-3 text-center">
+                          <div className="flex flex-col items-center gap-1">
+                            <span className="text-sm font-medium text-gray-900">
+                              {hero.buttonText || "لا يوجد"}
+                            </span>
+                            {hero.buttonLink && (
+                              <a
+                                href={hero.buttonLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 hover:text-blue-800 truncate max-w-[150px]"
+                              >
+                                {hero.buttonLink}
+                              </a>
+                            )}
+                          </div>
+                        </td>
                         <td className="px-4 py-3 text-center text-xs text-gray-500 w-32">
-                          {new Date(offer.createdAt).toLocaleDateString(
+                          {new Date(hero.createdAt).toLocaleDateString(
                             "en-GB",
                             {
                               year: "numeric",
@@ -218,32 +242,21 @@ const AdminOffers = () => {
                           )}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              offer.display
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {offer.display ? "متاح" : "غير متاح"}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-center">
                           <div className="flex items-center justify-center gap-3">
                             <button
-                              onClick={() => handleEditClick(offer)}
+                              onClick={() => handleEditClick(hero)}
                               className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
                               title="تعديل"
                             >
                               <Pencil size={18} />
                             </button>
                             <button
-                              onClick={() => handleDelete(offer._id)}
+                              onClick={() => handleDelete(hero._id)}
                               className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                               title="حذف"
-                              disabled={deletingId === offer._id}
+                              disabled={deletingId === hero._id}
                             >
-                              {deletingId === offer._id ? (
+                              {deletingId === hero._id ? (
                                 <Loader2 size={18} className="animate-spin" />
                               ) : (
                                 <Trash2 size={18} />
@@ -259,7 +272,7 @@ const AdminOffers = () => {
                         colSpan="5"
                         className="px-4 py-8 text-center text-gray-500"
                       >
-                        لا توجد عروض متاحة
+                        لا توجد صور رئيسية متاحة
                       </td>
                     </tr>
                   )}
@@ -269,7 +282,7 @@ const AdminOffers = () => {
 
             <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-3">
               <div className="text-sm text-gray-700">
-                عرض {offers.length} من {total} عرض
+                عرض {heroes.length} من {total} صورة رئيسية
               </div>
               <div className="flex items-center gap-2 space-x-reverse">
                 <span className="text-sm text-gray-700">
@@ -300,4 +313,4 @@ const AdminOffers = () => {
   );
 };
 
-export default AdminOffers;
+export default AdminHero;
