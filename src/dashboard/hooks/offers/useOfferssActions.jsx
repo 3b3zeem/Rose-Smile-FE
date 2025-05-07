@@ -1,140 +1,117 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+
+const BaseURL = "http://localhost:5000/api/v1/offer";
+
+const fetchOffers = async ({ page, size, search }) => {
+  const response = await axios.get(
+    `${BaseURL}?page=${page}&size=${size}&search=${search}`,
+    { withCredentials: true }
+  );
+  return response.data;
+};
 
 const useOffersActions = () => {
-  const [offers, setOffers] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [addLoading, setAddLoading] = useState(false);
-  const [editLoading, setEditLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const BaseURL = "http://localhost:5000/api/v1/offer";
+  const queryClient = useQueryClient();
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 8;
   const search = searchParams.get("search") || "";
 
-  // Get All Doctors
-  const fetchOffers = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${BaseURL}?page=${page}&size=${size}&search=${search}`,
-        {
-          withCredentials: true,
-        }
-      );
-      setOffers(response.data.offers || []);
-      setTotal(response.data.totalOffers || 0);
-    } catch (error) {
-      console.error("Failed to fetch offers:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // Add Doctor
-  const addOffer = async (formData) => {
-    setAddLoading(true);
-    try {
-      const response = await axios.post(BaseURL, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      await fetchOffers();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "خطأ أثناء الإضافة",
-      };
-    } finally {
-      setAddLoading(false);
-    }
-  };
-  // Update Doctor
-  const updateOffer = async (id, data) => {
-    setEditLoading(true);
-    try {
-      const response = await axios.put(`${BaseURL}/${id}`, data, {
-        withCredentials: true,
-      });
-      await fetchOffers();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "خطأ أثناء التعديل",
-      };
-    } finally {
-      setEditLoading(false);
-    }
-  };
-  // Update Doctor Image
-  const updateOfferImage = async (id, formData) => {
-    setImageUploadLoading(true);
-    try {
-      const response = await axios.put(`${BaseURL}/image/${id}`, formData, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      await fetchOffers();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "فشل تحديث الصورة",
-      };
-    } finally {
-      setImageUploadLoading(false);
-    }
-  };
-  // Delete Doctor
-  const deleteOffer = async (id) => {
-    setDeleteLoading(true);
-    try {
-      const response = await axios.delete(`${BaseURL}/${id}`, {
-        withCredentials: true,
-      });
-      await fetchOffers();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "فشل في الحذف",
-      };
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
+  // 📦 Get Offers (with cache)
+  const {
+    data,
+    isLoading: loading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["offers", page, search],
+    queryFn: () => fetchOffers({ page, size, search }),
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-  useEffect(() => {
-    fetchOffers();
-  }, [page, size, search]);
+  // ➕ Add Offer
+  const addMutation = useMutation({
+    mutationFn: async (formData) => {
+      const res = await axios.post(BaseURL, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["offers"]);
+    },
+  });
+
+  // ✏️ Update Offer
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      const res = await axios.put(`${BaseURL}/${id}`, data, {
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["offers"]);
+    },
+  });
+
+  // 🖼️ Update Image
+  const imageMutation = useMutation({
+    mutationFn: async ({ id, formData }) => {
+      const res = await axios.put(`${BaseURL}/image/${id}`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["offers"]);
+    },
+  });
+
+  // ❌ Delete
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await axios.delete(`${BaseURL}/${id}`, {
+        withCredentials: true,
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["offers"]);
+    },
+  });
 
   const handlePageChange = (newPage) => {
     setSearchParams({ page: newPage.toString(), search });
   };
 
   return {
-    offers,
-    total,
+    offers: data?.offers || [],
+    total: data?.totalOffers || 0,
     page,
     size,
-    totalPages: Math.ceil(total / size),
+    totalPages: Math.ceil((data?.totalOffers || 0) / size),
     loading,
-    addLoading,
-    editLoading,
-    deleteLoading,
-    imageUploadLoading,
-    addOffer,
-    updateOffer,
-    updateOfferImage,
-    deleteOffer,
+    isFetching,
     handlePageChange,
+
+    // mutations
+    addOffer: addMutation.mutateAsync,
+    addLoading: addMutation.isPending,
+
+    updateOffer: updateMutation.mutateAsync,
+    editLoading: updateMutation.isPending,
+
+    updateOfferImage: imageMutation.mutateAsync,
+    imageUploadLoading: imageMutation.isPending,
+
+    deleteOffer: deleteMutation.mutateAsync,
+    deleteLoading: deleteMutation.isPending,
   };
 };
 

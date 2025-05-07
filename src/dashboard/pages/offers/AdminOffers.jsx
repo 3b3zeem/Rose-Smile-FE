@@ -43,16 +43,13 @@ const AdminOffers = () => {
 
   const handleEditClick = (offer) => {
     setCurrentOffer(offer);
-    console.log(offer, isImageModalOpen, isEditModalOpen);
-
-    setIsEditModalOpen(true);
-    console.log(isEditModalOpen , isImageModalOpen);
-    
+    setIsEditModalOpen(true);    
   };
 
   const handleImageClick = (offer) => {
-    setCurrentOffer(offer);
-    setIsImageModalOpen(true);
+  setSelectedOffer(offer); // ← هذا هو المهم
+  setIsImageModalOpen(true);
+  setIsEditModalOpen(false);
   };
 
   const handleDelete = async (id) => {
