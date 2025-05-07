@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import useAdminServices from "../../hooks/Services/useAdminService";
+import useSections from "../../hooks/Sections/useSections";
 
 const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,8 @@ const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
   });
 
   const [editLoading, setEditLoading] = useState(false);
+  const { services, loading: servicesLoading } = useAdminServices();
+  const { sections, loading: sectionsLoading } = useSections();
 
   useEffect(() => {
     if (offer) {
@@ -25,6 +29,16 @@ const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
       });
     }
   }, [offer]);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (formData.type === "service") {
+        // Services will be fetched automatically by useAdminServices
+      } else if (formData.type === "section") {
+        // Sections will be fetched automatically by useSections
+      }
+    }
+  }, [isOpen, formData.type]);
 
   const handleInputChange = (e, field) => {
     const value = field === "display" ? e.target.checked : e.target.value;
@@ -130,15 +144,37 @@ const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 المرجع
               </label>
-              <input
-                type="text"
-                value={formData.reference}
-                onChange={(e) => handleInputChange(e, "reference")}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
-                required
-                disabled={editLoading}
-                placeholder="أدخل معرف الخدمة أو القسم"
-              />
+              {formData.type === "service" ? (
+                <select
+                  value={formData.reference}
+                  onChange={(e) => handleInputChange(e, "reference")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+                  required
+                  disabled={editLoading || servicesLoading}
+                >
+                  <option value="">اختر الخدمة</option>
+                  {services.map((service) => (
+                    <option key={service._id} value={service._id}>
+                      {service.title}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <select
+                  value={formData.reference}
+                  onChange={(e) => handleInputChange(e, "reference")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+                  required
+                  disabled={editLoading || sectionsLoading}
+                >
+                  <option value="">اختر القسم</option>
+                  {sections.map((section) => (
+                    <option key={section._id} value={section._id}>
+                      {section.title}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="md:col-span-2">
