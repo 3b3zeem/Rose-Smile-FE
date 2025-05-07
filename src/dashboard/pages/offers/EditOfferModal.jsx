@@ -57,7 +57,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
     };
 
     try {
-      const result = await updateOffer(offer._id, data);
+      const result = await updateOffer({ id: offer._id, data });
       if (result.success) {
         toast.success(result.message);
         onClose();
