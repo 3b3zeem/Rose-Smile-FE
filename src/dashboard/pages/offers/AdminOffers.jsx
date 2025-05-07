@@ -37,19 +37,19 @@ const AdminOffers = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [currentOffer, setCurrentOffer] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   const handleEditClick = (offer) => {
-    setCurrentOffer(offer);
-    setIsEditModalOpen(true);    
+    setSelectedOffer(offer);
+    setIsEditModalOpen(true);
+    setIsImageModalOpen(false);
   };
 
   const handleImageClick = (offer) => {
-  setSelectedOffer(offer); // ← هذا هو المهم
-  setIsImageModalOpen(true);
-  setIsEditModalOpen(false);
+    setSelectedOffer(offer);
+    setIsImageModalOpen(true);
+    setIsEditModalOpen(false);
   };
 
   const handleDelete = async (id) => {
@@ -139,11 +139,11 @@ const AdminOffers = () => {
         )}
 
         {/* Edit Modal */}
-        {currentOffer && (
+        {selectedOffer && (
           <EditOfferModal
             isOpen={isEditModalOpen}
-            onClose={() => setCurrentOffer(null)}
-            offer={currentOffer}
+            onClose={() => setSelectedOffer(null)}
+            offer={selectedOffer}
             updateOffer={updateOffer}
           />
         )}

@@ -58,6 +58,7 @@ const useHeroActions = () => {
   // ✏️ Update Hero
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }) => {
+      console.log(id, data);
       try {
         const res = await axios.put(`${BaseURL}/${id}`, data, {
           withCredentials: true,
@@ -79,6 +80,7 @@ const useHeroActions = () => {
   const imageMutation = useMutation({
     mutationFn: async ({ id, formData }) => {
       try {
+        console.log(id, formData);
         const res = await axios.put(`${BaseURL}/${id}`, formData, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },

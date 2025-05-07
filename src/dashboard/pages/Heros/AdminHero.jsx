@@ -44,6 +44,7 @@ const AdminHero = () => {
   const handleEditClick = (hero) => {
     setSelectedHero(hero);
     setIsEditModalOpen(true);
+    setIsImageModalOpen(false);
   };
 
   const handleImageClick = (hero) => {

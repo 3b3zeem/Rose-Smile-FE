@@ -10,7 +10,7 @@ const useHero = () => {
     const fetchHeroes = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v1/hero/all"
+          "http://localhost:5000/api/v1/hero"
         );
         if (response.data?.success) {
           setHeroes(response.data.heroes);

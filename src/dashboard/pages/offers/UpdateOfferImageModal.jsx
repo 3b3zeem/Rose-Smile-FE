@@ -87,10 +87,10 @@ const UpdateOfferImageModal = ({
                 document.getElementById("offerImageUpload").click()
               }
             >
-              {previewImage || offer.image?.url ? (
+              {previewImage || offer.image?.cardImage ? (
                 <img
-                  src={previewImage || offer.image?.url}
-                  alt="Preview"
+                  src={previewImage || offer.image?.cardImage}
+                  alt={offer.title}
                   className="w-full h-full object-cover object-top"
                 />
               ) : (
