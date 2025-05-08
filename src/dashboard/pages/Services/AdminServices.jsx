@@ -17,6 +17,7 @@ import ImageUpdateModal from "./ImageUpdateModal";
 import useAdminServices from "../../hooks/Services/useAdminService";
 import { useSectionTitles } from "../../../hooks/Sections/UseSections";
 import Swal from "sweetalert2";
+import Loader from "../../../layouts/Loader"
 
 const AdminServices = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -148,9 +149,7 @@ const AdminServices = () => {
         />
 
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="animate-spin text-blue-500" size={32} />
-          </div>
+          <Loader />
         ) : (
           <React.Fragment>
             <div className="bg-white shadow-md rounded-lg overflow-x-auto">

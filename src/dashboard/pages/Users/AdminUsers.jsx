@@ -112,7 +112,7 @@ const AdminUsers = () => {
     newRole,
     newBlocked,
     newConfirmed,
-    newSort
+    newSort = "email:asc"
   ) => {
     setSearchTerm(newSearch);
     setRoleFilter(newRole);
@@ -130,13 +130,14 @@ const AdminUsers = () => {
       if (newRole) newParams.set("role", newRole);
       else newParams.delete("role");
 
-      if (newBlocked) newParams.set("isBlocked", newBlocked);
-      else newParams.delete("isBlocked");
+      if (newBlocked) newParams.set("blocked", newBlocked);
+      else newParams.delete("blocked");
 
-      if (newConfirmed) newParams.set("isConfirmed", newConfirmed);
-      else newParams.delete("isConfirmed");
+      if (newConfirmed) newParams.set("confirmed", newConfirmed);
+      else newParams.delete("confirmed");
 
       newParams.set("sort", newSort);
+      newParams.set("page", "1");
 
       return newParams;
     });
@@ -157,8 +158,8 @@ const AdminUsers = () => {
   useEffect(() => {
     setSearchTerm(searchParams.get("search") || "");
     setRoleFilter(searchParams.get("role") || "");
-    setBlockedFilter(searchParams.get("isBlocked") || "");
-    setConfirmedFilter(searchParams.get("isConfirmed") || "");
+    setBlockedFilter(searchParams.get("blocked") || "");
+    setConfirmedFilter(searchParams.get("confirmed") || "");
     const [field, direction] = (searchParams.get("sort") || "email:asc").split(
       ":"
     );
@@ -481,14 +482,14 @@ const AdminUsers = () => {
                     </th>
                     <th
                       className="text-center px-4 py-3 text-xs font-medium text-gray-500 cursor-pointer"
-                      onClick={() => toggleSort("isConfirmed")}
+                      onClick={() => toggleSort("confirmed")}
                     >
                       <div className="flex items-center justify-center gap-1">
                         مؤكد
-                        {sortField === "isConfirmed" &&
+                        {sortField === "confirmed" &&
                         sortDirection === "asc" ? (
                           <ArrowUp size={16} className="text-blue-500" />
-                        ) : sortField === "isConfirmed" &&
+                        ) : sortField === "confirmed" &&
                           sortDirection === "desc" ? (
                           <ArrowDown size={16} className="text-blue-500" />
                         ) : (
