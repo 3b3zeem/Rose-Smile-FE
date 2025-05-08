@@ -63,7 +63,7 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-500 p-4"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -78,12 +78,12 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             معاينة الصورة الحالية
           </h3>
-          <div className="relative rounded-lg overflow-hidden border border-gray-200 aspect-[16/9]">
-            {hero.image?.url ? (
+          <div className="relative rounded-lg overflow-hidden border border-gray-200 aspect-[16/9] w-full">
+            {hero.image?.heroBanner ? (
               <img
-                src={hero.image.url}
+                src={hero.image.heroBanner}
                 alt={hero.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -103,7 +103,6 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
           <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">
             تعديل بيانات الصورة الرئيسية
           </h2>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6">
               <div>
@@ -120,7 +119,6 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
                   disabled={editLoading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الوصف
@@ -135,7 +133,6 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
                   disabled={editLoading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   نص الزر
@@ -150,7 +147,6 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
                   disabled={editLoading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   رابط الزر
@@ -166,20 +162,10 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
                 />
               </div>
             </div>
-
-            <div className="flex justify-between items-center pt-6 border-t">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
-                disabled={editLoading}
-              >
-                إلغاء
-              </button>
-
+            <div className="flex flex-col gap-3 pt-6 border-t">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 font-medium disabled:opacity-70"
+                className="w-full px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 font-medium disabled:opacity-70"
                 disabled={editLoading}
               >
                 {editLoading ? (
@@ -190,6 +176,14 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
                 ) : (
                   "حفظ التعديلات"
                 )}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                disabled={editLoading}
+              >
+                إلغاء
               </button>
             </div>
           </form>

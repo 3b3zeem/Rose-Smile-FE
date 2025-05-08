@@ -33,7 +33,7 @@ const Profile = lazy(() => import("../pages/User/Profile.jsx"));
 
 // * Admin
 const Dashboard = lazy(() => import("../dashboard/pages/Home/Dashboard.jsx"));
-const Users = lazy(() => import("../dashboard/pages/Users/Users.jsx"));
+const AdminUsers = lazy(() => import("../dashboard/pages/Users/AdminUsers.jsx"));
 const AdminServices = lazy(() =>
   import("../dashboard/pages/Services/AdminServices.jsx")
 );
@@ -217,7 +217,7 @@ const routes = createBrowserRouter([
             path: "users", // /admin-dashboard/users
             element: (
               <Suspense fallback={<Loader />}>
-                <Users />
+                <AdminUsers />
               </Suspense>
             ),
           },

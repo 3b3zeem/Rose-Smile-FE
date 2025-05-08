@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const BaseURL = "http://localhost:5000/api/v1/hero";
 
@@ -38,81 +39,86 @@ const useHeroActions = () => {
   // ➕ Add Hero
   const addMutation = useMutation({
     mutationFn: async (formData) => {
-      try {
-        const res = await axios.post(BaseURL, formData, {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        return res.data;
-      } catch (error) {
-        throw new Error(
-          error.response?.data?.message || "حدث خطأ أثناء إضافة الصورة الرئيسية"
-        );
-      }
+      const res = await axios.post(BaseURL, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["heroes"]);
+      queryClient.invalidateQueries(["hero"]);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء إضافة الصورة الرئيسية");
+      }
     },
   });
 
   // ✏️ Update Hero
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      console.log(id, data);
-      try {
-        const res = await axios.put(`${BaseURL}/${id}`, data, {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        return res.data;
-      } catch (error) {
-        throw new Error(
-          error.response?.data?.message || "حدث خطأ أثناء تحديث الصورة الرئيسية"
-        );
-      }
+      const res = await axios.put(`${BaseURL}/${id}`, data, {
+        withCredentials: true,
+      });
+      return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["heroes"]);
+      queryClient.invalidateQueries(["hero"]);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء تحديث الصورة الرئيسية");
+      }
     },
   });
 
   // 🖼️ Update Image
   const imageMutation = useMutation({
     mutationFn: async ({ id, formData }) => {
-      try {
-        console.log(id, formData);
-        const res = await axios.put(`${BaseURL}/${id}`, formData, {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        return res.data;
-      } catch (error) {
-        throw new Error(
-          error.response?.data?.message || "حدث خطأ أثناء تحديث الصورة"
-        );
-      }
+      const res = await axios.put(`${BaseURL}/${id}`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["heroes"]);
+      queryClient.invalidateQueries(["hero"]);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء تحديث صورة الصورة الرئيسية");
+      }
     },
   });
 
   // ❌ Delete
   const deleteMutation = useMutation({
     mutationFn: async (id) => {
-      try {
-        const res = await axios.delete(`${BaseURL}/${id}`, {
-          withCredentials: true,
-        });
-        return res.data;
-      } catch (error) {
-        throw new Error(
-          error.response?.data?.message || "حدث خطأ أثناء حذف الصورة الرئيسية"
-        );
-      }
+      const res = await axios.delete(`${BaseURL}/${id}`, {
+        withCredentials: true,
+      });
+      return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["heroes"]);
+      queryClient.invalidateQueries(["hero"]);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء حذف الصورة الرئيسية");
+      }
     },
   });
 

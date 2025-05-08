@@ -57,7 +57,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
     };
 
     try {
-      const result = await updateOffer(offer._id, data);
+      const result = await updateOffer({ id: offer._id, data });
       if (result.success) {
         toast.success(result.message);
         onClose();
@@ -80,7 +80,7 @@ const EditOfferModal = ({ isOpen, onClose, offer, updateOffer }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-500 p-4"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}

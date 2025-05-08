@@ -15,6 +15,22 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
     }
   }, [isOpen]);
 
+// Close modal with Ctrl + Shift + X
+  useEffect(() => {
+    const handleModalCloseKey = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "x") {
+        e.preventDefault();
+        onClose();
+      }
+    };
+  
+    window.addEventListener("keydown", handleModalCloseKey);
+    return () => {
+      window.removeEventListener("keydown", handleModalCloseKey);
+    };
+  }, []);
+  
+
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -60,7 +76,7 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-500 p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -77,39 +93,57 @@ const UpdateDoctorImageModal = ({ isOpen, onClose, doctor, updateDoctorImage }) 
         <form onSubmit={handleSubmit}>
             <div className="flex justify-center mb-8">
             <div
-            className="relative aspect-[3/4] w-74 bg-gray-100 overflow-hidden rounded-xl shadow-md cursor-pointer hover:opacity-90 transition"
-              onClick={() => document.getElementById("doctorImageUpload").click()}
-            >
-              {previewImage || doctor.image?.url ? (
+            className="relative rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-blue-500 transition-colors duration-200 aspect-[3/4] w-full max-w-xs cursor-pointer group"
+            onClick={() => document.getElementById("doctorImageUpload").click()}
+          >
+            {previewImage || doctor.image?.url ? (
+              <div className="w-full h-full relative group">
                 <img
                   src={previewImage || doctor.image?.url}
                   alt="Preview"
                   className="w-full h-full object-cover object-top"
                 />
-              ) : (
-                <span className="flex items-center justify-center h-full text-gray-400 text-sm text-center px-2">
-                  اضغط لرفع صورة
-                </span>
-              )}
-              <input
-                type="file"
-                id="doctorImageUpload"
-                onChange={handleImageFileChange}
-                className="hidden"
-                accept="image/*"
-                disabled={imageUploadLoading}
-              />
-            </div>
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">تغيير الصورة</span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center p-6">
+                <div className="mb-3 text-gray-400">
+                  <svg className="mx-auto h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                    <path
+                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+
+              </div>
+            )}
+            <input
+              type="file"
+              id="doctorImageUpload"
+              onChange={handleImageFileChange}
+              className="hidden"
+              accept="image/*"
+              disabled={imageUploadLoading}
+            />
+          </div>
+
           </div>
           <div className="flex justify-between items-center gap-2 mt-4">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
-              disabled={imageUploadLoading}
-            >
-             اغلاق
-            </button>
+          <button
+            type="button"
+            onClick={handleClose}
+            title="يمكنك أيضًا الإغلاق باستخدام Ctrl + Shift + X"
+            className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
+            disabled={imageUploadLoading}
+          >
+            إغلاق
+          </button>
+
 
 
             <button

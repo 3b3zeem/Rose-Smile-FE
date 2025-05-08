@@ -172,7 +172,6 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
           <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">
             إضافة صورة رئيسية جديدة
           </h2>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6">
               <div>
@@ -189,7 +188,6 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                   disabled={addLoading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   الوصف
@@ -204,7 +202,6 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                   disabled={addLoading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   نص الزر
@@ -219,7 +216,6 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                   disabled={addLoading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   رابط الزر
@@ -235,20 +231,10 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                 />
               </div>
             </div>
-
-            <div className="flex justify-between items-center pt-6 border-t">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
-                disabled={addLoading}
-              >
-                إلغاء
-              </button>
-
+            <div className="flex flex-col gap-3 pt-6 border-t">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 font-medium disabled:opacity-70"
+                className="w-full px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 font-medium disabled:opacity-70"
                 disabled={addLoading}
               >
                 {addLoading ? (
@@ -259,6 +245,14 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                 ) : (
                   "تأكيد الإضافة"
                 )}
+              </button>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="w-full px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                disabled={addLoading}
+              >
+                إلغاء
               </button>
             </div>
           </form>
