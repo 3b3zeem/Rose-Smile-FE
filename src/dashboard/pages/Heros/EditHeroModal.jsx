@@ -79,9 +79,9 @@ const EditHeroModal = ({ isOpen, onClose, hero, updateHero }) => {
             معاينة الصورة الحالية
           </h3>
           <div className="relative rounded-lg overflow-hidden border border-gray-200 aspect-[16/9] w-full">
-            {hero.image?.url ? (
+            {hero.image?.heroBanner ? (
               <img
-                src={hero.image.url}
+                src={hero.image.heroBanner}
                 alt={hero.title}
                 className="w-full h-full object-cover object-center"
               />

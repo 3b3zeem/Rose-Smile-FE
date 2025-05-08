@@ -16,8 +16,8 @@ const useUsersActions = () => {
   const size = 6;
   const search = searchParams.get("search") || "";
   const role = searchParams.get("role") || "";
-  const isBlocked = searchParams.get("isBlocked") || "";
-  const isConfirmed = searchParams.get("isConfirmed") || "";
+  const blocked = searchParams.get("blocked") || "";
+  const confirmed = searchParams.get("confirmed") || "";
   const sort = searchParams.get("sort") || "email:asc";
 
   // Get All Users with Filters
@@ -29,8 +29,8 @@ const useUsersActions = () => {
         size: size.toString(),
         search,
         ...(role && { role }),
-        ...(isBlocked && { isBlocked }),
-        ...(isConfirmed && { isConfirmed }),
+        ...(blocked && { blocked }),
+        ...(confirmed && { confirmed }),
         sort,
       }).toString();
 
@@ -88,7 +88,7 @@ const useUsersActions = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [page, size, search, role, isBlocked, isConfirmed, sort]);
+  }, [page, size, search, role, blocked, confirmed, sort]);
 
   const handlePageChange = (newPage) => {
     setSearchParams((prev) => {
