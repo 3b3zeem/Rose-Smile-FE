@@ -202,7 +202,7 @@ const AdminHero = () => {
                           >
                             <img
                               src={
-                                hero.image?.thumbnailMedium ||
+                                hero.image?.heroBanner ||
                                 hero.image?.url ||
                                 "/placeholder.png"
                               }
