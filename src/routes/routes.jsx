@@ -6,10 +6,11 @@ import NotFound from "../components/NotFound/NotFound.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import BookADeal from "../components/BookADeal/BookADeal.jsx";
 import NewsId from "../pages/News/NewsId/NewsId.jsx";
+import AdminNews from "../dashboard/pages/news/AdminNews.jsx";
 
 const Loader = lazy(() => import("../layouts/Loader.jsx"));
 const Home = lazy(() => import("../pages/Home/Home.jsx"));
-const PrivacyPolicy = lazy(() =>
+ const PrivacyPolicy = lazy(() =>
   import("../pages/PrivacyPolicy/PrivacyPolicy.jsx")
 );
 const Services = lazy(() => import("../pages/Service/Services.jsx"));
@@ -244,6 +245,14 @@ const routes = createBrowserRouter([
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminSection />
+              </Suspense>
+            ),
+          },
+          {
+            path: "news", // /admin-dashboard/Sections
+            element: (
+              <Suspense fallback={<Loader />}>
+                <AdminNews/>
               </Suspense>
             ),
           },
