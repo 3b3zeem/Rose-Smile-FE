@@ -40,7 +40,7 @@ export default function useSections() {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-    await fetchsection();
+      await fetchsection();
       return { success: true, message: response.data.section };
     } catch (error) {
       return {

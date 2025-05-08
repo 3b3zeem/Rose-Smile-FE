@@ -1,102 +1,21 @@
-
-import React, { useEffect, useState } from "react";
-import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  Trash2,
-  Plus,
-  Pencil,
-} from "lucide-react";
+import React from "react";
+import useNews from "../../hooks/News/useNews";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import AddSectionModal from "./AddSectionModal";
-import EditsectionModal from "./EditSectionModal";
-import ImageSectinUpdateModal from "./ImageSectinUpdateModal";
-import Swal from "sweetalert2";
-import useSections from "../../hooks/Sections/useSections";
 
-const AdminSection = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+export default function AdminNews() {
   const {
-    page,
-    sections,
-
+    news,
     loading,
-    total,
-    fetchsection,
-    addSection,
-    updateSection,
-    updatesectionImage,
-    deleteSection,
-  } = useSections();
-  
-  const initialSearchTerm = searchParams.get("search") || "";
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [currentsection, setCurrentsection] = useState(null);
-  const [deletingsectionId, setDeletingsectionId] = useState(null);
+    error,
+    page,
+    fetchNews,
+    createNew,
+    updateNew,
+    updateImage,
+    deleteNew,
+  } = useNews();
 
-  const handleEditClick = (section) => {
-    setCurrentsection(section);
-    setIsEditModalOpen(true);
-  };
-
-  const handleImageClick = (section) => {
-    setCurrentsection(section);
-    setIsImageModalOpen(true);
-  };
-
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: "هل أنت متأكد؟",
-      text: "لن تتمكن من التراجع عن هذا!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "نعم، احذف!",
-      cancelButtonText: "إلغاء",
-    });
-
-    if (result.isConfirmed) {
-      setDeletingsectionId(id);
-      try {
-        const response = await deleteSection(id);
-        if (response.success) {
-          toast.success(response.message);
-        } else {
-          toast.error(response.message);
-        }
-      } catch (error) {
-        toast.error(error.message || "حدث خطأ أثناء الحذف");
-      } finally {
-        setDeletingsectionId(null);
-      }
-    }
-  };
-
-  const handleSearch = (newSearchTerm) => {
-    setSearchTerm(newSearchTerm);
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
-      if (newSearchTerm) {
-        newParams.set("search", newSearchTerm);
-        newParams.set("page", "1");
-      } else {
-        newParams.delete("search");
-      }
-      return newParams;
-    });
-  };
-
-  useEffect(() => {
-    const currentSearch = searchParams.get("search") || "";
-    setSearchTerm(currentSearch);
-  }, [searchParams]);
+  const [setSearchParams] = useSearchParams();
 
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
@@ -111,7 +30,7 @@ const AdminSection = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="ابحث عن اقسام..."
+              placeholder="ابحث عن اخبار..."
               className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none text-right"
             />
           </div>
@@ -120,7 +39,7 @@ const AdminSection = () => {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-200 w-full sm:w-auto"
           >
             <Plus size={20} />
-            إضافة قســم جديدة
+          إضافة خبر جديد
             </button>
         </div>
 
@@ -175,22 +94,22 @@ const AdminSection = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {sections.length > 0 ? (
-                    sections.map((section) => (
+                  {news.length > 0 ? (
+                    news.map((section) => (
                       <tr key={section._id}>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                           <img
-                            src={section.image.thumbnailMedium}
-                            alt={section.title}
+                            src={news.image.thumbnailMedium}
+                            alt={news.title}
                             className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer mx-auto"
                             onClick={() => handleImageClick(section)}
                           />
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[150px] sm:max-w-[200px] truncate">
-                          {section.title}
+                          {news.title}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] truncate">
-                          {section.subTitle}
+                          {news.subTitle}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                           {new Date(section.createdAt).toLocaleDateString(
@@ -261,11 +180,10 @@ const AdminSection = () => {
                 </div>
               </div>
             </div> */}
+            
           </React.Fragment>
         )}
       </div>
     </div>
   );
-};
-
-export default AdminSection;
+}
