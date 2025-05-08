@@ -1,47 +1,15 @@
 import React from "react";
 import { Eye, Heart } from "lucide-react";
-
-import img from "../../../assets/Iamges/news.png";
+import UseNews from "../../../hooks/News/UseNews";
+import { Link } from "react-router-dom";
 
 const News = () => {
-  const newsArticles = [
-    {
-      id: 1,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-    {
-      id: 2,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-    {
-      id: 3,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-    {
-      id: 4,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-  ];
+  const { data, loading, error } = UseNews(1);
+
+  if (loading) return <p>جاري التحميل...</p>;
+  if (error) return <p>{error}</p>;
+
+  const latestNews = [...data].slice(-4).reverse();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12" dir="rtl">
@@ -55,36 +23,31 @@ const News = () => {
 
       {/* News Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {newsArticles.map((article) => (
+        {latestNews.map((article) => (
           <div
-            key={article.id}
+            key={article._id}
             className="flex bg-white shadow-sm rounded-lg overflow-hidden"
           >
             <div className="w-2/3 p-4 flex flex-col justify-between">
               <div>
-                <div className="text-blue-500 text-sm mb-1">
-                  {article.date} | بواسطة {article.author}
+                <div className="text-blue-500 text-sm mb-1 flex flex-col gap-2">
+                  {new Date(article.createdAt).toLocaleDateString("ar-EG")}
+                  <span>بواسطة: {article.service.title}</span>
                 </div>
-                <h3 className="font-medium text-lg mb-2">{article.title}</h3>
-              </div>
-              <div className="flex items-center space-x-4 text-gray-500">
-                <div className="flex items-center ml-4">
-                  <span className="text-sm">{article.views}</span>
-                  <Eye className="w-4 h-4 mr-1" />
-                </div>
-                <div className="flex items-center">
-                  <span className="text-sm">{article.likes}</span>
-                  <Heart className="w-4 h-4 mr-1 text-red-500" />
-                </div>
+                <h3 className="font-medium text-lg my-2">
+                  {article.title}
+                </h3>
               </div>
             </div>
-            <div className="w-1/3">
+            <Link to={`/news/${article._id}`} className="cursor-pointer w-1/3">
+            <div className="w-full h-full hover:scale-105 transition-all duration-150">
               <img
-                src={article.image}
+                src={article.image?.cardImage}
                 alt={article.title}
                 className="w-full h-full object-cover"
               />
             </div>
+            </Link>
           </div>
         ))}
       </div>
