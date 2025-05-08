@@ -1,14 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const BASE_URL = "http://localhost:5000/api/v1/news";
 
-const fetchNews = async ({ page, search, sort }) => {
+const fetchNews = async ({ page, size, search, sort }) => {
   try {
-    // Only include search parameter if it's not empty
+    
     const searchParam = search ? `&search=${search}` : "";
     const response = await axios.get(
-      `${BASE_URL}?page=${page}${searchParam}&sort=${sort}`
+      `${BASE_URL}?page=${page}&size=${size}${searchParam}&sort=${sort}&select=title,subTitle,image,createdAt`
     );
     return response.data;
   } catch (error) {
@@ -18,11 +19,15 @@ const fetchNews = async ({ page, search, sort }) => {
   }
 };
 
-export default function UseNews(
-  page = 1,
-  search = "",
-  sort = "createdAt:desc"
-) {
+export default function UseNews() {
+  const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get("page")) || 1;
+  const size = 8;
+  const search = searchParams.get("search") || "";
+  const sort = searchParams.get("sort") || "createdAt:desc";
+
   const {
     data,
     isLoading: loading,
@@ -31,19 +36,25 @@ export default function UseNews(
     error: queryError,
   } = useQuery({
     queryKey: ["news", { page, search, sort }],
-    queryFn: () => fetchNews({ page, search, sort }),
+    queryFn: () => fetchNews({ page, size, search, sort }),
     keepPreviousData: true,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
+  const handlePageChange = (newPage) => {
+    setSearchParams({ page: newPage.toString(), search, sort });
+  };
+
   return {
-    data: data?.data || [],
+    news: data?.data || [],
     total: data?.totalNews || 0,
     page,
-    totalPages: Math.ceil((data?.totalNews || 0) / 8),
+    size,
+    totalPages: Math.ceil((data?.totalNews || 0) / size),
     loading,
     isFetching,
     error: isError ? queryError?.message || "حدث خطأ أثناء جلب البيانات" : null,
+    handlePageChange,
   };
 }
 
