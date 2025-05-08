@@ -5,9 +5,7 @@ import {
   Tag,
   Briefcase,
   Layers,
-  LogOut,
   Menu,
-  X,
   Stethoscope,
   FileText,
   Megaphone,
@@ -124,15 +122,6 @@ const Sidebar = () => {
             </>
           )}
         </nav>
-
-        <div className="p-2 border-t border-gray-700">
-          <SidebarItem
-            icon={<LogOut />}
-            label="تسجيل الخروج"
-            isOpen={isOpen}
-            className="text-red-400 hover:text-red-600"
-          />
-        </div>
       </div>
     </>
   );

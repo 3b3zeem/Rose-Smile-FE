@@ -27,6 +27,24 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
     }
   }, [doctor]);
 
+
+  // Close modal with Ctrl + Shift + X
+  useEffect(() => {
+    const handleModalCloseKey = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "x") {
+        e.preventDefault();
+        onClose();
+      }
+    };
+  
+    window.addEventListener("keydown", handleModalCloseKey);
+    return () => {
+      window.removeEventListener("keydown", handleModalCloseKey);
+    };
+  }, []);
+  
+
+  
   const handleInputChange = (e, field) => {
     setFormData({ ...formData, [field]: e.target.value });
   };
@@ -214,14 +232,16 @@ const EditDoctorModal = ({ isOpen, onClose, doctor, updateDoctor }) => {
           </div>
 
           <div className="mt-6 flex justify-between items-center">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
-              disabled={editLoading}
-            >
-              إغلاق
-            </button>
+          <button
+            type="button"
+            onClick={onClose}
+            title="يمكنك أيضًا الإغلاق باستخدام Ctrl + Shift + X"
+            className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
+            disabled={editLoading}
+          >
+            إغلاق
+          </button>
+
             <button
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
