@@ -10,7 +10,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import Swal from "sweetalert2";
 import AddHeroModal from "./AddHerosModel";
 import EditHeroModal from "./EditHeroModal";
@@ -105,6 +105,15 @@ const AdminHero = () => {
 
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          className: "z-[99999]",
+          style: {
+            zIndex: 99999,
+          },
+        }}
+      />
       <div className="overflow-x-auto">
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="relative w-full sm:w-auto sm:max-w-md" dir="rtl">

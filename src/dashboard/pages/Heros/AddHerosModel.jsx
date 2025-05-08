@@ -104,7 +104,7 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
         className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] overflow-hidden flex flex-col md:flex-row"
         dir="rtl"
       >
-        {/* Left Side - Image Upload + Title/Subtitle */}
+        {/* Left Side - Image Upload */}
         <div className="w-full md:w-1/2 bg-gray-50 p-6 flex flex-col">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             معاينة الصورة
@@ -165,46 +165,43 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
             <p>• الحد الأقصى لحجم الملف: 10MB</p>
             <p>• الصورة ستظهر في الشكل الرئيسي للموقع</p>
           </div>
-          {/* Title and Subtitle Inputs under image */}
-          <div className="mt-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                العنوان
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange(e, "title")}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right transition-colors"
-                placeholder="أدخل عنوان الصورة الرئيسية"
-                required
-                disabled={addLoading}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                الوصف
-              </label>
-              <textarea
-                value={formData.subtitle}
-                onChange={(e) => handleInputChange(e, "subtitle")}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right transition-colors resize-none"
-                rows="3"
-                placeholder="أدخل وصف الصورة الرئيسية"
-                required
-                disabled={addLoading}
-              />
-            </div>
-          </div>
         </div>
 
-        {/* Right Side - Form (Button Text/Link) */}
-        <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto flex flex-col justify-center">
+        {/* Right Side - Form */}
+        <div className="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto">
           <h2 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-4">
             إضافة صورة رئيسية جديدة
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  العنوان
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange(e, "title")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right transition-colors"
+                  placeholder="أدخل عنوان الصورة الرئيسية"
+                  required
+                  disabled={addLoading}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  الوصف
+                </label>
+                <textarea
+                  value={formData.subtitle}
+                  onChange={(e) => handleInputChange(e, "subtitle")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right transition-colors resize-none"
+                  rows="3"
+                  placeholder="أدخل وصف الصورة الرئيسية"
+                  required
+                  disabled={addLoading}
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   نص الزر
@@ -234,18 +231,10 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                 />
               </div>
             </div>
-            <div className="flex justify-between items-center pt-6 border-t">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
-                disabled={addLoading}
-              >
-                إلغاء
-              </button>
+            <div className="flex flex-col gap-3 pt-6 border-t">
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2 font-medium disabled:opacity-70"
+                className="w-full px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2 font-medium disabled:opacity-70"
                 disabled={addLoading}
               >
                 {addLoading ? (
@@ -256,6 +245,14 @@ const AddHeroModal = ({ isOpen, onClose, addHero }) => {
                 ) : (
                   "تأكيد الإضافة"
                 )}
+              </button>
+              <button
+                type="button"
+                onClick={handleClose}
+                className="w-full px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                disabled={addLoading}
+              >
+                إلغاء
               </button>
             </div>
           </form>

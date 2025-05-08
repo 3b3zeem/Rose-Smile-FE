@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const BaseURL = "http://localhost:5000/api/v1/offer";
 
@@ -44,6 +45,14 @@ const useOffersActions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["offers"]);
     },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء إضافة العرض");
+      }
+    },
   });
 
   // ✏️ Update Offer
@@ -56,6 +65,14 @@ const useOffersActions = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["offers"]);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء تحديث العرض");
+      }
     },
   });
 
@@ -71,6 +88,14 @@ const useOffersActions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["offers"]);
     },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء تحديث صورة العرض");
+      }
+    },
   });
 
   // ❌ Delete
@@ -83,6 +108,14 @@ const useOffersActions = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["offers"]);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("حدث خطأ أثناء حذف العرض");
+      }
     },
   });
 
