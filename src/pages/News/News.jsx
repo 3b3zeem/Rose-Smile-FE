@@ -1,49 +1,58 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState } from "react";
 import UseNews from "../../hooks/News/UseNews";
 import { Link, useSearchParams } from "react-router-dom";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search, ChevronDown } from "lucide-react";
 
 export default function News() {
-  const [filteredData, setFilteredData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const searchTerm = searchParams.get("search") || "";
   const page = parseInt(searchParams.get("page")) || 1;
-  const { data, error, loading } = UseNews(page);
+  const sortOption = searchParams.get("sort") || "createdAt:desc";
 
-  // Memoize filtered data to prevent unnecessary re-renders
-  const filteredNews = useMemo(() => {
-    if (!data) return [];
-    return data;
-  }, [data]);
-
-  useEffect(() => {
-    if (data) {
-      setFilteredData(data);
-    }
-  }, [data]);
+  const { data, loading, error, totalPages } = UseNews(
+    page,
+    searchTerm,
+    sortOption
+  );
 
   const handleSearch = (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    const filtered = data.filter((news) =>
-      news.title.toLowerCase().includes(searchValue)
-    );
-    setFilteredData(filtered);
+    const newSearchTerm = e.target.value.trim();
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (newSearchTerm) {
+        newParams.set("search", newSearchTerm);
+      } else {
+        newParams.delete("search");
+      }
+      newParams.set("page", "1");
+      return newParams;
+    });
+  };
+
+  const handleSortChange = (sortValue) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("sort", sortValue);
+      newParams.set("page", "1");
+      return newParams;
+    });
+    setIsSortOpen(false);
+  };
+
+  const getSortLabel = () => {
+    return sortOption === "createdAt:desc" ? "الأحدث" : "الأقدم";
   };
 
   const handlePageChange = (newPage) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
-      newParams.set("page", newPage);
+      newParams.set("page", newPage.toString());
       return newParams;
     });
-    // Scroll to top when changing pages
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const pagination = {
-    currentPage: page,
-    totalPages: Math.ceil(data?.length / 8) || 1, // 8 items per page (2 rows of 4)
-    totalItems: data?.length || 0,
   };
 
   if (loading) {
@@ -58,7 +67,7 @@ export default function News() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="bg-red-50 text-red-600 px-6 py-4 rounded-lg shadow-sm">
-          حدث خطأ أثناء تحميل الأخبار
+          {error}
         </div>
       </div>
     );
@@ -67,24 +76,68 @@ export default function News() {
   return (
     <div className="container mx-auto my-10 px-4" style={{ direction: "rtl" }}>
       <div className="grid gap-8">
-        {/* Search Section */}
-        <div className="flex justify-center">
-          <div className="w-full max-w-xl">
-            <div className="relative">
-              <input
-                type="text"
-                className="w-full border border-gray-200 rounded-xl py-3 px-6 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
-                placeholder="ابحث عن خبر..."
-                aria-label="Search"
-                onChange={handleSearch}
+        {/* Search and Sort Section */}
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          {/* Search Bar */}
+          <div className="relative flex-1 max-w-xl">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="w-full border border-gray-200 rounded-xl py-3 px-6 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
+              placeholder="ابحث عن خبر..."
+              aria-label="Search"
+            />
+            <Search
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="relative w-full sm:w-48">
+            <button
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              className="w-full py-3 px-4 rounded-xl border border-gray-200 bg-white text-gray-700 flex items-center justify-between text-right transition-all duration-200 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <span>{getSortLabel()}</span>
+              <ChevronDown
+                size={20}
+                className={`transition-transform duration-200 ${
+                  isSortOpen ? "rotate-180" : ""
+                }`}
               />
-            </div>
+            </button>
+            {isSortOpen && (
+              <div className="absolute w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+                <button
+                  onClick={() => handleSortChange("createdAt:desc")}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${
+                    sortOption === "createdAt:desc"
+                      ? "bg-blue-50 text-blue-700 font-semibold"
+                      : "text-gray-700 hover:bg-blue-50"
+                  }`}
+                >
+                  الأحدث
+                </button>
+                <button
+                  onClick={() => handleSortChange("createdAt:asc")}
+                  className={`w-full py-2 px-4 text-right transition-all duration-200 ${
+                    sortOption === "createdAt:asc"
+                      ? "bg-blue-50 text-blue-700 font-semibold"
+                      : "text-gray-700 hover:bg-blue-50"
+                  }`}
+                >
+                  الأقدم
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* News Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredData.map((news) => (
+          {data?.map((news) => (
             <div key={news._id} className="group">
               <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col overflow-hidden">
                 <div className="relative overflow-hidden aspect-[4/3]">
@@ -121,7 +174,7 @@ export default function News() {
         </div>
 
         {/* Pagination */}
-        {pagination.totalPages > 1 && (
+        {totalPages > 1 && (
           <div className="flex justify-center items-center gap-4 mt-8">
             <button
               onClick={() => handlePageChange(Math.max(page - 1, 1))}
@@ -131,11 +184,11 @@ export default function News() {
               السابق
             </button>
             <span className="text-gray-600 font-medium">
-              الصفحة {page} من {pagination.totalPages}
+              الصفحة {page} من {totalPages}
             </span>
             <button
               onClick={() => handlePageChange(page + 1)}
-              disabled={page === pagination.totalPages || loading}
+              disabled={page === totalPages || loading}
               className="bg-blue-600 text-white py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-all duration-200 font-medium"
             >
               التالي
