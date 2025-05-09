@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
@@ -9,29 +9,30 @@ import {
   Stethoscope,
   FileText,
   Megaphone,
-} from "lucide-react";
+  BookUser,
+} from 'lucide-react';
 
-import logo from "../../../assets/Iamges/logo.png";
-import { useState } from "react";
+import logo from '../../../assets/Iamges/logo.png';
+import { useState } from 'react';
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const isLogin = localStorage.getItem("isLogin");
-  const user = isLogin ? JSON.parse(localStorage.getItem("user")) : null;
-  const superAdmin = user.role === "superadmin";
+  const isLogin = localStorage.getItem('isLogin');
+  const user = isLogin ? JSON.parse(localStorage.getItem('user')) : null;
+  const superAdmin = user.role === 'superadmin';
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const SidebarItem = ({ to, icon, label, isOpen, className = "" }) => (
+  const SidebarItem = ({ to, icon, label, isOpen, className = '' }) => (
     <NavLink
       to={to}
       className={({ isActive }) =>
         `flex items-center gap-3 px-3 py-2 rounded transition cursor-pointer ${
           isActive
-            ? "bg-gray-800 text-blue-50 font-semibold"
-            : "hover:bg-gray-200"
+            ? 'bg-gray-800 text-blue-50 font-semibold'
+            : 'hover:bg-gray-200'
         } ${className}`
       }
     >
@@ -44,7 +45,7 @@ const Sidebar = () => {
     <>
       <div
         className={`${
-          isOpen ? "w-64" : "w-16"
+          isOpen ? 'w-64' : 'w-16'
         } h-screen bg-gray-100 text-gray-900 flex flex-col transition-all duration-300 sticky top-0 border-r border-gray-300`}
       >
         {/* Toggle button */}
@@ -108,9 +109,15 @@ const Sidebar = () => {
                 isOpen={isOpen}
               />
               <SidebarItem
-                to="/admin-dashboard/categories"
+                to="/admin-dashboard/sheets"
                 icon={<FileText />}
-                label="شيتات"
+                label="فورمات"
+                isOpen={isOpen}
+              />
+              <SidebarItem
+                to="/admin-dashboard/customers"
+                icon={<BookUser />}
+                label="بيانات العملاء"
                 isOpen={isOpen}
               />
               <SidebarItem
