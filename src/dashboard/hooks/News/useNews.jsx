@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export default function useNews() {
@@ -9,7 +9,7 @@ export default function useNews() {
   const [searchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get("page")) || 1;
-  const search = searchParams.get("search") || "";
+  const search = searchParams.get("search") || ""; 
   const BASE_URL = "http://localhost:5000/api/v1/news/";
 
   const fetchNews = async () => {
@@ -104,6 +104,13 @@ export default function useNews() {
       setLoading(false);
     }
   };
+
+  
+    useEffect(() => {
+      fetchNews();
+    }, [page,search]);
+  
+  
 
   return {
     news,

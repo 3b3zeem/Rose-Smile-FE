@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useNews from "../../hooks/News/useNews";
 import { useSearchParams } from "react-router-dom";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Trash2,
+  Plus,
+  Pencil,
+} from "lucide-react";
+import AddNewsModal from "./AddNewsModal";
 
 export default function AdminNews() {
   const {
@@ -15,7 +25,27 @@ export default function AdminNews() {
     deleteNew,
   } = useNews();
 
-  const [setSearchParams] = useSearchParams();
+  // handle search params
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialSearchTerm = searchParams.get("search") || "";
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+
+  const handleSearch = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (newSearchTerm) {
+        newParams.set("search", newSearchTerm);
+        newParams.set("page", "1");
+      } else {
+        newParams.delete("search");
+      }
+      return newParams;
+    });
+  };
+
+  // handle add modal
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
@@ -39,33 +69,33 @@ export default function AdminNews() {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-all duration-200 w-full sm:w-auto"
           >
             <Plus size={20} />
-          إضافة خبر جديد
-            </button>
+            إضافة خبر جديد
+          </button>
         </div>
 
         {/* EXPLAIN THIS CODE */}
-        <AddSectionModal
+        <AddNewsModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
-          sections={sections}
-          addsection={addSection}
+          news={news}
+          addNews={createNew}
         />
 
-        <EditsectionModal
+        {/* <EditNewsnModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           sections={sections}
           section={currentsection}
           updatesection={updateSection}
-        />
+        /> */}
 
-        <ImageSectinUpdateModal
+        {/* <ImageSectinUpdateModal
           isOpen={isImageModalOpen}
           onClose={() => setIsImageModalOpen(false)}
           section={currentsection}
           updatesectionImage={updatesectionImage}
         />
-
+ */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <Loader2 className="animate-spin text-blue-500" size={32} />
@@ -83,7 +113,7 @@ export default function AdminNews() {
                       العنوان
                     </th>
                     <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
-                      العنون الفرعى 
+                      العنون الفرعى
                     </th>
                     <th className="text-center px-2 sm:px-4 py-3 text-xs font-medium text-gray-500 tracking-wider whitespace-nowrap">
                       تاريخ الإنشاء
@@ -153,7 +183,7 @@ export default function AdminNews() {
               </table>
             </div>
 
-          {/* Pagination  */}
+            {/* Pagination  */}
             {/* <div className="mt-4 flex flex-col sm:flex-row sm:justify-between items-center gap-3">
               <div className="text-sm text-gray-700">
                 عرض {sections.length} من {total} خدمة
@@ -180,7 +210,6 @@ export default function AdminNews() {
                 </div>
               </div>
             </div> */}
-            
           </React.Fragment>
         )}
       </div>
