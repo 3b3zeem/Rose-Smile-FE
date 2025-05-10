@@ -13,10 +13,11 @@ import {
 } from "lucide-react";
 import AddNewsModal from "./AddNewsModal";
 import EditNewsnModal from "./EditNewsnModal";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 export default function AdminNews() {
-
- const{services} = useAdminServices()
+  const { services } = useAdminServices();
 
   const {
     news,
@@ -53,13 +54,40 @@ export default function AdminNews() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-
-  const[currentNew,setCurrentNew]= useState({});
-
+  const [currentNew, setCurrentNew] = useState({});
   const handleEditClick = (newsItem) => {
     setCurrentNew(newsItem);
     setIsEditModalOpen(true);
-  }
+  };
+
+  const [deletingNewsId, setDeletingNewsId] = useState(null);
+
+  const handleDelete = async (newsId) => {
+    const result = await Swal.fire({
+      title: "هل أنت متأكد؟",
+      text: "لن تتمكن من التراجع عن هذا!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "نعم، احذف!",
+      cancelButtonText: "إلغاء",
+    });
+    console.log(result);
+     if (result.isConfirmed) {
+      setDeletingNewsId(newsId);
+      try {
+        const response = await deleteNew(newsId);
+        if (response.success) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+      } catch (error) {
+        console.error("Error deleting news:", error);
+      }
+    }
+  };
 
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
@@ -169,18 +197,18 @@ export default function AdminNews() {
                           >
                             <Pencil size={16} />
                           </button>
-                          {/* <button
-                            onClick={() =>handleDelete(newsItem._id)}
+                          <button
+                            onClick={() => handleDelete(newsItem._id)}
                             className="text-red-600 hover:text-red-800 cursor-pointer"
                             title="حذف الخدمة"
-                            disabled={deletingsectionId === newsItem._id}
+                            disabled={deletingNewsId === newsItem._id}
                           >
-                            {deletingsectionId === newsItem._id ? (
+                            {deletingNewsId === newsItem._id ? (
                               <Loader2 className="animate-spin" size={16} />
                             ) : (
                               <Trash2 size={16} />
                             )}
-                          </button> */}
+                          </button>
                         </td>
                       </tr>
                     ))

@@ -109,6 +109,12 @@ const Sidebar = () => {
                 isOpen={isOpen}
               />
               <SidebarItem
+                to="/admin-dashboard/news"
+                icon={<Layers />}
+                label="الاخبار"
+                isOpen={isOpen}
+              />
+              <SidebarItem
                 to="/admin-dashboard/sheets"
                 icon={<FileText />}
                 label="فورمات"
