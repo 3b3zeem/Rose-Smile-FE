@@ -201,7 +201,7 @@ const AdminCustomerData = () => {
                           <button
                             onClick={() => handleAddCommentClick(data)}
                             className="text-blue-600 hover:text-blue-800 cursor-pointer mt-2"
-                            title="تعديل"
+                            title="اضافة تعليق"
                           >
                             <MessageSquareDiff size={16} />
                           </button>
