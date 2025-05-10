@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-
-export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
+import { Loader2, Minus } from "lucide-react";
+export default function AddNewsModal({
+  isOpen,
+  onClose,
+  news,
+  addNews,
+  allServices,
+}) {
   const [addLoading, setAddLoading] = useState(false);
   const [currentDescription, setCurrentDescription] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
@@ -10,10 +16,12 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
   const [formData, setFormData] = React.useState({
     title: "",
     subTitle: "",
-    content: "",
+    desc: [],
     image: null,
+    serviceId: "",
   });
   const handleInputChange = (e, field) => {
+
     setFormData({ ...formData, [field]: e.target.value });
   };
 
@@ -21,11 +29,18 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
     if (currentDescription.trim()) {
       setFormData({
         ...formData,
-        description: [...formData.description, currentDescription.trim()],
+        desc: [...formData.desc, currentDescription.trim()],
       });
       setCurrentDescription("");
     }
   };
+
+  
+  const removeField = (field, index) => {
+    const updatedArray = formData[field].filter((_, i) => i !== index);
+    setFormData({ ...formData, [field]: updatedArray });
+  };
+
 
   const handleDescriptionKeyDown = (e) => {
     if (e.key === "Enter" && currentDescription.trim()) {
@@ -50,18 +65,16 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
     const data = new FormData();
     data.append("title", formData.title);
     data.append("subTitle", formData.subTitle);
+    data.append("serviceId", formData.serviceId);
     if (formData.image) {
       data.append("image", formData.image);
     }
 
-    formData.description.forEach((desc, index) => {
-      if (desc) data.append(`description[${index}]`, desc);
+    formData.desc?.forEach((desc, index) => {
+      if (desc) data.append(`desc[${index}]`, desc);
     });
     if (currentDescription.trim()) {
-      data.append(
-        `description[${formData.description.length}]`,
-        currentDescription.trim()
-      );
+      data.append(`desc[${formData.desc?.length}]`, currentDescription.trim());
     }
 
     // call the addNews function with the FormData object
@@ -76,10 +89,9 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
         setFormData({
           title: "",
           subTitle: "",
-          sectionId: "",
+          serviceId: "",
           image: null,
-          description: [],
-          features: [],
+          desc: [],
         }); // reset the form data
         setPreviewImage(null);
         setCurrentDescription("");
@@ -124,6 +136,8 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
               onSubmit={handleSubmit}
               className="w-full grid grid-cols-1 md:grid-cols-2 gap-6"
             >
+
+             {/* 1- add title input  */}
               <div className="flex gap-10">
                 <div className="w-1/2">
                   <label className="block mb-1 text-sm font-medium text-gray-700">
@@ -139,6 +153,8 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
                   />
                 </div>
               </div>
+
+              {/*2- add  image input  */}
 
               <div className="md:col-span-1 row-span-3 flex justify-center">
                 <div
@@ -167,7 +183,10 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
                 </div>
               </div>
 
-              <div className="w-full">
+              
+             {/* 3- add sub title input  */}
+
+              <div className="w-1/2">
                 <label className="block mb-1 text-sm font-medium text-gray-700">
                   العنوان الفرعي
                 </label>
@@ -179,6 +198,33 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
                   disabled={addLoading}
                 />
               </div>
+
+
+             {/* 4- add service related select   */}
+
+              <div className="w-1/2">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  الخدمة المرتبطة بالخبر
+                </label>
+
+                <select
+                  value={formData.serviceId}
+                  onChange={(e) => handleInputChange(e, "serviceId")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right focus:outline-none"
+                  required
+                  disabled={addLoading}
+                >
+                  <option value="">اختر قسمًا</option>
+                  {allServices.map((service) => (
+                    <option key={service._id} value={service._id}>
+                      {service.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+           
+             {/* 3- add  desc input  */}
 
               <div className="" dir="rtl">
                 <label className="block mb-1 text-sm font-medium text-gray-700">
@@ -196,7 +242,7 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
                   />
                 </div>
                 <AnimatePresence>
-                  {formData.description?.map((desc, index) => (
+                  {formData.desc?.map((desc, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, y: -10 }}
@@ -210,7 +256,7 @@ export default function AddNewsModal({ isOpen, onClose, news, addNews }) {
                       </span>
                       <button
                         type="button"
-                        onClick={() => removeField("description", index)}
+                        onClick={() => removeField("desc", index)}
                         className="text-red-600 hover:text-red-800 mt-1"
                         disabled={addLoading}
                       >

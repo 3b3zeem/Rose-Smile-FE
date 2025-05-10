@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useNews from "../../hooks/News/useNews";
 import { useSearchParams } from "react-router-dom";
+import useAdminServices from "../../hooks/Services/useAdminService";
 import {
   Search,
   ChevronLeft,
@@ -11,8 +12,12 @@ import {
   Pencil,
 } from "lucide-react";
 import AddNewsModal from "./AddNewsModal";
+import EditNewsnModal from "./EditNewsnModal";
 
 export default function AdminNews() {
+
+ const{services} = useAdminServices()
+
   const {
     news,
     loading,
@@ -44,8 +49,17 @@ export default function AdminNews() {
     });
   };
 
-  // handle add modal
+  // handle  modal
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+
+  const[currentNew,setCurrentNew]= useState({});
+
+  const handleEditClick = (newsItem) => {
+    setCurrentNew(newsItem);
+    setIsEditModalOpen(true);
+  }
 
   return (
     <div className="p-4 sm:p-6 bg-gray-100 min-h-screen overflow-x-auto">
@@ -76,18 +90,19 @@ export default function AdminNews() {
         {/* EXPLAIN THIS CODE */}
         <AddNewsModal
           isOpen={isAddModalOpen}
+          allServices={services}
           onClose={() => setIsAddModalOpen(false)}
           news={news}
           addNews={createNew}
         />
 
-        {/* <EditNewsnModal
+        <EditNewsnModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
-          sections={sections}
-          section={currentsection}
-          updatesection={updateSection}
-        /> */}
+          news={news}
+          updateNew={updateNew}
+          currentNew={currentNew}
+        />
 
         {/* <ImageSectinUpdateModal
           isOpen={isImageModalOpen}
@@ -125,47 +140,47 @@ export default function AdminNews() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {news.length > 0 ? (
-                    news.map((section) => (
-                      <tr key={section._id}>
+                    news.map((newsItem) => (
+                      <tr key={newsItem._id}>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                           <img
-                            src={news.image.thumbnailMedium}
-                            alt={news.title}
+                            src={newsItem.image?.cardImage}
+                            alt={newsItem.title}
                             className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer mx-auto"
-                            onClick={() => handleImageClick(section)}
+                            onClick={() => handleImageClick(newsItem)}
                           />
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[150px] sm:max-w-[200px] truncate">
-                          {news.title}
+                          {newsItem.title}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] truncate">
-                          {news.subTitle}
+                          {newsItem.subTitle}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                          {new Date(section.createdAt).toLocaleDateString(
+                          {new Date(newsItem.createdAt).toLocaleDateString(
                             "ar-EG"
                           )}
                         </td>
                         <td className="px-2 sm:px-4 py-8 whitespace-nowrap text-sm flex gap-5 items-center justify-center">
                           <button
-                            onClick={() => handleEditClick(section)}
+                            onClick={() => handleEditClick(newsItem)}
                             className="text-blue-600 hover:text-blue-800 cursor-pointer"
                             title="تعديل الخدمة"
                           >
                             <Pencil size={16} />
                           </button>
-                          <button
-                            onClick={() => handleDelete(section._id)}
+                          {/* <button
+                            onClick={() =>handleDelete(newsItem._id)}
                             className="text-red-600 hover:text-red-800 cursor-pointer"
                             title="حذف الخدمة"
-                            disabled={deletingsectionId === section._id}
+                            disabled={deletingsectionId === newsItem._id}
                           >
-                            {deletingsectionId === section._id ? (
+                            {deletingsectionId === newsItem._id ? (
                               <Loader2 className="animate-spin" size={16} />
                             ) : (
                               <Trash2 size={16} />
                             )}
-                          </button>
+                          </button> */}
                         </td>
                       </tr>
                     ))

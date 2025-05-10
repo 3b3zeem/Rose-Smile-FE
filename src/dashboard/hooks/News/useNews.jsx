@@ -9,13 +9,15 @@ export default function useNews() {
   const [searchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get("page")) || 1;
+  const size = 6;
   const search = searchParams.get("search") || ""; 
   const BASE_URL = "http://localhost:5000/api/v1/news/";
 
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${BASE_URL}?page=${page}&search=${search}`);
+      const searchParam = search ? `&search=${search}` : "";
+      const res = await axios.get(`${BASE_URL}?page=${page}&size=${size}${searchParam}`);
       console.log(res);
       setNews(res.data.data || []);
     } catch (error) {
