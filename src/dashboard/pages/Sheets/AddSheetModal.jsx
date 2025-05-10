@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-hot-toast';
-import { Loader2, Minus } from 'lucide-react';
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-hot-toast";
+import { Loader2, Minus } from "lucide-react";
+import Swal from "sweetalert2";
 
 const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    url: '',
+    title: "",
+    url: "",
     image: null,
   });
 
@@ -29,15 +29,15 @@ const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.image) {
-      toast.error('يرجى اختيار صورة الفورم');
+      toast.error("يرجى اختيار صورة الفورم");
       return;
     }
 
     setAddLoading(true);
     const data = new FormData();
-    data.append('title', formData.title);
-    data.append('url', formData.url);
-    data.append('image', formData.image);
+    data.append("title", formData.title);
+    data.append("url", formData.url);
+    data.append("image", formData.image);
 
     try {
       const result = await addSheet(data);
@@ -45,16 +45,16 @@ const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
         toast.success(result.message);
         onClose();
         setFormData({
-          title: '',
-          url: '',
+          title: "",
+          url: "",
           image: null,
         });
         setPreviewImage(null);
       } else {
-        toast.error(result.message || 'حدث خطأ أثناء إضافة الفورم');
+        toast.error(result.message || "حدث خطأ أثناء إضافة الفورم");
       }
     } catch (error) {
-      toast.error(error.message || 'حدث خطأ أثناء إضافة الفورم');
+      toast.error(error.message || "حدث خطأ أثناء إضافة الفورم");
     } finally {
       setAddLoading(false);
     }
@@ -69,7 +69,7 @@ const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-500 p-4"
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
@@ -83,63 +83,65 @@ const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
           إضافة فورم جديد
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit}>
           {/* TOP GRID: Title + Url */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="md:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1 mt-11">
-                اسم الفورم
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange(e, 'title')}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right mt-2 "
-                required
-                disabled={addLoading}
-              />
-            </div>
-
-            <div className="md:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1 mt-11">
-                عنوان الفورم المميز
-              </label>
-              <input
-                type="text"
-                value={formData.url}
-                onChange={(e) => handleInputChange(e, 'url')}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right mt-2 "
-                required
-                disabled={addLoading}
-              />
-            </div>
-          </div>
-
-          {/* IMAGE */}
-          <div className="flex justify-center items-start mt-4">
-            <div
-              className="relative h-50 w-90 bg-gray-100 overflow-hidden rounded-xl shadow-md cursor-pointer hover:opacity-90 transition"
-              onClick={() => document.getElementById('imageUpload').click()}
-            >
-              {previewImage ? (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="w-full h-full object-cover object-top"
+          <div className="flex items-center justify-between my-10">
+            <div className="flex flex-col w-1/2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  اسم الفورم
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange(e, "title")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right mt-2 transition-all duration-200"
+                  required
+                  disabled={addLoading}
                 />
-              ) : (
-                <span className="flex items-center justify-center h-full text-gray-400 text-sm text-center px-2">
-                  اضغط لرفع صورة
-                </span>
-              )}
-              <input
-                type="file"
-                id="imageUpload"
-                onChange={handleImageChange}
-                className="hidden"
-                accept="image/*"
-                disabled={addLoading}
-              />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1 mt-11">
+                  عنوان الفورم المميز
+                </label>
+                <input
+                  type="text"
+                  value={formData.url}
+                  onChange={(e) => handleInputChange(e, "url")}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right mt-2 transition-all duration-200"
+                  required
+                  disabled={addLoading}
+                />
+              </div>
+            </div>
+
+            {/* IMAGE */}
+            <div className="flex justify-center items-start">
+              <div
+                className="relative h-50 w-90 border-2 border-dashed border-gray-300 hover:bg-gray-100 overflow-hidden rounded-md cursor-pointer hover:opacity-90 transition"
+                onClick={() => document.getElementById("imageUpload").click()}
+              >
+                {previewImage ? (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="w-full h-full object-cover object-top"
+                  />
+                ) : (
+                  <span className="flex items-center justify-center h-full text-gray-400 text-sm text-center px-2">
+                    اضغط لرفع صورة
+                  </span>
+                )}
+                <input
+                  type="file"
+                  id="imageUpload"
+                  onChange={handleImageChange}
+                  className="hidden"
+                  accept="image/*"
+                  disabled={addLoading}
+                />
+              </div>
             </div>
           </div>
 
@@ -158,8 +160,8 @@ const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
               type="button"
               onClick={() => {
                 setFormData({
-                  title: '',
-                  url: '',
+                  title: "",
+                  url: "",
                   image: null,
                 });
                 setPreviewImage(null);
@@ -178,7 +180,7 @@ const AddSheetModal = ({ isOpen, onClose, addSheet }) => {
               {addLoading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
-                'تاكيد الإضافة'
+                "تاكيد الإضافة"
               )}
             </button>
           </div>
