@@ -13,7 +13,7 @@ export default function useSections() {
   const size = 6;
   const search = searchParams.get("search") || "";
 
-  const BaseURL = "http://localhost:5000/api/v1/section";
+  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/section`;
 
   const fetchsection = async () => {
     setLoading(true);
@@ -95,8 +95,6 @@ export default function useSections() {
     }
   };
 
-
-
   const deleteSection = async (id) => {
     setLoading(true);
     try {
@@ -115,22 +113,19 @@ export default function useSections() {
     }
   };
 
-
-
   useEffect(() => {
     fetchsection();
   }, [page, size, search]);
 
-
-    return {
-        sections,
-        loading,
-        total,
-        fetchsection,
-        addSection,
-        updateSection,
-        updatesectionImage,
-        deleteSection,
-        setSearchParams,
-    };
+  return {
+    sections,
+    loading,
+    total,
+    fetchsection,
+    addSection,
+    updateSection,
+    updatesectionImage,
+    deleteSection,
+    setSearchParams,
+  };
 }

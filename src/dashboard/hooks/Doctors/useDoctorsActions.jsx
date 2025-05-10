@@ -12,20 +12,22 @@ const useDoctorsActions = () => {
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const BaseURL = "http://localhost:5000/api/v1/doctor";
+  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/doctor`;
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
   const search = searchParams.get("search") || "";
 
-
-// Get All Doctors
+  // Get All Doctors
   const fetchDoctors = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${BaseURL}?page=${page}&size=${size}&search=${search}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${BaseURL}?page=${page}&size=${size}&search=${search}`,
+        {
+          withCredentials: true,
+        }
+      );
       setDoctors(response.data.doctors || []);
       setTotal(response.data.totalDoctors || 0);
     } catch (error) {
@@ -91,16 +93,13 @@ const useDoctorsActions = () => {
       };
     }
   };
- //delete Doctor Case
+  //delete Doctor Case
   const deleteDoctorCase = async (doctorId, caseId) => {
     try {
-      const response = await axios.delete(
-        `${BaseURL}/cases/${doctorId}`,
-        {
-          data: { caseId },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.delete(`${BaseURL}/cases/${doctorId}`, {
+        data: { caseId },
+        withCredentials: true,
+      });
       await fetchDoctors();
       return { success: true, message: response.data.message };
     } catch (error) {
@@ -110,7 +109,7 @@ const useDoctorsActions = () => {
       };
     }
   };
-  
+
   // Update Doctor Image
   const updateDoctorImage = async (id, formData) => {
     setImageUploadLoading(true);
@@ -130,7 +129,7 @@ const useDoctorsActions = () => {
       setImageUploadLoading(false);
     }
   };
-   // Delete Doctor
+  // Delete Doctor
   const deleteDoctor = async (id) => {
     setDeleteLoading(true);
     try {
@@ -173,8 +172,8 @@ const useDoctorsActions = () => {
     updateDoctorImage,
     deleteDoctor,
     handlePageChange,
-    addCaseToDoctor,       
-    deleteDoctorCase 
+    addCaseToDoctor,
+    deleteDoctorCase,
   };
 };
 

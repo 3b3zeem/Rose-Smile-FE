@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const useSheetsActions = () => {
   const [sheets, setSheets] = useState([]);
@@ -12,11 +12,11 @@ const useSheetsActions = () => {
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const BaseURL = 'http://localhost:5000/api/v1/sheet';
+  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/sheet`;
 
-  const page = parseInt(searchParams.get('page')) || 1;
+  const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
-  const search = searchParams.get('search') || '';
+  const search = searchParams.get("search") || "";
 
   // Get All Sheets
   const fetchSheets = async () => {
@@ -31,7 +31,7 @@ const useSheetsActions = () => {
       setSheets(response.data.sheets || []);
       setTotal(response.data.totalSheets || 0);
     } catch (error) {
-      console.error('Failed to fetch sheets:', error);
+      console.error("Failed to fetch sheets:", error);
     } finally {
       setLoading(false);
     }
@@ -42,14 +42,14 @@ const useSheetsActions = () => {
     try {
       const response = await axios.post(BaseURL, formData, {
         withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       });
       await fetchSheets();
       return { success: true, message: response.data.message };
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'خطأ أثناء الإضافة',
+        message: error.response?.data?.message || "خطأ أثناء الإضافة",
       };
     } finally {
       setAddLoading(false);
@@ -67,7 +67,7 @@ const useSheetsActions = () => {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'خطأ أثناء التعديل',
+        message: error.response?.data?.message || "خطأ أثناء التعديل",
       };
     } finally {
       setEditLoading(false);
@@ -80,14 +80,14 @@ const useSheetsActions = () => {
     try {
       const response = await axios.put(`${BaseURL}/image/${id}`, formData, {
         withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       });
       await fetchSheets();
       return { success: true, message: response.data.message };
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'فشل تحديث الصورة',
+        message: error.response?.data?.message || "فشل تحديث الصورة",
       };
     } finally {
       setImageUploadLoading(false);
@@ -105,7 +105,7 @@ const useSheetsActions = () => {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'فشل في الحذف',
+        message: error.response?.data?.message || "فشل في الحذف",
       };
     } finally {
       setDeleteLoading(false);

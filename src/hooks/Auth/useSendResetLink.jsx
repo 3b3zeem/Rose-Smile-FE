@@ -12,7 +12,10 @@ const useSendResetLink = () => {
       setError(null);
       setSuccess(false);
 
-      const res = await axios.post("http://localhost:5000/api/v1/auth/sendCode", { email });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACK_END}/api/v1/auth/sendCode`,
+        { email }
+      );
 
       if (res?.data?.message) {
         setSuccess(true);

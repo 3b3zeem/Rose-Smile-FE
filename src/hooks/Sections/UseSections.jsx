@@ -11,7 +11,9 @@ export const useAllSections = () => {
   const sort = searchParams.get("sort") || "createdAt:desc";
 
   const BASE_URL = useMemo(() => {
-    return `http://localhost:5000/api/v1/section?search=${searchTerm}&sort=${sort}`;
+    return `${
+      import.meta.env.VITE_BACK_END
+    }/api/v1/section?search=${searchTerm}&sort=${sort}`;
   }, [searchTerm, sort]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const useSectionData = (reference) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://localhost:5000/api/v1/section/";
+  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/section/`;
 
   const url = reference ? `${BASE_URL}${reference}` : BASE_URL;
 
@@ -76,7 +78,7 @@ const useSectionTitles = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://localhost:5000/api/v1/section/";
+  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/section/`;
 
   useEffect(() => {
     const fetchSections = async () => {

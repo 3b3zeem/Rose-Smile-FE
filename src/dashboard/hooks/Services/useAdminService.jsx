@@ -12,7 +12,7 @@ const useAdminServices = () => {
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const BaseURL = "http://localhost:5000/api/v1/service";
+  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/service`;
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
@@ -34,7 +34,7 @@ const useAdminServices = () => {
         })
       );
       console.log("data", normalizedServices);
-      
+
       setServices(normalizedServices);
       setTotal(response.data.totalServices || 0);
     } catch (error) {

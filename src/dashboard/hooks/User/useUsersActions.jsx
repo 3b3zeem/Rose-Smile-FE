@@ -10,7 +10,7 @@ const useUsersActions = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const BaseURL = "http://localhost:5000/api/v1/user";
+  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/user`;
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
@@ -66,25 +66,25 @@ const useUsersActions = () => {
     }
   };
 
-    // Edit User
-    const editUser = async (id, updatedData) => {
-      try {
-        const response = await axios.put(
-          `${BaseURL}/admin/${id}`,
-          {
-            role: updatedData.role,
-            block: updatedData.block,
-            confirm: updatedData.confirm,
-          },
-          { withCredentials: true }
-        );
-        await fetchUsers();
-        toast.success(response.data.message || "تم تعديل المستخدم بنجاح");
-      } catch (error) {
-        toast.error(error.response?.data?.message || "فشل في تعديل المستخدم");
-        console.error("Failed to edit user:", error);
-      }
-    };
+  // Edit User
+  const editUser = async (id, updatedData) => {
+    try {
+      const response = await axios.put(
+        `${BaseURL}/admin/${id}`,
+        {
+          role: updatedData.role,
+          block: updatedData.block,
+          confirm: updatedData.confirm,
+        },
+        { withCredentials: true }
+      );
+      await fetchUsers();
+      toast.success(response.data.message || "تم تعديل المستخدم بنجاح");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "فشل في تعديل المستخدم");
+      console.error("Failed to edit user:", error);
+    }
+  };
 
   useEffect(() => {
     fetchUsers();

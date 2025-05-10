@@ -10,14 +10,16 @@ export default function useNews() {
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
-  const search = searchParams.get("search") || ""; 
-  const BASE_URL = "http://localhost:5000/api/v1/news/";
+  const search = searchParams.get("search") || "";
+  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/news/`;
 
   const fetchNews = async () => {
     setLoading(true);
     try {
       const searchParam = search ? `&search=${search}` : "";
-      const res = await axios.get(`${BASE_URL}?page=${page}&size=${size}${searchParam}`);
+      const res = await axios.get(
+        `${BASE_URL}?page=${page}&size=${size}${searchParam}`
+      );
       console.log(res);
       setNews(res.data.data || []);
     } catch (error) {
@@ -107,12 +109,9 @@ export default function useNews() {
     }
   };
 
-  
-    useEffect(() => {
-      fetchNews();
-    }, [page,search]);
-  
-  
+  useEffect(() => {
+    fetchNews();
+  }, [page, search]);
 
   return {
     news,

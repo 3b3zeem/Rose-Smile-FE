@@ -2,11 +2,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 
-const BASE_URL = "http://localhost:5000/api/v1/news";
+const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/news`;
 
 const fetchNews = async ({ page, size, search, sort }) => {
   try {
-    
     const searchParam = search ? `&search=${search}` : "";
     const response = await axios.get(
       `${BASE_URL}?page=${page}&size=${size}${searchParam}&sort=${sort}&select=title,subTitle,image,createdAt`

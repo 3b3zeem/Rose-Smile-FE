@@ -6,7 +6,7 @@ const useBookingSubmit = () => {
   const [success, setSuccess] = useState(null);
   const [defaultSheet, setDefaultSheet] = useState(null);
 
-  const BASE_URL = "http://localhost:5000/api/v1/form/";
+  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/form/`;
 
   const submitBooking = async (formData) => {
     try {
@@ -42,7 +42,9 @@ const useBookingSubmit = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`http://localhost:5000/api/v1/sheet/default`);
+      const res = await fetch(
+        `${import.meta.env.VITE_BACK_END}/api/v1/sheet/default`
+      );
       const data = await res.json();
       const sheetId = data.sheet;
 
@@ -59,7 +61,14 @@ const useBookingSubmit = () => {
     }
   };
 
-  return { submitBooking, fetchDefaultSheet, defaultSheet, loading, error, success };
+  return {
+    submitBooking,
+    fetchDefaultSheet,
+    defaultSheet,
+    loading,
+    error,
+    success,
+  };
 };
 
 export default useBookingSubmit;

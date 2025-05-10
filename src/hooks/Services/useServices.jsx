@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const BASE_URL = "http://localhost:5000/api/v1/service";
+const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/service`;
 
 export const useAllServices = () => {
   const [searchParams] = useSearchParams();
@@ -99,7 +99,7 @@ export const useServiceTitles = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = "http://localhost:5000/api/v1/service/";
+  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/service/`;
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -111,7 +111,7 @@ export const useServiceTitles = () => {
           const serviceData = data.services.map((service) => ({
             id: service._id,
             title: service.title,
-          }));          
+          }));
           setServices(serviceData);
         } else {
           setError("Failed to fetch service titles");

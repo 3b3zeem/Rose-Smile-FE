@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const useCustomerDataActions = () => {
   const [customerData, setCustomerData] = useState([]);
@@ -10,11 +10,11 @@ const useCustomerDataActions = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const BaseURL = 'http://localhost:5000/api/v1/form';
+  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/form`;
 
-  const page = parseInt(searchParams.get('page')) || 1;
+  const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
-  const search = searchParams.get('search') || '';
+  const search = searchParams.get("search") || "";
 
   // Get All Customer Data
   const fetchCustomerData = async () => {
@@ -29,7 +29,7 @@ const useCustomerDataActions = () => {
       setCustomerData(response.data.forms || []);
       setTotal(response.data.totalForms || 0);
     } catch (error) {
-      console.error('Failed to fetch forms:', error);
+      console.error("Failed to fetch forms:", error);
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,7 @@ const useCustomerDataActions = () => {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'خطأ أثناء الإضافة',
+        message: error.response?.data?.message || "خطأ أثناء الإضافة",
       };
     } finally {
       setEditLoading(false);
@@ -66,7 +66,7 @@ const useCustomerDataActions = () => {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'خطأ أثناء التعديل',
+        message: error.response?.data?.message || "خطأ أثناء التعديل",
       };
     } finally {
       setEditLoading(false);
@@ -85,7 +85,7 @@ const useCustomerDataActions = () => {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || 'فشل في الحذف',
+        message: error.response?.data?.message || "فشل في الحذف",
       };
     } finally {
       setDeleteLoading(false);

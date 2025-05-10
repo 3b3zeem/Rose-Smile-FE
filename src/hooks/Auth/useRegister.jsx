@@ -9,18 +9,23 @@ const useRegister = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.post("http://localhost:5000/api/v1/auth/register", formData);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACK_END}/api/v1/auth/register`,
+        formData
+      );
       return res.data;
     } catch (err) {
       const backendErrors = err?.response?.data?.errors;
-      console.error("🛑 Full backend validation:", backendErrors || err?.response?.data);
+      console.error(
+        "🛑 Full backend validation:",
+        backendErrors || err?.response?.data
+      );
       setError(err?.response?.data?.message || "حدث خطأ أثناء التسجيل");
       return null;
     } finally {
       setLoading(false);
     }
   };
-  
 
   return { register, loading, error };
 };

@@ -9,7 +9,10 @@ const useResetPassword = () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.post(`http://localhost:5000/api/v1/auth/reset/${token}`, data);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACK_END}/api/v1/auth/reset/${token}`,
+        data
+      );
       return res.data;
     } catch (err) {
       setError(err?.response?.data?.message || "حدث خطأ أثناء العملية");
@@ -18,7 +21,6 @@ const useResetPassword = () => {
       setLoading(false);
     }
   };
-  
 
   return { resetPassword, loading, error };
 };

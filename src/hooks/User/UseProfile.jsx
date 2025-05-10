@@ -12,7 +12,7 @@ export const useUserProfile = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://localhost:5000/api/v1/user/profile",
+        `${import.meta.env.VITE_BACK_END}/api/v1/user/profile`,
         {
           method: "GET",
           credentials: "include",
@@ -41,7 +41,7 @@ export const useUserProfile = () => {
       setUpdateError(null);
 
       const response = await axios.put(
-        "http://localhost:5000/api/v1/user/update",
+        `${import.meta.env.VITE_BACK_END}/api/v1/user/update`,
         updatedData,
         {
           headers: {
@@ -96,7 +96,7 @@ export const useUploadAvatar = () => {
       setError(null);
 
       const res = await axios.post(
-        "http://localhost:5000/api/v1/user/avatar",
+        `${import.meta.env.VITE_BACK_END}/api/v1/user/avatar`,
         formData,
         {
           headers: {
@@ -141,7 +141,7 @@ export const useChangePassword = () => {
       setChangePasswordError(null);
 
       const response = await axios.put(
-        "http://localhost:5000/api/v1/user/change/password",
+        `${import.meta.env.VITE_BACK_END}/api/v1/user/change/password`,
         {
           currentPassword,
           newPassword,

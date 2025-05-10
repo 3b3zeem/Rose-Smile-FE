@@ -15,7 +15,9 @@ const useDoctors = ({ page = 1, size = 8, search = "" }) => {
         const params = new URLSearchParams({ page, size });
         if (search.trim()) params.append("search", search);
 
-        const res = await axios.get(`http://localhost:5000/api/v1/doctor?${params.toString()}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACK_END}/api/v1/doctor?${params.toString()}`
+        );
         setDoctors(res.data.doctors || []);
         setTotalDoctors(res.data.totalDoctors || 0);
         setTotalPages(res.data.totalPages || 1);
@@ -43,7 +45,9 @@ export const useSomeDoctors = ({ page = 1, size = 5 }) => {
         setLoading(true);
         const params = new URLSearchParams({ page, size });
 
-        const res = await axios.get(`http://localhost:5000/api/v1/doctor?${params.toString()}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACK_END}/api/v1/doctor?${params.toString()}`
+        );
         setDoctors(res.data.doctors || []);
       } catch (err) {
         setError("فشل في تحميل بيانات الأطباء");

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-const BaseURL = "http://localhost:5000/api/v1/offer";
+const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/offer`;
 
 const fetchOffers = async ({ page, size, search }) => {
   const response = await axios.get(

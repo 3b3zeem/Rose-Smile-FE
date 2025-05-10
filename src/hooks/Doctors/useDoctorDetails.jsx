@@ -8,7 +8,9 @@ const useDoctorDetails = (doctorId) => {
 
   const fetchDoctor = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/doctor/${doctorId}`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACK_END}/api/v1/doctor/${doctorId}`
+      );
       setDoctor(res.data.doctor || null);
     } catch (err) {
       setError("فشل في تحميل تفاصيل الطبيب");
