@@ -51,7 +51,7 @@ const useUsersActions = () => {
   const deleteUser = async (id) => {
     setDeleteLoading(true);
     try {
-      const response = await axios.delete(`${BaseURL}/delete/${id}`, {
+      const response = await axios.delete(`${BaseURL}/admin/${id}`, {
         withCredentials: true,
       });
       await fetchUsers();

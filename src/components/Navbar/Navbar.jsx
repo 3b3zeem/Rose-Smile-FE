@@ -63,7 +63,6 @@ const ArabicNavbar = () => {
     { text: "خدماتنا", href: "/Services" },
     { text: "الاقسام المتاحة", href: "/sections" },
     { text: "آخر الأخبار", href: "/News" },
-    { text: "الخصوصية", href: "/PrivacyPolicy" },
   ];
 
   const renderAvatar = () => {
@@ -200,7 +199,10 @@ const ArabicNavbar = () => {
 
             <div className="p-4">
               {isLogin && (
-                <div className="flex items-center gap-3 mb-6 border-b border-gray-100">
+                <div
+                  onClick={() => setIsOpen((prev) => !prev)}
+                  className="flex items-center gap-3 mb-6 border-b border-gray-100 relative cursor-pointer"
+                >
                   <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-200">
                     {renderAvatar()}
                   </div>
@@ -210,6 +212,34 @@ const ArabicNavbar = () => {
                       {FirstName} {LastName}
                     </p>
                   </div>
+
+                  {isOpen && (
+                    <div className="absolute right-0 top-18 w-52 bg-white rounded-xl shadow-lg z-50 border border-gray-100 overflow-hidden">
+                      {user.role !== "user" && (
+                        <button
+                          onClick={handleDashboardRedirect}
+                          className="flex items-center gap-3 w-full text-right px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+                        >
+                          <LayoutDashboard className="w-5 h-5" />
+                          <span>لوحة التحكم</span>
+                        </button>
+                      )}
+                      <button
+                        onClick={() => navigate("/profile")}
+                        className="flex items-center gap-3 w-full text-right px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200 border-b border-gray-100"
+                      >
+                        <User className="w-5 h-5" />
+                        <span>الصفحة الشخصية</span>
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full text-right px-4 py-3 text-red-600 hover:bg-red-50 cursor-pointer transition-colors duration-200"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        <span>تسجيل الخروج</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

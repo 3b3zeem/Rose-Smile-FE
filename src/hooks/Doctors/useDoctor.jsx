@@ -1,65 +1,58 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const useDoctors = ({ page = 1, size = 8, search = "" }) => {
-  const [doctors, setDoctors] = useState([]);
-  const [totalDoctors, setTotalDoctors] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/doctor`;
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams({ page, size });
-        if (search.trim()) params.append("search", search);
+const fetchDoctors = async ({ page, size, search }) => {
+  const params = new URLSearchParams({ page, size });
+  if (search?.trim()) params.append("search", search);
 
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACK_END}/api/v1/doctor?${params.toString()}`
-        );
-        setDoctors(res.data.doctors || []);
-        setTotalDoctors(res.data.totalDoctors || 0);
-        setTotalPages(res.data.totalPages || 1);
-      } catch (err) {
-        setError("فشل في تحميل بيانات الأطباء");
-      } finally {
-        setLoading(false);
-      }
-    };
+  try {
+    const res = await axios.get(`${BASE_URL}?${params.toString()}`);
+    return res.data;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
 
-    fetchDoctors();
-  }, [page, size, search]);
+export const useDoctors = ({ page = 1, size = 8, search = "" }) => {
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["doctors", { page, size, search }],
+    queryFn: () => fetchDoctors({ page, size, search }),
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  return { doctors, totalDoctors, totalPages, loading, error };
+  return {
+    doctors: data?.doctors || [],
+    totalDoctors: data?.totalDoctors || 0,
+    totalPages: data?.totalPages || 1,
+    loading,
+    error: isError ? error.message : null,
+  };
 };
 
 export const useSomeDoctors = ({ page = 1, size = 5 }) => {
-  const [doctors, setDoctors] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["some-doctors", { page, size }],
+    queryFn: () => fetchDoctors({ page, size, search: "" }),
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams({ page, size });
-
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACK_END}/api/v1/doctor?${params.toString()}`
-        );
-        setDoctors(res.data.doctors || []);
-      } catch (err) {
-        setError("فشل في تحميل بيانات الأطباء");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDoctors();
-  }, [page, size]);
-
-  return { doctors, loading, error };
+  return {
+    doctors: data?.doctors || [],
+    loading,
+    error: isError ? error.message : null,
+  };
 };
-
-export default useDoctors;

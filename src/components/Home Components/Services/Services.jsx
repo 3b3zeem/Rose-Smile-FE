@@ -135,7 +135,7 @@ const Services = () => {
                     </p>
                     <div className="flex gap-2 mt-auto">
                       <Link
-                        to={`/book/${service._id}`}
+                        to={`/BookADeal/service/${service._id}`}
                         className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 text-sm"
                       >
                         <Calendar size={16} />

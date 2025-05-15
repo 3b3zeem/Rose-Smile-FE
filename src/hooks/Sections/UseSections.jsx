@@ -1,111 +1,99 @@
-import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export const useAllSections = () => {
   const [searchParams] = useSearchParams();
-  const [sections, setSections] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const searchTerm = searchParams.get("search") || "";
   const sort = searchParams.get("sort") || "createdAt:desc";
 
-  const BASE_URL = useMemo(() => {
-    return `${
-      import.meta.env.VITE_BACK_END
-    }/api/v1/section?search=${searchTerm}&sort=${sort}`;
-  }, [searchTerm, sort]);
+  const BASE_URL = `${
+    import.meta.env.VITE_BACK_END
+  }/api/v1/section?search=${searchTerm}&sort=${sort}`;
 
-  useEffect(() => {
-    const fetchSections = async () => {
-      try {
-        const response = await fetch(BASE_URL);
-        const data = await response.json();
-
-        if (data.success) {
-          setSections(data.sections);
-        } else {
-          setError("Failed to fetch sections");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching sections");
-      } finally {
-        setLoading(false);
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["sections", searchTerm, sort],
+    queryFn: async () => {
+      const res = await fetch(BASE_URL);
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch sections");
       }
-    };
+      return data.sections;
+    },
+  });
 
-    fetchSections();
-  }, [BASE_URL]);
-
-  return { sections, loading, error };
+  return {
+    sections: data || [],
+    loading,
+    error: isError ? error.message : null,
+  };
 };
 
 const useSectionData = (reference) => {
-  const [sectionData, setSectionData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const BASE_URL = `${
+    import.meta.env.VITE_BACK_END
+  }/api/v1/section/${reference}`;
 
-  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/section/`;
-
-  const url = reference ? `${BASE_URL}${reference}` : BASE_URL;
-
-  useEffect(() => {
-    const fetchSection = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.success) {
-          setSectionData(data.section);
-        } else {
-          setError("Failed to fetch section data");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching data");
-      } finally {
-        setLoading(false);
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["section", reference],
+    queryFn: async () => {
+      const res = await fetch(BASE_URL);
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch section data");
       }
-    };
+      return data.section;
+    },
+    enabled: !!reference,
+  });
 
-    fetchSection();
-  }, [reference]);
-
-  return { sectionData, loading, error };
+  return {
+    sectionData: data || null,
+    loading,
+    error: isError ? error.message : null,
+  };
 };
 
 const useSectionTitles = () => {
-  const [sections, setSections] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const BASE_URL = `${
+    import.meta.env.VITE_BACK_END
+  }/api/v1/section?select=title,_id`;
 
-  const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/section/`;
-
-  useEffect(() => {
-    const fetchSections = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${BASE_URL}?select=title,_id`);
-        const data = await response.json();
-        if (data.success) {
-          const sectionData = data.sections.map((section) => ({
-            id: section._id,
-            title: section.title,
-          }));
-          setSections(sectionData);
-        } else {
-          setError("Failed to fetch section titles");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching section titles");
-      } finally {
-        setLoading(false);
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["sectionTitles"],
+    queryFn: async () => {
+      const res = await fetch(BASE_URL);
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Failed to fetch section titles");
       }
-    };
+      return data.sections.map((section) => ({
+        id: section._id,
+        title: section.title,
+      }));
+    },
+  });
 
-    fetchSections();
-  }, []);
-
-  return { sections, loading, error };
+  return {
+    sections: data || [],
+    loading,
+    error: isError ? error.message : null,
+  };
 };
 
 export { useSectionTitles };

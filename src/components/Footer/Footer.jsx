@@ -7,12 +7,14 @@ import {
   User,
   Stethoscope,
   Info,
+  GlobeLock,
 } from "lucide-react";
 import { Tooltip } from "@mui/material";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="bg-blue-900 text-white py-10 px-6 md:px-12 lg:px-16">
       <div className="container mx-auto">
@@ -27,21 +29,17 @@ const Footer = () => {
           <div className="flex flex-col items-end">
             <h3 className="text-lg font-semibold mb-4">روابط مهمة</h3>
             <ul className="space-y-2 text-right">
-              <li className="flex items-center justify-end gap-2 cursor-pointer">
-                <span>حجز موعد</span>
-                <Calendar className="w-4 h-4" />
-              </li>
-              <li className="flex items-center justify-end gap-2 cursor-pointer">
+              <li onClick={() => navigate('/doctors')} className="flex items-center justify-end gap-2 cursor-pointer NavLinks">
                 <span>الأطباء</span>
                 <Stethoscope className="w-4 h-4" />
               </li>
-              <li className="flex items-center justify-end gap-2 cursor-pointer">
+              <li onClick={() => navigate('/services')} className="flex items-center justify-end gap-2 cursor-pointer NavLinks">
                 <span>الخدمات</span>
                 <User className="w-4 h-4" />
               </li>
-              <li className="flex items-center justify-end gap-2 cursor-pointer">
-                <span>من نحن</span>
-                <Info className="w-4 h-4" />
+              <li className="flex items-center justify-end gap-2 cursor-pointer NavLinks">
+                <Link to={"/PrivacyPolicy"}>سياسة الخصوصية</Link>
+                <GlobeLock className="w-4 h-4" />
               </li>
             </ul>
           </div>
@@ -72,7 +70,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="text-center text-sm">
-          <Link to={"/PrivacyPolicy"} className="NavLinks">الشروط و الأحكام</Link>
+          
         </div>
       </div>
     </footer>

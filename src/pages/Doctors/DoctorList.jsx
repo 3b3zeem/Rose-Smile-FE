@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Stethoscope } from "lucide-react";
-import useDoctors from "../../hooks/Doctors/useDoctor";
 import { ArrowLeft } from "lucide-react";
+import { useDoctors } from "../../hooks/Doctors/useDoctor";
 
 const DoctorList = () => {
   const [search, setSearch] = useState("");

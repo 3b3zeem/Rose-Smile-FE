@@ -165,18 +165,18 @@ const AdminCustomerData = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200" dir="rtl">
                   {customerData.length > 0 ? (
                     customerData.map((data) => (
                       <tr key={data._id}>
                         <td className="px-4 py-3 text-center">{data.name}</td>
-                        <td className="px-4 py-3 text-center">{data.phone}</td>
+                        <td className="px-4 py-3 text-center" dir="ltr">{data.phone}</td>
                         <td className="px-4 py-3 text-center">{data.city}</td>
                         <td className="px-4 py-3 text-center">
-                          {data?.section?.title}
+                          {data?.section?.title.slice(0,50)+"..."}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          {data?.service?.title}
+                          {data?.service?.title.slice(0,50)+"..."}
                         </td>
                         <td className="px-4 py-3 text-center">{data.status}</td>
                         <td className="px-4 py-3 text-center">

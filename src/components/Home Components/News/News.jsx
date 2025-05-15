@@ -1,47 +1,16 @@
 import React from "react";
 import { Eye, Heart } from "lucide-react";
+import { format } from "date-fns";
 
-import img from "../../../assets/Iamges/news.png";
+import UseNews from "../../../hooks/News/UseNews";
+import { useNavigate } from "react-router-dom";
 
 const News = () => {
-  const newsArticles = [
-    {
-      id: 1,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-    {
-      id: 2,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-    {
-      id: 3,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-    {
-      id: 4,
-      title: "عنوان المقالة يظهر هنا، ولكن ليس طويلاً جداً.",
-      date: "الإثنين 05، سبتمبر 2021",
-      author: "الكاتب",
-      image: img,
-      views: 68,
-      likes: 86,
-    },
-  ];
+  const { news, loading, error } = UseNews();
+
+  const lastFourNews = news.slice(0, 4);
+
+  const navigate = useNavigate();
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12" dir="rtl">
@@ -54,40 +23,40 @@ const News = () => {
       </div>
 
       {/* News Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {newsArticles.map((article) => (
-          <div
-            key={article.id}
-            className="flex bg-white shadow-sm rounded-lg overflow-hidden"
-          >
-            <div className="w-2/3 p-4 flex flex-col justify-between">
-              <div>
-                <div className="text-blue-500 text-sm mb-1">
-                  {article.date} | بواسطة {article.author}
+      {loading ? (
+        <p className="text-center">جاري تحميل الأخبار...</p>
+      ) : error ? (
+        <p className="text-center text-red-600">{error}</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {lastFourNews.map((article) => (
+            <div
+              key={article._id}
+              className="flex bg-white shadow-sm rounded-lg overflow-hidden cursor-pointer"
+              onClick={() => navigate(`news/${article._id}`)}
+            >
+              <div className="w-2/3 p-4 flex flex-col justify-between">
+                <div>
+                  <div className="text-blue-500 text-sm mb-1">
+                    {format(new Date(article.createdAt), "EEEE dd، MMMM yyyy")}{" "}
+                    | {article.service?.title || "خدمة غير معروفة"}
+                  </div>
+                  <h3 className="font-medium text-lg mb-2 line-clamp-2">
+                    {article.title}
+                  </h3>
                 </div>
-                <h3 className="font-medium text-lg mb-2">{article.title}</h3>
               </div>
-              <div className="flex items-center space-x-4 text-gray-500">
-                <div className="flex items-center ml-4">
-                  <span className="text-sm">{article.views}</span>
-                  <Eye className="w-4 h-4 mr-1" />
-                </div>
-                <div className="flex items-center">
-                  <span className="text-sm">{article.likes}</span>
-                  <Heart className="w-4 h-4 mr-1 text-red-500" />
-                </div>
+              <div className="w-1/3">
+                <img
+                  src={article.image?.thumbnailMedium || article.image?.url}
+                  alt={article.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
-            <div className="w-1/3">
-              <img
-                src={article.image}
-                alt={article.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,9 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import useServiceDetails from "../../../hooks/Services/useServices";
+// import useServiceDetails from "../../../hooks/Services/useServices";
 import { Calendar, Clock, CheckCircle, Star, ArrowLeft } from "lucide-react";
 import Loader from "../../../layouts/Loader";
+import { useServiceDetails } from "../../../hooks/Services/useServices";
 
 export default function Service() {
   const { reference } = useParams();

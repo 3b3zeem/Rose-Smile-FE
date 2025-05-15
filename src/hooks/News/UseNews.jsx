@@ -8,8 +8,10 @@ const fetchNews = async ({ page, size, search, sort }) => {
   try {
     const searchParam = search ? `&search=${search}` : "";
     const response = await axios.get(
-      `${BASE_URL}?page=${page}&size=${size}${searchParam}&sort=${sort}&select=title,subTitle,image,createdAt`
+      `${BASE_URL}?page=${page}&size=${size}${searchParam}&sort=${sort}`
     );
+    console.log(response.data);
+
     return response.data;
   } catch (error) {
     throw new Error(

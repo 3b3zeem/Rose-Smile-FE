@@ -12,19 +12,25 @@ import {
 import React, { useState, useEffect } from "react";
 import { useSectionTitles } from "../../hooks/Sections/UseSections";
 import { useServiceTitles } from "../../hooks/Services/useServices";
-import useBookingSubmit from "../../hooks/Bookings/useBookingSubmit";
+// import useBookingSubmit from "../../hooks/Bookings/useBookingSubmit";
 import { Toaster, toast } from "react-hot-toast";
 import Loader from "../../layouts/Loader";
+import useBookingSubmit from "../../hooks/Bookings/useBookingSubmit";
+import { useAuthContext } from "../../context/Auth/AuthContext";
 
-export default function BookingForm({ serviceData, sectionData, isSectionBooking }) {
+export default function BookingForm({
+  serviceData,
+  sectionData,
+  isSectionBooking,
+}) {
+  const { user } = useAuthContext();
   const { services: allServices } = useServiceTitles();
   const { sections } = useSectionTitles();
   const {
     submitBooking,
-    fetchDefaultSheet,
     defaultSheet,
-    loading: submitLoading,
-    error: submitError,
+    loadingSubmit: submitLoading,
+    errorSubmit: submitError,
     success: submitSuccess,
   } = useBookingSubmit();
 
@@ -38,8 +44,18 @@ export default function BookingForm({ serviceData, sectionData, isSectionBooking
   });
 
   useEffect(() => {
-    fetchDefaultSheet();
+    scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: `${user.firstName || ""} ${user.lastName || ""}`,
+        phone: user.phone || "",
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (defaultSheet?.sheet_id) {
@@ -88,6 +104,20 @@ export default function BookingForm({ serviceData, sectionData, isSectionBooking
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { name, phone, city, service, section, spreadsheetId } = formData;
+    if (!name || !phone || !city || !service || !section || !spreadsheetId) {
+      toast.error("من فضلك املأ جميع الحقول المطلوبة", {
+        position: "top-right",
+        style: {
+          fontFamily: "Arial, sans-serif",
+          direction: "rtl",
+          textAlign: "right",
+        },
+      });
+      return;
+    }
+
     await submitBooking(formData);
     if (!submitError) {
       setFormData({
@@ -142,8 +172,15 @@ export default function BookingForm({ serviceData, sectionData, isSectionBooking
             fullWidth
             label="رقم الهاتف"
             name="phone"
+            type="tel"
+            inputProps={{ inputMode: "numeric" }}
             value={formData.phone}
-            onChange={handleChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setFormData((prev) => ({ ...prev, phone: value }));
+              }
+            }}
             sx={{ marginBottom: "15px", direction: "rtl" }}
             required
             disabled={submitLoading}
@@ -226,6 +263,10 @@ export default function BookingForm({ serviceData, sectionData, isSectionBooking
                 color: "white",
                 padding: "10px",
                 fontSize: "20px",
+                minWidth: "150px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 "&:hover": {
                   backgroundColor: "#253276",
                 },
@@ -234,7 +275,7 @@ export default function BookingForm({ serviceData, sectionData, isSectionBooking
               disabled={submitLoading}
             >
               {submitLoading ? (
-                <CircularProgress size={24} color={"#fff"} />
+                <CircularProgress size={24} sx={{ color: "#fff" }} />
               ) : (
                 "احجز ميعادك"
               )}
