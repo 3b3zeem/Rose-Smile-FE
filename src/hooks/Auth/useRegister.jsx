@@ -13,6 +13,9 @@ const useRegister = () => {
         `${import.meta.env.VITE_BACK_END}/api/v1/auth/register`,
         formData
       );
+      if (res.data.success) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
       return res.data;
     } catch (err) {
       const backendErrors = err?.response?.data?.errors;

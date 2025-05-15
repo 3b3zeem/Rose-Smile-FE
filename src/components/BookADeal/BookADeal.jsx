@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 // import useServiceDetails from "../../hooks/Services/useServices";
 import BookingForm from "../Booking/BookingForm";
 import { Calendar, FileText, CheckCircle } from "lucide-react";
-import useServiceDetails from "../../hooks/Services/useServices";
 import useSectionData from "../../hooks/Sections/UseSections";
 import Loader from "../../layouts/Loader";
+import { useServiceDetails } from "../../hooks/Services/useServices";
 // import useSectionData from "../../hooks/Sections/UseSections";
 
 const BookADeal = ({ type }) => {

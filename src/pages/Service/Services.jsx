@@ -257,9 +257,103 @@ const Services = () => {
         {/* Overlay for mobile */}
         {isFilterOpen && (
           <div
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[90] lg:hidden"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-500 lg:hidden"
             onClick={() => setIsFilterOpen(false)}
-          />
+          >
+            <div
+              className={`fixed lg:static inset-y-0 right-0 z-[50] w-80 max-w-[80%] bg-white shadow-sm lg:w-1/4 lg:bg-transparent p-6 transform transition-all duration-300 ease-in-out ${
+                isFilterOpen
+                  ? "translate-x-0"
+                  : "translate-x-full lg:translate-x-0"
+              }`}
+              style={{ top: "0" }}
+              dir="rtl"
+            >
+              {/* Close button - Mobile */}
+              <div className="sticky top-0 flex justify-between items-center mb-8 lg:hidden bg-white pb-4 border-b border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-800">الأقسام</h3>
+                <button
+                  onClick={() => setIsFilterOpen(false)}
+                  className="text-gray-600 hover:text-pink-500 transition-colors duration-200 cursor-pointer p-2 hover:bg-pink-50/50 rounded-full"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Sections List */}
+              <div className="h-full overflow-y-auto">
+                {sectionsError ? (
+                  <div className="text-red-600">{sectionsError}</div>
+                ) : (
+                  <div className="space-y-1.5">
+                    {sections.map((section) => (
+                      <div
+                        key={section.id}
+                        className="flex items-center gap-3 text-right hover:bg-gray-50/80 p-2.5 rounded-lg transition-all duration-200 group pt-5"
+                      >
+                        <label className="relative flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={selectedSectionIds.includes(section.id)}
+                            onChange={() => handleCategoryChange(section.id)}
+                          />
+                          <div className="w-4.5 h-4.5 border-2 border-gray-300 rounded flex items-center justify-center peer-checked:border-pink-400 peer-checked:bg-gradient-to-r from-pink-400 to-pink-500 transition-all duration-200 group-hover:border-pink-300">
+                            <svg
+                              className="w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={3}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                        </label>
+                        <span
+                          className="flex-1 text-gray-600 group-hover:text-gray-900 transition-colors duration-200 cursor-pointer text-sm font-medium"
+                          onClick={() => handleCategoryChange(section.id)}
+                        >
+                          {section.title}
+                        </span>
+                        <span className="text-xs text-gray-400 group-hover:text-pink-400 transition-colors duration-200">
+                          {/* يمكنك إضافة عدد الخدمات في كل قسم هنا إذا كان متوفراً */}
+                          {/* {section.servicesCount} */}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Footer - Selected Filters Summary */}
+              {selectedSectionIds.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => {
+                        setSearchParams((prev) => {
+                          const newParams = new URLSearchParams(prev);
+                          newParams.delete("sectionIds");
+                          return newParams;
+                        });
+                      }}
+                      className="text-xs text-pink-500 hover:text-pink-600 transition-colors duration-200"
+                    >
+                      مسح التصفية
+                    </button>
+                    <span className="text-xs text-gray-500">
+                      {selectedSectionIds.length} قسم محدد
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
         {/* Main Content Area */}

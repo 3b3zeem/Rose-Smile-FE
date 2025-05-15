@@ -201,11 +201,7 @@ const AdminHero = () => {
                             onClick={() => setSelectedHero(hero)}
                           >
                             <img
-                              src={
-                                hero.image?.heroBanner ||
-                                hero.image?.url ||
-                                "/placeholder.png"
-                              }
+                              src={hero.image?.backgroundLarge}
                               alt={hero.title}
                               className="w-full h-full object-cover"
                               onClick={() => handleImageClick(hero)}

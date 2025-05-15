@@ -1,17 +1,17 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const useBookingSubmit = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [errorSubmit, setErrorSubmit] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [defaultSheet, setDefaultSheet] = useState(null);
 
   const BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1/form/`;
 
   const submitBooking = async (formData) => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoadingSubmit(true);
+      setErrorSubmit(null);
       setSuccess(null);
 
       const response = await fetch(BASE_URL, {
@@ -28,46 +28,44 @@ const useBookingSubmit = () => {
         setSuccess("تم إرسال الحجز بنجاح!");
         return data;
       } else {
-        setError(data.message || "فشل في إرسال الحجز");
+        setErrorSubmit(data.message || "فشل في إرسال الحجز");
       }
     } catch (err) {
-      setError("حدث خطأ أثناء إرسال الحجز");
+      setErrorSubmit(err);
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
 
-  const fetchDefaultSheet = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
+  const {
+    data: defaultSheet,
+    error: errorFetch,
+    isLoading: loadingFetch,
+  } = useQuery({
+    queryKey: ["defaultSheet"],
+    queryFn: async () => {
       const res = await fetch(
         `${import.meta.env.VITE_BACK_END}/api/v1/sheet/default`
       );
       const data = await res.json();
-      const sheetId = data.sheet;
-
-      if (data.success) {
-        setDefaultSheet(sheetId);
-        return data.data;
-      } else {
-        setError(data.message || "فشل في تحميل بيانات الورقة الافتراضية");
+      if (!data.success) {
+        throw new Error(
+          data.message || "فشل في تحميل بيانات الورقة الافتراضية"
+        );
       }
-    } catch (err) {
-      setError("حدث خطأ أثناء جلب بيانات الورقة");
-    } finally {
-      setLoading(false);
-    }
-  };
+      return data.sheet;
+    },
+    refetchOnWindowFocus: false,
+  });
 
   return {
     submitBooking,
-    fetchDefaultSheet,
-    defaultSheet,
-    loading,
-    error,
+    loadingSubmit,
+    errorSubmit,
     success,
+    defaultSheet,
+    loadingFetch,
+    errorFetch,
   };
 };
 

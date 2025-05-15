@@ -1,39 +1,44 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
+// ✅ GET: Fetch User Profile using React Query
 export const useUserProfile = () => {
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [updateLoading, setUpdateLoading] = useState(false);
-  const [updateError, setUpdateError] = useState(null);
-
   const fetchUserProfile = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_BACK_END}/api/v1/user/profile`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      if (data.success) {
-        setUserData(data.user);
-      } else {
-        setError("Failed to fetch user data");
-      }
-    } catch (err) {
-      setError("Error fetching user data");
-    } finally {
-      setLoading(false);
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACK_END}/api/v1/user/profile`,
+      { withCredentials: true }
+    );
+
+    if (response.data.success) {
+      return response.data.user;
+    } else {
+      throw new Error("Failed to fetch user data");
     }
   };
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+  const {
+    data: userData,
+    isLoading: loading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: fetchUserProfile,
+  });
+
+  return {
+    userData,
+    loading,
+    error: isError ? error?.message : null,
+    fetchUserProfile,
+  };
+};
+
+// ✅ PUT: Update User (still using axios directly)
+export const useUpdateUser = () => {
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateError, setUpdateError] = useState(null);
 
   const updateUser = async (updatedData) => {
     try {
@@ -55,7 +60,6 @@ export const useUserProfile = () => {
         throw new Error("Failed to update user profile");
       }
 
-      setUserData(response.data.user);
       return response.data;
     } catch (err) {
       setUpdateError(
@@ -68,16 +72,13 @@ export const useUserProfile = () => {
   };
 
   return {
-    userData,
-    loading,
-    error,
-    fetchUserProfile,
     updateUser,
     updateLoading,
     updateError,
   };
 };
 
+// ✅ POST: Upload Avatar
 export const useUploadAvatar = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -110,9 +111,7 @@ export const useUploadAvatar = () => {
         throw new Error("Failed to upload avatar");
       }
 
-      if (res.status == 200) {
-        return res.data;
-      }
+      return res.data;
     } catch (err) {
       setError(
         err.response?.data?.message ||
@@ -127,6 +126,7 @@ export const useUploadAvatar = () => {
   return { uploadAvatar, loading, error };
 };
 
+// ✅ PUT: Change Password
 export const useChangePassword = () => {
   const [changePasswordLoading, setChangePasswordLoading] = useState(false);
   const [changePasswordError, setChangePasswordError] = useState(null);

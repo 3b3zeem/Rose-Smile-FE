@@ -23,7 +23,7 @@ const useLogin = () => {
 
       return res.data;
     } catch (err) {
-      setError(err?.response?.data?.message || "فشل في تسجيل الدخول");
+      setError(err?.response?.data?.message);
       return null;
     } finally {
       setLoading(false);

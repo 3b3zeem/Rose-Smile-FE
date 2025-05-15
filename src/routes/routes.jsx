@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute.jsx';
 import BookADeal from '../components/BookADeal/BookADeal.jsx';
 import NewsId from '../pages/News/NewsId/NewsId.jsx';
 import AdminNews from '../dashboard/pages/news/AdminNews.jsx';
+import Influence from '../pages/Influence/Influence.jsx';
 
 const Loader = lazy(() => import('../layouts/Loader.jsx'));
 const Home = lazy(() => import('../pages/Home/Home.jsx'));
@@ -199,6 +200,14 @@ const routes = createBrowserRouter([
         element: (
           <Suspense fallback={<Loader />}>
             <Profile />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'Influence',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Influence />
           </Suspense>
         ),
       },

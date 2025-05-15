@@ -13,7 +13,6 @@ const Sections = () => {
 
   const { sections, loading, error, refetch } = useAllSections();
 
-  if (loading) return <Loader />;
   if (error) return <div>حدث خطأ: {error}</div>;
 
   const handleSearch = (value) => {
@@ -120,11 +119,16 @@ const Sections = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col lg:flex-row-reverse gap-6 relative" dir="rtl">
+      <div
+        className="flex flex-col lg:flex-row-reverse gap-6 relative"
+        dir="rtl"
+      >
         {/* Main Content Area */}
         <div className="flex-1">
           {/* Sections Grid */}
-          {sections.length === 0 ? (
+          {loading ? (
+            <Loader />
+          ) : sections.length === 0 ? (
             <div className="text-center p-8 text-gray-600">
               لا توجد أقسام متاحة حاليًا.
             </div>

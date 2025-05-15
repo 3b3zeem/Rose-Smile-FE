@@ -8,11 +8,11 @@ import {
   Info,
 } from "lucide-react";
 
-import useOffers from "../../../hooks/HomeComponents/useOffers";
 import { useNavigate } from "react-router-dom";
+import useFetchOffers from "../../../hooks/HomeComponents/useOffers";
 
 const Offers = () => {
-  const { offers, loading } = useOffers();
+  const { data: offers = [], isLoading: loading } = useFetchOffers();
   const navigate = useNavigate();
 
   const handleNavigate = (type, reference) => {
