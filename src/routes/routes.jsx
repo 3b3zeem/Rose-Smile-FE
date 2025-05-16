@@ -204,7 +204,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'Influence',
+        path: 'Influence/:name',
         element: (
           <Suspense fallback={<Loader />}>
             <Influence />
