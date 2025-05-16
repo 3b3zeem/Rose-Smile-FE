@@ -69,7 +69,7 @@ export default function BookingForm({
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      service: serviceData?.id || "", // إذا كان serviceData موجود، نحدد الخدمة
+      service: serviceData?.id || "",
       section: sectionData?.id || "",
     }));
   }, [serviceData, sectionData]);
@@ -121,8 +121,8 @@ export default function BookingForm({
     await submitBooking(formData);
     if (!submitError) {
       setFormData({
-        name: "",
-        phone: "",
+        name: `${user.firstName || ""} ${user.lastName || ""}`,
+        phone: user.phone || "",
         city: "",
         service: serviceData?.id || "",
         section: sectionData?.id || "",
