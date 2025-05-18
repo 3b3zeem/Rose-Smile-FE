@@ -115,9 +115,9 @@ const Influence = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, phone, city, service, section } = formData;
-    if (!name || !phone || !city || (!service && !section)) {
-      toast.error("من فضلك املأ جميع الحقول المطلوبة أو اختر خدمة أو قسم.", {
+    const { name, phone, city, section } = formData;
+    if (!name || !phone || !city || !section) {
+      toast.error("من فضلك املأ جميع الحقول المطلوبة.", {
         position: "top-right",
         style: {
           fontFamily: "Arial, sans-serif",
@@ -133,7 +133,7 @@ const Influence = () => {
         name,
         phone,
         city,
-        service,
+        service: formData.service || undefined,
         section,
         spreadsheetId: sheet?.sheet_id,
       });
@@ -311,6 +311,7 @@ const Influence = () => {
             fullWidth
             margin="dense"
             sx={{ background: "#f9f9f9", borderRadius: 2, mb: 2 }}
+            required
           >
             <InputLabel id="section-label">القسم</InputLabel>
             <Select
