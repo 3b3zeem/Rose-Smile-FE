@@ -12,8 +12,7 @@ const DoctorDetail = () => {
   const { doctorId } = useParams();
   const { doctor, loading, error } = useDoctorDetails(doctorId);
 
-  if (loading)
-    return <Loader />;
+  if (loading) return <Loader />;
 
   if (error || !doctor) {
     return (
@@ -57,10 +56,14 @@ const DoctorDetail = () => {
             </p>
 
             <div className="border border-blue-100 rounded-xl p-4 sm:p-6 shadow-sm text-gray-800">
-              <h2 className="text-base sm:text-xl font-semibold text-blue-800 mb-3">الوصف:</h2>
+              <h2 className="text-base sm:text-xl font-semibold text-blue-800 mb-3">
+                الوصف:
+              </h2>
               <ul className="list-disc pr-4 space-y-2 text-sm leading-loose">
                 {inlineDescription.map((line, idx) => (
-                  <li key={idx} className="break-words">{line}</li>
+                  <li key={idx} className="break-words">
+                    {line}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -70,30 +73,37 @@ const DoctorDetail = () => {
         {/* More Info (only if lines > 7 lines) */}
         {extraDescription.length > 0 && (
           <div className="mb-16">
-            <h2 className="text-xl sm:text-2xl font-semibold text-blue-900 mb-4 border-t pt-6">معلومات إضافية</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-blue-900 mb-4 border-t pt-6">
+              معلومات إضافية
+            </h2>
             <ul className="list-disc pr-6 space-y-2 text-sm leading-loose text-gray-800">
               {extraDescription.map((line, idx) => (
-                <li key={idx} className="break-words">{line}</li>
+                <li key={idx} className="break-words">
+                  {line}
+                </li>
               ))}
             </ul>
           </div>
         )}
-         {/* Divider */}
-         <div className="w-full border-t border-gray-200 my-12"></div>
+        {/* Divider */}
+        <div className="w-full border-t border-gray-200 my-12"></div>
 
         {/* Static Section */}
         <section className="mb-16">
-          <h2 className="text-2xl font-semibold text-blue-900 mb-4">رؤيتنا في رعاية المرضى</h2>
+          <h2 className="text-2xl font-semibold text-blue-900 mb-4">
+            رؤيتنا في رعاية المرضى
+          </h2>
           <p className="text-gray-700 leading-loose max-w-3xl mx-auto text-base sm:text-lg">
-            نحن نؤمن بأهمية التفاعل الإنساني بين الطبيب والمريض، ونركز على تقديم رعاية شاملة ومريحة
-            لجميع الحالات. هدفنا هو دمج أحدث التقنيات مع تعاطف حقيقي لنمنحك أفضل تجربة علاجية ممكنة.
+            نحن نؤمن بأهمية التفاعل الإنساني بين الطبيب والمريض، ونركز على تقديم
+            رعاية شاملة ومريحة لجميع الحالات. هدفنا هو دمج أحدث التقنيات مع
+            تعاطف حقيقي لنمنحك أفضل تجربة علاجية ممكنة.
           </p>
         </section>
 
         {/* Case Gallery */}
         <section className="border-t pt-10">
           <h3 className="text-2xl text-blue-900 font-semibold text-center mb-6">
-            الحالات الخاصة بالدكتور {doctor.name}
+            الحالات الخاصة بالطبيب {doctor.name}
           </h3>
           <CaseGallery cases={doctor.cases || []} doctorName={doctor.name} />
         </section>

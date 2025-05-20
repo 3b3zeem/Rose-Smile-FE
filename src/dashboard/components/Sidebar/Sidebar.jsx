@@ -82,7 +82,7 @@ const Sidebar = () => {
               <SidebarItem
                 to="/admin-dashboard/doctors"
                 icon={<Stethoscope />}
-                label="الدكاترة"
+                label="الاطباء"
                 isOpen={isOpen}
               />
               <SidebarItem
