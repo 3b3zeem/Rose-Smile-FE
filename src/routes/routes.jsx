@@ -1,80 +1,79 @@
-import { createBrowserRouter } from 'react-router-dom';
-import LayOut from '../layouts/Layout.jsx';
-import AdminLayout from '../dashboard/layouts/Layout.jsx';
-import { lazy, Suspense } from 'react';
-import NotFound from '../components/NotFound/NotFound.jsx';
-import ProtectedRoute from './ProtectedRoute.jsx';
-import BookADeal from '../components/BookADeal/BookADeal.jsx';
-import NewsId from '../pages/News/NewsId/NewsId.jsx';
-import AdminNews from '../dashboard/pages/news/AdminNews.jsx';
-import Influence from '../pages/Influence/Influence.jsx';
+import { createBrowserRouter } from "react-router-dom";
+import LayOut from "../layouts/Layout.jsx";
+import AdminLayout from "../dashboard/layouts/Layout.jsx";
+import { lazy, Suspense } from "react";
+import NotFound from "../components/NotFound/NotFound.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import BookADeal from "../components/BookADeal/BookADeal.jsx";
+import NewsId from "../pages/News/NewsId/NewsId.jsx";
+import AdminNews from "../dashboard/pages/news/AdminNews.jsx";
+import Influence from "../pages/Influence/Influence.jsx";
 
-const Loader = lazy(() => import('../layouts/Loader.jsx'));
-const Home = lazy(() => import('../pages/Home/Home.jsx'));
+const Loader = lazy(() => import("../layouts/Loader.jsx"));
+const Home = lazy(() => import("../pages/Home/Home.jsx"));
 const PrivacyPolicy = lazy(() =>
-  import('../pages/PrivacyPolicy/PrivacyPolicy.jsx')
+  import("../pages/PrivacyPolicy/PrivacyPolicy.jsx")
 );
-const Services = lazy(() => import('../pages/Service/Services.jsx'));
+const Services = lazy(() => import("../pages/Service/Services.jsx"));
 
-const News = lazy(() => import('../pages/News/News.jsx'));
+const News = lazy(() => import("../pages/News/News.jsx"));
 
 const ServiceId = lazy(() =>
-  import('../pages/Service/ServiceId/ServiceId.jsx')
+  import("../pages/Service/ServiceId/ServiceId.jsx")
 );
-const Sections = lazy(() => import('../pages/Section/Sections.jsx'));
+const Sections = lazy(() => import("../pages/Section/Sections.jsx"));
 const SectionId = lazy(() =>
-  import('../pages/Section/SectionId/SectionId.jsx')
+  import("../pages/Section/SectionId/SectionId.jsx")
 );
-const DoctorList = lazy(() => import('../pages/Doctors/DoctorList.jsx'));
-const DoctorDetail = lazy(() => import('../pages/Doctors/DoctorDetails.jsx'));
-const Register = lazy(() => import('../pages/Auth/Register.jsx'));
-const Login = lazy(() => import('../pages/Auth/Login.jsx'));
-const ResetPassword = lazy(() => import('../pages/Auth/ResetPassword.jsx'));
-const Profile = lazy(() => import('../pages/User/Profile.jsx'));
+const DoctorList = lazy(() => import("../pages/Doctors/DoctorList.jsx"));
+const DoctorDetail = lazy(() => import("../pages/Doctors/DoctorDetails.jsx"));
+const Register = lazy(() => import("../pages/Auth/Register.jsx"));
+const Login = lazy(() => import("../pages/Auth/Login.jsx"));
+const ResetPassword = lazy(() => import("../pages/Auth/ResetPassword.jsx"));
+const Profile = lazy(() => import("../pages/User/Profile.jsx"));
 
 // * Admin
-const Dashboard = lazy(() => import('../dashboard/pages/Home/Dashboard.jsx'));
 const AdminUsers = lazy(() =>
-  import('../dashboard/pages/Users/AdminUsers.jsx')
+  import("../dashboard/pages/Users/AdminUsers.jsx")
 );
 const AdminServices = lazy(() =>
-  import('../dashboard/pages/Services/AdminServices.jsx')
+  import("../dashboard/pages/Services/AdminServices.jsx")
 );
 
 //DashBoard Section
 const AdminSection = lazy(() =>
-  import('../dashboard/pages/Sections/AdminSection.jsx')
+  import("../dashboard/pages/Sections/AdminSection.jsx")
 );
 // DashBoard Doctor
 const AdminDoctors = lazy(() =>
-  import('../dashboard/pages/Doctors/AdminDoctors.jsx')
+  import("../dashboard/pages/Doctors/AdminDoctors.jsx")
 );
 const AddDoctor = lazy(() =>
-  import('../dashboard/pages/Doctors/AddDoctorModal.jsx')
+  import("../dashboard/pages/Doctors/AddDoctorModal.jsx")
 );
 const EditDoctor = lazy(() =>
-  import('../dashboard/pages/Doctors/EditDoctorModal.jsx')
+  import("../dashboard/pages/Doctors/EditDoctorModal.jsx")
 );
 
 const AdminSheets = lazy(() =>
-  import('../dashboard/pages/Sheets/AdminSheets.jsx')
+  import("../dashboard/pages/Sheets/AdminSheets.jsx")
 );
 
 const AdminCustomerData = lazy(() =>
-  import('../dashboard/pages/CustomerData/AdminCustomerData.jsx')
+  import("../dashboard/pages/CustomerData/AdminCustomerData.jsx")
 );
 
 const AdminOffers = lazy(() =>
-  import('../dashboard/pages/offers/AdminOffers.jsx')
+  import("../dashboard/pages/offers/AdminOffers.jsx")
 );
-const AdminHero = lazy(() => import('../dashboard/pages/Heros/AdminHero.jsx'));
+const AdminHero = lazy(() => import("../dashboard/pages/Heros/AdminHero.jsx"));
 const routes = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <LayOut />,
     children: [
       {
-        path: '',
+        path: "",
         element: (
           <Suspense fallback={<Loader />}>
             <Home />
@@ -83,7 +82,7 @@ const routes = createBrowserRouter([
       },
 
       {
-        path: 'services',
+        path: "services",
         element: (
           <Suspense fallback={<Loader />}>
             <Services />
@@ -91,7 +90,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'news',
+        path: "news",
         element: (
           <Suspense fallback={<Loader />}>
             <News />
@@ -99,7 +98,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'news/:newId',
+        path: "news/:newId",
         element: (
           <Suspense fallback={<Loader />}>
             <NewsId />
@@ -108,7 +107,7 @@ const routes = createBrowserRouter([
       },
 
       {
-        path: 'service/:reference',
+        path: "service/:reference",
         element: (
           <Suspense fallback={<Loader />}>
             <ServiceId />
@@ -116,7 +115,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'BookADeal/service/:reference',
+        path: "BookADeal/service/:reference",
         element: (
           <Suspense fallback={<Loader />}>
             <BookADeal type="service" />
@@ -124,7 +123,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'BookADeal/section/:reference',
+        path: "BookADeal/section/:reference",
         element: (
           <Suspense fallback={<Loader />}>
             <BookADeal type="section" />
@@ -132,7 +131,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'sections',
+        path: "sections",
         element: (
           <Suspense fallback={<Loader />}>
             <Sections />
@@ -140,7 +139,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'section/:reference',
+        path: "section/:reference",
         element: (
           <Suspense fallback={<Loader />}>
             <SectionId />
@@ -148,7 +147,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'PrivacyPolicy',
+        path: "PrivacyPolicy",
         element: (
           <Suspense fallback={<Loader />}>
             <PrivacyPolicy />
@@ -156,7 +155,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'doctors',
+        path: "doctors",
         element: (
           <Suspense fallback={<Loader />}>
             <DoctorList />
@@ -164,7 +163,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'doctor/:doctorId',
+        path: "doctor/:doctorId",
         element: (
           <Suspense fallback={<Loader />}>
             <DoctorDetail />
@@ -172,7 +171,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'register',
+        path: "register",
         element: (
           <Suspense fallback={<Loader />}>
             <Register />
@@ -180,7 +179,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'login',
+        path: "login",
         element: (
           <Suspense fallback={<Loader />}>
             <Login />
@@ -188,7 +187,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'resetPassword/:token',
+        path: "resetPassword/:token",
         element: (
           <Suspense fallback={<Loader />}>
             <ResetPassword />
@@ -196,7 +195,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'profile',
+        path: "profile",
         element: (
           <Suspense fallback={<Loader />}>
             <Profile />
@@ -204,7 +203,7 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'Influence/:name',
+        path: "Influence/:name",
         element: (
           <Suspense fallback={<Loader />}>
             <Influence />
@@ -212,9 +211,9 @@ const routes = createBrowserRouter([
         ),
       },
       {
-        path: 'admin-dashboard',
+        path: "admin-dashboard",
         element: (
-          <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
+          <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
             <Suspense fallback={<Loader />}>
               <AdminLayout />
             </Suspense>
@@ -222,16 +221,7 @@ const routes = createBrowserRouter([
         ),
         children: [
           {
-            index: true,
-            element: (
-              <Suspense fallback={<Loader />}>
-                <Dashboard />
-              </Suspense>
-            ),
-          },
-
-          {
-            path: 'users', // /admin-dashboard/users
+            path: "users", // /admin-dashboard/users
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminUsers />
@@ -240,7 +230,7 @@ const routes = createBrowserRouter([
           },
 
           {
-            path: 'offers', // /admin-dashboard/offers
+            path: "offers", // /admin-dashboard/offers
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminOffers />
@@ -249,7 +239,7 @@ const routes = createBrowserRouter([
           },
 
           {
-            path: 'heroes', // /admin-dashboard/heroes
+            path: "heroes", // /admin-dashboard/heroes
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminHero />
@@ -258,7 +248,7 @@ const routes = createBrowserRouter([
           },
 
           {
-            path: 'sections', // /admin-dashboard/Sections
+            path: "sections", // /admin-dashboard/Sections
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminSection />
@@ -266,7 +256,7 @@ const routes = createBrowserRouter([
             ),
           },
           {
-            path: 'news', // /admin-dashboard/Sections
+            path: "news", // /admin-dashboard/Sections
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminNews />
@@ -275,7 +265,7 @@ const routes = createBrowserRouter([
           },
 
           {
-            path: 'services', // /admin-dashboard/services
+            path: "services", // /admin-dashboard/services
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminServices />
@@ -284,7 +274,7 @@ const routes = createBrowserRouter([
           },
 
           {
-            path: 'doctors', // /admin-dashboard/doctors
+            path: "doctors", // /admin-dashboard/doctors
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminDoctors />
@@ -292,7 +282,7 @@ const routes = createBrowserRouter([
             ),
           },
           {
-            path: 'doctors/add', // /admin-dashboard/doctors/add
+            path: "doctors/add", // /admin-dashboard/doctors/add
             element: (
               <Suspense fallback={<Loader />}>
                 <AddDoctor />
@@ -300,7 +290,7 @@ const routes = createBrowserRouter([
             ),
           },
           {
-            path: 'doctors/edit/:doctorId', // /admin-dashboard/doctors/edit/123
+            path: "doctors/edit/:doctorId", // /admin-dashboard/doctors/edit/123
             element: (
               <Suspense fallback={<Loader />}>
                 <EditDoctor />
@@ -309,7 +299,7 @@ const routes = createBrowserRouter([
           },
 
           {
-            path: 'sheets', // /admin-dashboard/doctors
+            path: "sheets", // /admin-dashboard/doctors
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminSheets />
@@ -317,7 +307,7 @@ const routes = createBrowserRouter([
             ),
           },
           {
-            path: 'customers', // /admin-dashboard/doctors
+            path: "customers", // /admin-dashboard/doctors
             element: (
               <Suspense fallback={<Loader />}>
                 <AdminCustomerData />
@@ -326,7 +316,7 @@ const routes = createBrowserRouter([
           },
         ],
       },
-      { path: '*', element: <NotFound /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);

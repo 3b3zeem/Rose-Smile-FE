@@ -39,9 +39,11 @@ const ArabicNavbar = () => {
 
   const handleDashboardRedirect = () => {
     if (!user) return;
-    if (user.role === "admin" || user.role === "superadmin")
-      navigate("/admin-dashboard");
-    else navigate("/dashboard");
+    if (user.role === "superadmin") {
+      navigate("/admin-dashboard/heroes");
+    } else if (user.role === "admin") {
+      navigate("/admin-dashboard/customers");
+    } else navigate("/dashboard");
   };
 
   useEffect(() => {
