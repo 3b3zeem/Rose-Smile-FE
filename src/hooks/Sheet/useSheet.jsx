@@ -6,14 +6,16 @@ export const useSheet = (name) => {
   return useQuery({
     queryKey: ["sheet", name],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/v1/sheet/${name}`);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACK_END}/api/v1/sheet/${name}`
+      );
       return res.data.sheet;
     },
     enabled: !!name,
   });
 };
 
-const API_BASE_URL = "http://localhost:5000/api/v1";
+const API_BASE_URL = `${import.meta.env.VITE_BACK_END}/api/v1`;
 
 export const fetchServicesBySection = async (sectionId) => {
   if (!sectionId) return [];
