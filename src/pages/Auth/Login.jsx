@@ -22,7 +22,7 @@ const validationSchema = Yup.object({
       /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/,
       "كلمة المرور يجب أن تحتوي على أحرف وأرقام"
     )
-    .required("كلمة المرور مطلوبة")
+    .required("كلمة المرور مطلوبة"),
 });
 
 const Login = () => {
@@ -45,8 +45,10 @@ const Login = () => {
         toast.success("تم تسجيل الدخول بنجاح");
         const user = res?.user || JSON.parse(localStorage.getItem("user"));
         setTimeout(() => {
-          if (user?.role === "admin" || user?.role === "superadmin") {
-            navigate("/admin-dashboard");
+          if (user?.role === "admin") {
+            navigate("/admin-dashboard/customers");
+          } else if (user?.role === "superadmin") {
+            navigate("/admin-dashboard/heroes");
           } else {
             navigate("/");
           }
