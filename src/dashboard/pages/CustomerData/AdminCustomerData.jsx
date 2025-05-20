@@ -1,5 +1,5 @@
 // dashboard/pages/Sheets/AdminCustomerData.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Search,
   ChevronLeft,
@@ -8,13 +8,13 @@ import {
   Trash2,
   Pencil,
   MessageSquareDiff,
-} from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import Swal from 'sweetalert2';
-import EditCustomerDataModal from './EditCustomerDataModal';
-import AddCommentModal from './AddCommentModal';
-import useCustomerDataActions from '../../hooks/CustomerData/useCustomerDataActions';
+} from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
+import EditCustomerDataModal from "./EditCustomerDataModal";
+import AddCommentModal from "./AddCommentModal";
+import useCustomerDataActions from "../../hooks/CustomerData/useCustomerDataActions";
 const AdminCustomerData = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -29,12 +29,14 @@ const AdminCustomerData = () => {
     deleteCustomerData,
   } = useCustomerDataActions();
 
-  const initialSearchTerm = searchParams.get('search') || '';
+  const initialSearchTerm = searchParams.get("search") || "";
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddCommentModalOpen, setIsAddCommentModalOpen] = useState(false);
   const [currentCustomerData, setCurrentCustomerData] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const isSuperAdmin =
+    JSON.parse(localStorage.getItem("user")).role === "superadmin";
 
   const handleEditClick = (data) => {
     setCurrentCustomerData(data);
@@ -48,14 +50,14 @@ const AdminCustomerData = () => {
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
-      title: 'هل أنت متأكد؟',
-      text: '!لن تتمكن من التراجع عن هذا',
-      icon: 'warning',
+      title: "هل أنت متأكد؟",
+      text: "!لن تتمكن من التراجع عن هذا",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: '!نعم، احذف',
-      cancelButtonText: 'إلغاء',
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "!نعم، احذف",
+      cancelButtonText: "إلغاء",
     });
 
     if (result.isConfirmed) {
@@ -65,7 +67,7 @@ const AdminCustomerData = () => {
         if (response.success) toast.success(response.message);
         else toast.error(response.message);
       } catch (err) {
-        toast.error(err.message || 'حدث خطأ أثناء الحذف');
+        toast.error(err.message || "حدث خطأ أثناء الحذف");
       } finally {
         setDeletingId(null);
       }
@@ -77,17 +79,17 @@ const AdminCustomerData = () => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
       if (newTerm) {
-        newParams.set('search', newTerm);
-        newParams.set('page', '1');
+        newParams.set("search", newTerm);
+        newParams.set("page", "1");
       } else {
-        newParams.delete('search');
+        newParams.delete("search");
       }
       return newParams;
     });
   };
 
   useEffect(() => {
-    setSearchTerm(searchParams.get('search') || '');
+    setSearchTerm(searchParams.get("search") || "");
   }, [searchParams]);
 
   return (
@@ -169,31 +171,37 @@ const AdminCustomerData = () => {
                   {customerData.length > 0 ? (
                     customerData.map((data) => (
                       <tr key={data._id}>
-                        <td className="px-4 py-3 text-center">{data.name}</td>
-                        <td className="px-4 py-3 text-center" dir="ltr">{data.phone}</td>
-                        <td className="px-4 py-3 text-center">{data.city}</td>
                         <td className="px-4 py-3 text-center">
-                          {data?.section?.title.slice(0,50)+"..."}
+                          {data?.name || " لا يوجد اسم"}
+                        </td>
+                        <td className="px-4 py-3 text-center" dir="ltr">
+                          {data.phone}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          {data?.service?.title.slice(0,50)+"..."}
+                          {data.city || "لا يوجد مدينه"}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {data?.section?.title.slice(0, 50) + "..."}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {data?.service?.title.slice(0, 50) + "..."}
                         </td>
                         <td className="px-4 py-3 text-center">{data.status}</td>
                         <td className="px-4 py-3 text-center">
-                          {data.comment ? `${data.comment}` : '-'}
+                          {data.comment ? `${data?.comment}` : "لا يوجد تعليق"}
                         </td>
                         <td className="px-4 py-3 text-center">
                           {data.editedBy
                             ? `${data.editedBy?.firstName} ${data.editedBy?.lastName}`
-                            : '-'}
+                            : "-"}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          {new Date(data.updatedAt).toLocaleString('ar-Ar', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
+                          {new Date(data.updatedAt).toLocaleString("ar-Ar", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
                           })}
                         </td>
 
@@ -206,26 +214,30 @@ const AdminCustomerData = () => {
                             <MessageSquareDiff size={16} />
                           </button>
 
-                          <button
-                            onClick={() => handleEditClick(data)}
-                            className="text-blue-600 hover:text-blue-800 cursor-pointer mt-2"
-                            title="تعديل"
-                          >
-                            <Pencil size={16} />
-                          </button>
+                          {isSuperAdmin && (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleEditClick(data)}
+                                className="text-blue-600 hover:text-blue-800 cursor-pointer mt-2"
+                                title="تعديل"
+                              >
+                                <Pencil size={16} />
+                              </button>
 
-                          <button
-                            onClick={() => handleDelete(data._id)}
-                            className="text-red-600 hover:text-red-800 cursor-pointer mt-2"
-                            title="حذف"
-                            disabled={deletingId === data._id}
-                          >
-                            {deletingId === data._id ? (
-                              <Loader2 size={16} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={16} />
-                            )}
-                          </button>
+                              <button
+                                onClick={() => handleDelete(data._id)}
+                                className="text-red-600 hover:text-red-800 cursor-pointer mt-2"
+                                title="حذف"
+                                disabled={deletingId === data._id}
+                              >
+                                {deletingId === data._id ? (
+                                  <Loader2 size={16} className="animate-spin" />
+                                ) : (
+                                  <Trash2 size={16} />
+                                )}
+                              </button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))
