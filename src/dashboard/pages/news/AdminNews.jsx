@@ -74,7 +74,7 @@ export default function AdminNews() {
       cancelButtonText: "إلغاء",
     });
     console.log(result);
-     if (result.isConfirmed) {
+    if (result.isConfirmed) {
       setDeletingNewsId(newsId);
       try {
         const response = await deleteNew(newsId);
@@ -172,17 +172,19 @@ export default function AdminNews() {
                       <tr key={newsItem._id}>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                           <img
-                            src={newsItem.image?.cardImage}
-                            alt={newsItem.title}
+                            src={
+                              newsItem.image?.cardImage || newsItem.image?.url
+                            }
+                            alt={newsItem?.title || "لا يوجد عنوان"}
                             className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer mx-auto"
                             onClick={() => handleImageClick(newsItem)}
                           />
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[150px] sm:max-w-[200px] truncate">
-                          {newsItem.title}
+                          {newsItem?.title || "لا يوجد عنوان"}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] truncate">
-                          {newsItem.subTitle}
+                          {newsItem.subTitle|| "لا يوجد عنوان فرعى"}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
                           {new Date(newsItem.createdAt).toLocaleDateString(

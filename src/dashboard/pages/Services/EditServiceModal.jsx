@@ -25,8 +25,8 @@ const EditServiceModal = ({
     if (service) {
       setFormData({
         title: service.title || "",
-        subTitle: service.subTitle || "",
-        sectionId: service.section?._id || "",
+        subTitle: service?.subTitle || "",
+        sectionId: service?.section?._id || "",
         description: service.description?.length > 0 ? service.description : [],
         features: service.features?.length > 0 ? service.features : [],
       });
@@ -168,7 +168,7 @@ const EditServiceModal = ({
               القسم
             </label>
             <select
-              value={formData.sectionId}
+              value={formData?.sectionId}
               onChange={(e) => handleInputChange(e, "sectionId")}
               className="mt-1 block w-full p-2 border border-gray-500 rounded-md focus:outline-none text-right cursor-pointer"
               required
@@ -177,7 +177,7 @@ const EditServiceModal = ({
               <option value="">اختر قسمًا</option>
               {sections.map((section) => (
                 <option key={section.id} value={section.id}>
-                  {section.title}
+                  {section?.title || "لا يوجد عنوان للقسم"}
                 </option>
               ))}
             </select>

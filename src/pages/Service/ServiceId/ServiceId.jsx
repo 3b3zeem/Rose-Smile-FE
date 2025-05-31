@@ -48,8 +48,8 @@ export default function Service() {
             <div className="relative">
               <div className="overflow-hidden rounded-2xl shadow-md aspect-[4/3]">
                 <img
-                  src={data.image.backgroundLarge}
-                  alt={data.title}
+                  src={data?.image.backgroundLarge}
+                  alt={data?.title || "لا يوجد وصف"}
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
@@ -57,7 +57,7 @@ export default function Service() {
                 <h1 className="text-3xl font-bold text-white mb-2">
                   {data.title}
                 </h1>
-                <p className="text-gray-200">{data.subTitle}</p>
+                <p className="text-gray-200">{data?.subTitle || "لا يوجد وصف "}</p>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@ export default function Service() {
             <div className="bg-white rounded-2xl shadow-md p-8">
               <div className="space-y-6">
                 {/* Description */}
-                {data.description && data.description.length > 0 && (
+                {data?.description && data?.description.length > 0 && (
                   <div>
                     <h2 className="text-xl font-bold text-blue-900 mb-4">
                       وصف الخدمة

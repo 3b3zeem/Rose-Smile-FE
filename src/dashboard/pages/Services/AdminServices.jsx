@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   Search,
@@ -17,7 +16,7 @@ import ImageUpdateModal from "./ImageUpdateModal";
 import useAdminServices from "../../hooks/Services/useAdminService";
 import { useSectionTitles } from "../../../hooks/Sections/UseSections";
 import Swal from "sweetalert2";
-import Loader from "../../../layouts/Loader"
+import Loader from "../../../layouts/Loader";
 
 const AdminServices = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -179,20 +178,24 @@ const AdminServices = () => {
                       <tr key={service._id}>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                           <img
-                            src={service.image.thumbnailMedium}
-                            alt={service.title}
+                            src={
+                              service?.image?.thumbnailMedium ||
+                              service?.image?.url ||
+                              "/images/default-thumbnail.png"
+                            }
+                            alt={service?.title || "لا يوجد عنوان"}
                             className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded cursor-pointer mx-auto"
                             onClick={() => handleImageClick(service)}
                           />
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-900 max-w-[150px] sm:max-w-[200px] truncate">
-                          {service.title}
+                          {service?.title || "لا يوجد عنوان"}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] truncate">
-                          {service.section.title}
+                          {service?.section?.title || "لا يوجد قسم"}
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                          {new Date(service.createdAt).toLocaleDateString(
+                          {new Date(service?.createdAt).toLocaleDateString(
                             "ar-EG"
                           )}
                         </td>

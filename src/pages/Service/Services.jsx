@@ -384,8 +384,8 @@ const Services = () => {
                   >
                     <div className="relative h-40 overflow-hidden">
                       <img
-                        src={service.image.url}
-                        alt={service.title}
+                        src={service?.image?.cardImage || service.image.url}
+                        alt={service?.title ||"خدمة بدون عنوان"}
                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                         loading="lazy"
                       />
@@ -397,8 +397,8 @@ const Services = () => {
                       </h3>
                       <p className="text-gray-600 text-right text-sm flex-1 mb-3 leading-relaxed">
                         {service.subTitle && service.subTitle.length > 100
-                          ? `${service.subTitle.substring(0, 100)}...`
-                          : service.subTitle || "لا يوجد وصف"}
+                          ? `${service?.subTitle.substring(0, 100)}...`
+                          : service?.subTitle || "لا يوجد وصف"}
                       </p>
                       <div className="flex gap-2 sm:gap-3 justify-end mt-auto">
                         <Link
