@@ -1,141 +1,130 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+
+const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/sheet`;
+
+const fetchSheets = async ({ page, size, search }) => {
+  const response = await axios.get(
+    `${BaseURL}?page=${page}&size=${size}&search=${search}`,
+    { withCredentials: true }
+  );
+  return response.data;
+};
 
 const useSheetsActions = () => {
-  const [sheets, setSheets] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [addLoading, setAddLoading] = useState(false);
-  const [editLoading, setEditLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/sheet`;
+  const queryClient = useQueryClient();
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
   const search = searchParams.get("search") || "";
 
-  // Get All Sheets
-  const fetchSheets = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${BaseURL}?page=${page}&size=${size}&search=${search}`,
-        {
-          withCredentials: true,
-        }
-      );
-      setSheets(response.data.sheets || []);
-      setTotal(response.data.totalSheets || 0);
-    } catch (error) {
-      console.error("Failed to fetch sheets:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // Add Sheet
-  const addSheet = async (formData) => {
-    setAddLoading(true);
-    try {
-      const response = await axios.post(BaseURL, formData, {
+  // 📦 Get Sheets
+  const {
+    data,
+    isLoading: loading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["sheets", page, size, search],
+    queryFn: () => fetchSheets({ page, size, search }),
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // ➕ Add Sheet
+  const addMutation = useMutation({
+    mutationFn: async (formData) => {
+      const res = await axios.post(BaseURL, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      await fetchSheets();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "خطأ أثناء الإضافة",
-      };
-    } finally {
-      setAddLoading(false);
-    }
-  };
-  // Update Sheet
-  const updateSheet = async (id, data) => {
-    setEditLoading(true);
-    try {
-      const response = await axios.put(`${BaseURL}/${id}`, data, {
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sheets"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "خطأ أثناء إضافة الشيت");
+    },
+  });
+
+  // ✏️ Update Sheet
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      const res = await axios.put(`${BaseURL}/${id}`, data, {
         withCredentials: true,
       });
-      await fetchSheets();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "خطأ أثناء التعديل",
-      };
-    } finally {
-      setEditLoading(false);
-    }
-  };
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sheets"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "خطأ أثناء تعديل الشيت");
+    },
+  });
 
-  // Update Sheet Image
-  const updateSheetImage = async (id, formData) => {
-    setImageUploadLoading(true);
-    try {
-      const response = await axios.put(`${BaseURL}/image/${id}`, formData, {
+  // 🖼️ Update Sheet Image
+  const imageMutation = useMutation({
+    mutationFn: async ({ id, formData }) => {
+      const res = await axios.put(`${BaseURL}/image/${id}`, formData, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      await fetchSheets();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "فشل تحديث الصورة",
-      };
-    } finally {
-      setImageUploadLoading(false);
-    }
-  };
-  // Delete Sheet
-  const deleteSheet = async (id) => {
-    setDeleteLoading(true);
-    try {
-      const response = await axios.delete(`${BaseURL}/${id}`, {
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sheets"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "فشل تحديث صورة الشيت");
+    },
+  });
+
+  // ❌ Delete Sheet
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await axios.delete(`${BaseURL}/${id}`, {
         withCredentials: true,
       });
-      await fetchSheets();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "فشل في الحذف",
-      };
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSheets();
-  }, [page, size, search]);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["sheets"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "فشل حذف الشيت");
+    },
+  });
 
   const handlePageChange = (newPage) => {
     setSearchParams({ page: newPage.toString(), search });
   };
 
   return {
-    sheets,
-    total,
+    sheets: data?.sheets || [],
+    total: data?.totalSheets || 0,
     page,
     size,
-    totalPages: Math.ceil(total / size),
+    totalPages: Math.ceil((data?.totalSheets || 0) / size),
     loading,
-    addLoading,
-    editLoading,
-    deleteLoading,
-    imageUploadLoading,
-    addSheet,
-    updateSheet,
-    updateSheetImage,
-    deleteSheet,
+    isFetching,
     handlePageChange,
+
+    // Mutations
+    addSheet: addMutation.mutateAsync,
+    addLoading: addMutation.isPending,
+
+    updateSheet: updateMutation.mutateAsync,
+    editLoading: updateMutation.isPending,
+
+    updateSheetImage: imageMutation.mutateAsync,
+    imageUploadLoading: imageMutation.isPending,
+
+    deleteSheet: deleteMutation.mutateAsync,
+    deleteLoading: deleteMutation.isPending,
   };
 };
 

@@ -173,30 +173,30 @@ const AdminSheets = () => {
                       <tr key={sheet._id}>
                         <td className="px-4 py-3 text-center">
                           <img
-                            src={sheet.image.url}
-                            alt={sheet.title}
+                            src={sheet?.image?.url}
+                            alt={sheet?.title || "لا يوجد عنوان"}
                             className="w-10 h-10 rounded-full object-cover mx-auto cursor-pointer"
                             onClick={() => handleImageClick(sheet)}
                           />
                         </td>
                         <td className="px-4 py-3 truncate max-w-[150px] text-center">
-                          {sheet.title}
+                          {sheet?.title || "لا يوجد عنوان"}
                         </td>
                         <td className="px-4 py-3 text-gray-600 flex gap-2 justify-center">
                           <a
-                            href={sheet.sheet_weblink}
+                            href={sheet?.sheet_weblink ||"لا يوجد "}
                             target="_blank"
                             className="flex items-center gap-2"
                           >
-                            {sheet.sheet_id}
+                            {sheet?.sheet_id ||"معرف الشيت غير موجود "}
                             <Link size={16} />
                           </a>
                         </td>
                         <td
                           className="px-4 py-3 text-gray-600 max-w-xs truncate text-center"
-                          title={sheet.url}
+                          title={sheet?.url || "لا يوجد عنوان مميز"}
                         >
-                          {sheet.url}
+                          {sheet?.url || "لا يوجد عنوان مميز"}
                         </td>
 
                         <td className="px-4 py-3 flex gap-4 justify-center">
