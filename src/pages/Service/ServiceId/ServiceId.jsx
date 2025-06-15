@@ -55,7 +55,7 @@ export default function Service() {
               </div>
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
                 <h1 className="text-3xl font-bold text-white mb-2">
-                  {data.title}
+                  {data?.title}
                 </h1>
                 <p className="text-gray-200">{data?.subTitle || "لا يوجد وصف "}</p>
               </div>
@@ -90,7 +90,7 @@ export default function Service() {
                 )}
 
                 {/* Features */}
-                {data.features && data.features.length > 0 && (
+                {data?.features && data.features?.length > 0 && (
                   <div>
                     <h2 className="text-xl font-bold text-blue-900 mb-4">
                       لماذا تختار مجمع ابتسامة الورود للحصول على {data.title} ؟
@@ -113,7 +113,7 @@ export default function Service() {
                 <div className="border-t border-gray-200 pt-6">
                   <div className="space-y-4">
                     <div className="flex items-center justify-end gap-3 text-gray-700">
-                      <span>آخر تحديث: {formatDate(data.updatedAt)}</span>
+                      <span>آخر تحديث: {formatDate(data?.updatedAt)}</span>
                       <Calendar className="w-5 h-5 text-blue-500" />
                     </div>
                     <div className="flex items-center justify-end gap-3 text-gray-700">

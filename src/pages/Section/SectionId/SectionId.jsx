@@ -104,15 +104,15 @@ const SectionId = () => {
                     sectionData.image?.backgroundLarge ||
                     "/api/placeholder/450/400"
                   }
-                  alt={sectionData.title}
+                  alt={sectionData?.title}
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
               </div>
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
                 <h1 className="text-3xl font-bold text-white mb-2">
-                  {sectionData.title}
+                  {sectionData?.title}
                 </h1>
-                <p className="text-gray-200">{sectionData.subTitle}</p>
+                <p className="text-gray-200">{sectionData?.subTitle}</p>
               </div>
             </div>
           </div>
@@ -123,14 +123,14 @@ const SectionId = () => {
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <div className="space-y-6">
                 {/* Description */}
-                {sectionData.description &&
-                  sectionData.description.length > 0 && (
+                {sectionData?.description &&
+                  sectionData?.description?.length > 0 && (
                     <div>
                       <h2 className="text-xl font-bold text-blue-900 mb-4">
                         وصف القسم
                       </h2>
                       <div className="space-y-3">
-                        {sectionData.description.map((desc, index) => (
+                        {sectionData?.description.map((desc, index) => (
                           <div
                             key={index}
                             className="flex items-center justify-end gap-3 bg-gray-50 p-4 rounded-lg"
@@ -146,7 +146,7 @@ const SectionId = () => {
                   )}
 
                 {/* Features */}
-                {sectionData.features && sectionData.features.length > 0 && (
+                {sectionData?.features && sectionData.features?.length > 0 && (
                   <div>
                     <h2 className="text-xl font-bold text-blue-900 mb-4">
                       لماذا تختار قسم {sectionData.title} في مجمع ابتسامة
@@ -171,7 +171,7 @@ const SectionId = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-end gap-3 text-gray-700">
                       <span>
-                        آخر تحديث: {formatDate(sectionData.updatedAt)}
+                        آخر تحديث: {formatDate(sectionData?.updatedAt)}
                       </span>
                       <Calendar className="w-5 h-5 text-blue-500" />
                     </div>

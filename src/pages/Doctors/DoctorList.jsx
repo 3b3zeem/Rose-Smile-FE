@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Stethoscope } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { useDoctors } from "../../hooks/Doctors/useDoctor";
@@ -15,6 +15,8 @@ const DoctorList = () => {
     size: doctorsPerPage,
     search,
   });
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     setCurrentPage(1);
@@ -71,7 +73,7 @@ const DoctorList = () => {
           </button>
           <span className="text-gray-700 font-medium text-lg">
             عدد النتائج: {doctors.length}{" "}
-            {doctors.length === 1 ? "طبيب" : "أطباء"}
+            {doctors?.length === 1 ? "طبيب" : "أطباء"}
           </span>
         </div>
       )}
@@ -81,7 +83,7 @@ const DoctorList = () => {
         <p className="text-blue-700 text-lg mt-20">جاري تحميل الأطباء...</p>
       ) : error ? (
         <p className="text-red-500 mt-20">{error}</p>
-      ) : doctors.length === 0 ? (
+      ) : doctors?.length === 0 ? (
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-blue-800 text-lg flex flex-col items-center gap-8">
             <Stethoscope size={100} className="text-blue-800" />
@@ -94,22 +96,23 @@ const DoctorList = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {doctors.map((doctor) => (
               <div key={doctor._id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden text-center hover:shadow-xl transition"
+                className="bg-white shadow-lg rounded-lg overflow-hidden text-center hover:shadow-xl transition cursor-pointer"
+                onClick={() => navigate(`/doctor/${doctor?._id}`)}
               > 
                <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden">
                   <img
-                    src={doctor.image?.url}
-                    alt={doctor.name}
+                    src={doctor?.image?.url}
+                    alt={doctor?.name}
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
 
                 <div className="p-4 bg-blue-50">
-                  <h3 className="text-blue-800 font-semibold text-lg">{doctor.name}</h3>
-                  <p className="text-gray-600">{doctor.specialization || "غير محدد"}</p>
+                  <h3 className="text-blue-800 font-semibold text-lg">{doctor?.name}</h3>
+                  <p className="text-gray-600">{doctor?.specialization || "غير محدد"}</p>
                   
                     <Link
-                      to={`/doctor/${doctor._id}`}
+                      to={`/doctor/${doctor?._id}`}
                       className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-600 transition-colors duration-200 font-medium"
                     >
                       <span>عرض الملف الشخصي</span>

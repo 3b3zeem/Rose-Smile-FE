@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
 import { useAllSections } from "../../hooks/Sections/UseSections";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../layouts/Loader";
 
 const Sections = () => {
@@ -12,6 +12,8 @@ const Sections = () => {
   const sortOption = searchParams.get("sort") || "";
 
   const { sections, loading, error, refetch } = useAllSections();
+
+  const navigate = useNavigate()
 
   if (error) return <div>حدث خطأ: {error}</div>;
 
@@ -128,21 +130,22 @@ const Sections = () => {
           {/* Sections Grid */}
           {loading ? (
             <Loader />
-          ) : sections.length === 0 ? (
+          ) : sections?.length === 0 ? (
             <div className="text-center p-8 text-gray-600">
               لا توجد أقسام متاحة حاليًا.
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {sections.map((item) => (
+              {sections?.map((item) => (
                 <div
                   key={item._id}
-                  className="bg-white rounded-lg shadow-lg overflow-hidden h-[320px] flex flex-col hover:shadow-xl transition-all duration-300"
+                  className="bg-white rounded-lg shadow-lg overflow-hidden h-[320px] flex flex-col hover:shadow-xl transition-all duration-300 cursor-pointer"
+                  onClick={() => navigate(`/section/${item._id}`)}
                 >
                   <div className="relative h-36 overflow-hidden">
                     <img
                       src={item.image?.cardImage}
-                      alt={item.title}
+                      alt={item?.title}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                       loading="lazy"
                     />
@@ -150,12 +153,12 @@ const Sections = () => {
                   </div>
                   <div className="p-4 flex flex-col flex-1">
                     <h3 className="text-lg font-bold text-blue-800 mb-2 text-right line-clamp-2 truncate">
-                      {item.title}
+                      {item?.title}
                     </h3>
                     <p className="text-gray-600 text-right text-sm flex-1 mb-3 leading-relaxed truncate">
-                      {item.subTitle && item.subTitle.length > 100
-                        ? `${item.subTitle.substring(0, 100)}...`
-                        : item.subTitle || "لا يوجد وصف"}
+                      {item?.subTitle && item.subTitle?.length > 100
+                        ? `${item?.subTitle.substring(0, 100)}...`
+                        : item?.subTitle || "لا يوجد وصف"}
                     </p>
                     <div className="flex gap-2 justify-end mt-auto">
                       <Link

@@ -14,8 +14,8 @@ export default function News() {
         <div className="mb-8">
           <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
             <img
-              src={New.image?.backgroundLarge}
-              alt={New.title}
+              src={New?.image?.backgroundLarge}
+              alt={New?.title}
               className="w-full h-full object-cover"
             />
           </div>
@@ -27,21 +27,21 @@ export default function News() {
           <div className="flex items-center gap-2 text-gray-500 mb-4">
             <AccessTimeFilledIcon className="text-blue-600" />
             <span className="text-sm">
-              {new Date(New.createdAt).toLocaleDateString("ar-EG")}
+              {new Date(New?.createdAt).toLocaleDateString("ar-EG")}
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">{New.title}</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">{New?.title}</h1>
 
           {/* Subtitle */}
           <h2 className="text-xl text-gray-600 mb-8 border-b pb-6">
-            {New.subTitle}
+            {New?.subTitle}
           </h2>
 
           {/* Description */}
           <div className="prose prose-lg max-w-none">
-            {New.desc?.map((descItem, index) => (
+            {New?.desc?.map((descItem, index) => (
               <p
                 key={index}
                 className="text-gray-700 leading-relaxed mb-6 text-lg"

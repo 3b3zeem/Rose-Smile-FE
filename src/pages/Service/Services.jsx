@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Search, X, ChevronDown, Briefcase } from "lucide-react";
 import { useAllServices } from "../../hooks/Services/useServices";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useSectionTitles } from "../../hooks/Sections/UseSections";
 
 import "./Services.css";
@@ -22,6 +22,8 @@ const Services = () => {
     loading: sectionsLoading,
     error: sectionsError,
   } = useSectionTitles();
+
+  const navigate = useNavigate()
 
   // * Search term state
   const handleSearch = (e) => {
@@ -189,7 +191,7 @@ const Services = () => {
                 {sections.map((section) => (
                   <div
                     key={section.id}
-                    className="flex items-center gap-3 text-right hover:bg-gray-50/80 p-2.5 rounded-lg transition-all duration-200 group pt-5"
+                    className="flex items-center gap-3 text-right hover:bg-gray-50/80 p-2.5 rounded-lg transition-all duration-200 group pt-5 cursor-pointer"
                   >
                     <label className="relative flex items-center cursor-pointer">
                       <input
@@ -218,7 +220,7 @@ const Services = () => {
                       className="flex-1 text-gray-600 group-hover:text-gray-900 transition-colors duration-200 cursor-pointer text-sm font-medium"
                       onClick={() => handleCategoryChange(section.id)}
                     >
-                      {section.title}
+                      {section?.title}
                     </span>
                     <span className="text-xs text-gray-400 group-hover:text-pink-400 transition-colors duration-200">
                       {/* يمكنك إضافة عدد الخدمات في كل قسم هنا إذا كان متوفراً */}
@@ -380,11 +382,12 @@ const Services = () => {
                 {services.map((service) => (
                   <div
                     key={service._id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden h-[380px] flex flex-col transition-all duration-300"
+                    className="bg-white rounded-lg shadow-md overflow-hidden h-[380px] flex flex-col transition-all duration-300 cursor-pointer"
+                    onClick={() => navigate(`/service/${service._id}`)}
                   >
                     <div className="relative h-40 overflow-hidden">
                       <img
-                        src={service?.image?.cardImage || service.image.url}
+                        src={service?.image?.cardImage || service?.image?.url}
                         alt={service?.title ||"خدمة بدون عنوان"}
                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                         loading="lazy"
@@ -393,10 +396,10 @@ const Services = () => {
                     </div>
                     <div className="p-4 sm:p-5 flex flex-col flex-1">
                       <h3 className="text-lg sm:text-xl font-bold text-blue-800 mb-2 text-right line-clamp-2">
-                        {service.title}
+                        {service?.title}
                       </h3>
                       <p className="text-gray-600 text-right text-sm flex-1 mb-3 leading-relaxed">
-                        {service.subTitle && service.subTitle.length > 100
+                        {service?.subTitle && service.subTitle?.length > 100
                           ? `${service?.subTitle.substring(0, 100)}...`
                           : service?.subTitle || "لا يوجد وصف"}
                       </p>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Search, ChevronDown } from "lucide-react";
 import Loader from "../../layouts/Loader";
 import UseNews from "../../hooks/News/UseNews";
@@ -86,13 +86,14 @@ const SortDropdown = ({ sortOption, onSortChange }) => {
 
 // News Card Component
 const NewsCard = ({ news }) => {
+  const navigate = useNavigate()
   return (
-    <div className="group">
+    <div className="group cursor-pointer" onClick={() => navigate(`/news/${news?._id}`)}>
       <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col overflow-hidden">
         <div className="relative overflow-hidden aspect-[4/3]">
           <img
-            src={news.image.cardImage}
-            alt={news.title}
+            src={news?.image?.cardImage}
+            alt={news?.title}
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -100,16 +101,16 @@ const NewsCard = ({ news }) => {
         <div className="p-5 flex flex-col flex-grow">
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
             <AccessTimeFilledIcon fontSize="small" />
-            <span>{new Date(news.createdAt).toLocaleDateString("ar-EG")}</span>
+            <span>{new Date(news?.createdAt).toLocaleDateString("ar-EG")}</span>
           </div>
           <h3 className="text-lg font-bold mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
-            {news.title}
+            {news?.title}
           </h3>
           <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
-            {news.subTitle}
+            {news?.subTitle}
           </p>
           <Link
-            to={`/news/${news._id}`}
+            to={`/news/${news?._id}`}
             className="mt-auto inline-flex items-center justify-center text-blue-600 border border-blue-600 rounded-lg py-2 px-4 hover:bg-blue-50 transition-all duration-200 text-sm font-medium"
           >
             اقرأ المزيد
@@ -129,7 +130,7 @@ const NewsGrid = ({ data, loading }) => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {data?.map((news) => (
-            <NewsCard key={news._id} news={news} />
+            <NewsCard key={news?._id} news={news} />
           ))}
         </div>
       )}

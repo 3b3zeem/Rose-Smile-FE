@@ -8,11 +8,13 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useSomeServices } from "../../../hooks/Services/useServices";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../../layouts/Loader";
 
 const Services = () => {
   const { data: services, loading, error } = useSomeServices();
+
+  const navigate = useNavigate();
 
   const truncateText = (text, maxLength = 100) => {
     if (!text) return "";
@@ -82,8 +84,8 @@ const Services = () => {
   }
 
   return (
-<div className="max-w-[90rem] mx-auto px-4 lg:px-8 py-16 font-sans">
-    {/* Header Section */}
+    <div className="max-w-[90rem] mx-auto px-4 lg:px-8 py-16 font-sans">
+      {/* Header Section */}
       <div className="text-center mb-12 rtl">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
           خدماتنا
@@ -108,7 +110,11 @@ const Services = () => {
         ) : (
           <Slider {...settings}>
             {services.map((service) => (
-              <div key={service._id} className="p-2 md:p-3 h-full">
+              <div
+                key={service._id}
+                className="p-2 md:p-3 h-full cursor-pointer"
+                onClick={() => navigate(`/service/${service._id}`)}
+              >
                 <div className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col">
                   <div className="relative h-48 overflow-hidden">
                     <img
