@@ -8,6 +8,7 @@ import {
   MenuItem,
   CircularProgress,
   Typography,
+  Box,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useSectionTitles } from "../../hooks/Sections/UseSections";
@@ -139,9 +140,9 @@ export default function BookingForm({
   return (
     <>
       <Toaster />
-      <div className="bg-white rounded-2xl p-8">
+      <div className="bg-white rounded-2xl w-full">
         <span className="text-2xl text-gray-600">احجز موعدك</span>
-        <form onSubmit={handleSubmit} className="p-8">
+        <form onSubmit={handleSubmit} className="py-3">
           {submitSuccess && (
             <Typography
               color="success.main"
@@ -158,6 +159,8 @@ export default function BookingForm({
               {submitError}
             </Typography>
           )}
+          <Box sx={{ width: "100%" }}>
+
           <TextField
             fullWidth
             label="الاسم"
@@ -168,6 +171,7 @@ export default function BookingForm({
             required
             disabled={submitLoading}
           />
+          </Box>
           <TextField
             fullWidth
             label="رقم الهاتف"
