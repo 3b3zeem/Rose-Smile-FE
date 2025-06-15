@@ -1,5 +1,11 @@
 import React from "react";
-import { FaInstagram, FaSnapchatGhost, FaTiktok, FaWhatsapp } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaSnapchatGhost,
+  FaTiktok,
+  FaWhatsapp,
+  FaYoutube,
+} from "react-icons/fa";
 
 const Social = () => {
   return (
@@ -45,6 +51,17 @@ const Social = () => {
         <FaTiktok color="white" size={20} />
         <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           TikTok
+        </span>
+      </a>
+
+      <a
+        href="https://www.youtube.com/@RoseSmileMakkah"
+        target="_blank"
+        class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-red-700 hover:w-40 transition-all duration-300 overflow-hidden"
+      >
+        <FaYoutube color="white" size={20} />
+        <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+          YouTube
         </span>
       </a>
     </div>
