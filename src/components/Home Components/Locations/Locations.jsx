@@ -3,6 +3,7 @@ import {
   FaInstagram,
   FaSnapchatGhost,
   FaTiktok,
+  FaTwitter,
   FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa";
@@ -50,7 +51,7 @@ const Locations = () => {
           <p>انضم لنا</p>
           <div className="flex">
             <a
-              href="https://www.instagram.com/rosesmileclinic"
+              href="https://www.instagram.com/rosesmilemakkah"
               target="_blank"
               class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-[#8b4e3a] hover:w-40 transition-all duration-300 overflow-hidden"
             >
@@ -61,7 +62,7 @@ const Locations = () => {
             </a>
 
             <a
-              href="https://wa.me/966543015553"
+              href="https://wa.me/966508533232"
               target="_blank"
               class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-[#25D366] hover:w-40 transition-all duration-300 overflow-hidden"
             >
@@ -72,7 +73,7 @@ const Locations = () => {
             </a>
 
             <a
-              href="https://www.snapchat.com/add/rosesmilesa"
+              href="https://snapchat.com/t/niOKvr1K"
               target="_blank"
               class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-[#FFFC00] hover:w-40 transition-all duration-300 overflow-hidden"
             >
@@ -83,7 +84,7 @@ const Locations = () => {
             </a>
 
             <a
-              href="https://www.tiktok.com/@rosesmiletaif"
+              href="https://www.tiktok.com/@rosesmilemakkah?_t=ZS-8xEdOQrWh3H&_r=1"
               target="_blank"
               class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-black hover:w-40 transition-all duration-300 overflow-hidden"
             >
@@ -101,6 +102,17 @@ const Locations = () => {
               <FaYoutube color="white" size={20} />
               <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
                 YouTube
+              </span>
+            </a>
+
+            <a
+              href="https://x.com/rosesmilemakkah"
+              target="_blank"
+              class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-sky-600 hover:w-40 transition-all duration-300 overflow-hidden"
+            >
+              <FaTwitter color="white" size={20} />
+              <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                Twitter
               </span>
             </a>
           </div>
