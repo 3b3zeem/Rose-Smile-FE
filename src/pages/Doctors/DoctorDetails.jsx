@@ -23,9 +23,9 @@ const DoctorDetail = () => {
   }
 
   // Ensure description is an array
-  const description = Array.isArray(doctor.description)
-    ? doctor.description
-    : [doctor.description];
+  const description = Array.isArray(doctor?.description)
+    ? doctor?.description
+    : [doctor?.description];
 
   const inlineDescription = description.slice(0, MAX_INLINE_LINES);
   const extraDescription = description.slice(MAX_INLINE_LINES);
@@ -38,8 +38,8 @@ const DoctorDetail = () => {
           {/* Image */}
           <div className="flex-shrink-0 w-full max-w-xs md:max-w-sm">
             <img
-              src={doctor.image.url}
-              alt={doctor.name}
+              src={doctor?.image?.url}
+              alt={doctor?.name}
               className="rounded-xl shadow-lg w-full h-[400px] object-cover object-top"
             />
           </div>
@@ -47,12 +47,12 @@ const DoctorDetail = () => {
           {/* Info */}
           <div className="flex-1 w-full max-w-3xl">
             <h1 className="text-2xl sm:text-3xl font-semibold text-blue-900 mb-2">
-              {doctor.name}
+              {doctor?.name}
               <span className="block w-1/4 h-1 bg-blue-200 mt-1 rounded"></span>
             </h1>
 
             <p className="text-base sm:text-lg text-blue-700 font-medium mb-4">
-              {doctor.specialization}
+              {doctor?.specialization}
             </p>
 
             <div className="border border-blue-100 rounded-xl p-4 sm:p-6 shadow-sm text-gray-800">
@@ -71,7 +71,7 @@ const DoctorDetail = () => {
         </div>
 
         {/* More Info (only if lines > 7 lines) */}
-        {extraDescription.length > 0 && (
+        {extraDescription?.length > 0 && (
           <div className="mb-16">
             <h2 className="text-xl sm:text-2xl font-semibold text-blue-900 mb-4 border-t pt-6">
               معلومات إضافية
@@ -105,7 +105,7 @@ const DoctorDetail = () => {
           <h3 className="text-2xl text-blue-900 font-semibold text-center mb-6">
             الحالات الخاصة بالطبيب {doctor.name}
           </h3>
-          <CaseGallery cases={doctor.cases || []} doctorName={doctor.name} />
+          <CaseGallery cases={doctor?.cases || []} doctorName={doctor?.name} />
         </section>
       </div>
     </div>

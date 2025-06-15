@@ -8,7 +8,7 @@ import logo from "../../assets/Iamges/logo.png";
 import { useAuthContext } from "../../context/Auth/AuthContext";
 import { useUserProfile } from "../../hooks/User/UseProfile";
 
-const ArabicNavbar = () => {
+const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -277,4 +277,4 @@ const ArabicNavbar = () => {
   );
 };
 
-export default ArabicNavbar;
+export default Navbar;

@@ -1,36 +1,42 @@
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+// import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 // ✅ GET: Fetch User Profile using React Query
 export const useUserProfile = () => {
-  const fetchUserProfile = async () => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACK_END}/api/v1/user/profile`,
-      { withCredentials: true }
-    );
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    if (response.data.success) {
-      return response.data.user;
-    } else {
-      throw new Error("Failed to fetch user data");
+  const fetchUserProfile = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACK_END}/api/v1/user/profile`,
+        { withCredentials: true }
+      );
+      if (response.data.success) {
+        console.log("Fetched user data:", response.data.user);
+        setUserData(response.data.user);
+      } else {
+        setError("Failed to fetch user data");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch user data");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const {
-    data: userData,
-    isLoading: loading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: fetchUserProfile,
-  });
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   return {
     userData,
     loading,
-    error: isError ? error?.message : null,
+    error,
     fetchUserProfile,
   };
 };
@@ -40,7 +46,7 @@ export const useUpdateUser = () => {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState(null);
 
-  const updateUser = async (updatedData) => {
+  const updateUser = async (updatedData, onSuccess) => {
     try {
       setUpdateLoading(true);
       setUpdateError(null);
@@ -56,11 +62,14 @@ export const useUpdateUser = () => {
         }
       );
 
-      if (response.status !== 200) {
+      if (response.status !== 200 || !response.data.success) {
         throw new Error("Failed to update user profile");
       }
 
-      return response.data;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (onSuccess) await onSuccess();
+
+      return response.data.user;
     } catch (err) {
       setUpdateError(
         err.response?.data?.message || "Failed to update user profile"

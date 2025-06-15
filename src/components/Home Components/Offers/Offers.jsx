@@ -80,7 +80,7 @@ const Offers = () => {
   };
 
   return (
-      <div className="max-w-[90rem] mx-auto px-4 lg:px-8 py-16 font-sans">
+    <div className="max-w-[90rem] mx-auto px-4 lg:px-8 py-16 font-sans">
       {/* Header Section */}
       <div className="text-center mb-12 rtl">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
@@ -107,7 +107,11 @@ const Offers = () => {
         ) : (
           <Slider {...settings}>
             {offers.map((offer) => (
-              <div key={offer.id} className="p-2 md:p-3 h-full">
+              <div
+                key={offer.id}
+                className="p-2 md:p-3 h-full cursor-pointer"
+                onClick={() => handleNavigate(offer.type, offer.reference)}
+              >
                 <div className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col">
                   <div className="relative h-48 overflow-hidden">
                     <img
@@ -137,7 +141,7 @@ const Offers = () => {
                         onClick={() =>
                           handleNavigate(offer.type, offer.reference)
                         }
-                        className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 text-sm"
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 text-sm cursor-pointer"
                       >
                         <Calendar size={16} />
                         <span>احجز الان</span>
@@ -147,7 +151,7 @@ const Offers = () => {
                         onClick={() =>
                           handleNavigate(offer.type, offer.reference)
                         }
-                        className="flex-1 flex items-center justify-center gap-1.5 bg-pink-50 hover:bg-pink-100 text-pink-600 py-2 px-3 rounded-lg transition-colors duration-200 text-sm border border-pink-200"
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-pink-50 hover:bg-pink-100 text-pink-600 py-2 px-3 rounded-lg transition-colors duration-200 text-sm border border-pink-200 cursor-pointer"
                       >
                         <Info size={16} />
                         <span>التفاصيل</span>

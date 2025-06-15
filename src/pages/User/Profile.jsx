@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 import { UserRoundPen } from "lucide-react";
 import {
   useChangePassword,
+  useUpdateUser,
   useUploadAvatar,
   useUserProfile,
 } from "../../hooks/User/UseProfile";
@@ -13,16 +13,16 @@ const Profile = () => {
     userData,
     loading: profileLoading,
     error: profileError,
-    updateUser,
-    updateLoading,
-    updateError,
+    fetchUserProfile,
   } = useUserProfile();
+  const { updateUser, updateLoading, updateError } = useUpdateUser();
   const {
     uploadAvatar,
     loading: uploadLoading,
     error: uploadError,
   } = useUploadAvatar();
-  const { changePassword, changePasswordLoading, changePasswordError } = useChangePassword();
+  const { changePassword, changePasswordLoading, changePasswordError } =
+    useChangePassword();
   const [city, setCity] = useState(userData?.city || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -44,7 +44,8 @@ const Profile = () => {
 
   useEffect(() => {
     if (userData) {
-      setAvatarUrl(userData.image?.url || "../../assets/Iamges/user.png");
+      console.log("Updated userData:", userData);
+      setAvatarUrl(userData.image?.url || "/user.png");
       setCity(userData.city || "");
       setFormData({
         firstName: userData.firstName || "",
@@ -175,8 +176,8 @@ const Profile = () => {
       return;
     }
 
-    const result = await updateUser(formData);
-    if (result) {
+    const updatedUser = await updateUser(formData, fetchUserProfile);
+    if (updatedUser) {
       toast.success("تم تحديث الملف الشخصي بنجاح", {
         position: "top-right",
         style: {
@@ -186,6 +187,11 @@ const Profile = () => {
         },
       });
       setIsPopupOpen(false);
+      setFormData({
+        firstName: updatedUser.firstName || "",
+        lastName: updatedUser.lastName || "",
+        phone: updatedUser.phone || "",
+      });
     } else {
       toast.error(updateError || "فشل تحديث الملف الشخصي", {
         position: "top-right",

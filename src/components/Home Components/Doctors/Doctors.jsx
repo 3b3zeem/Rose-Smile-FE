@@ -7,11 +7,12 @@ import {
   Stethoscope,
   ArrowLeft,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSomeDoctors } from "../../../hooks/Doctors/useDoctor";
 
 const DoctorsTeam = () => {
   const { doctors, loading, error } = useSomeDoctors({ page: 1, size: 5 });
+  const navigate = useNavigate()
 
   const NextArrow = ({ onClick }) => (
     <button
@@ -82,7 +83,7 @@ const DoctorsTeam = () => {
           ) : (
             <Slider {...settings} className="doctors-slider">
               {doctors.map((doctor) => (
-                <div key={doctor._id} className="px-2">
+                <div key={doctor._id} className="px-2 cursor-pointer" onClick={() => navigate(`/doctor/${doctor._id}`)}>
                   <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 group">
                     <div className="p-6">
                       <div className="flex items-center justify-center mb-4">
