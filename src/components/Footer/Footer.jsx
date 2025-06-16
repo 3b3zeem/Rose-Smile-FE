@@ -12,11 +12,12 @@ import {
 import { Tooltip } from "@mui/material";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo-rosesmile-foter.png";
 
 const Footer = () => {
   const navigate = useNavigate();
   return (
-    <footer className="bg-blue-900 text-white py-10 px-6 md:px-12 lg:px-16">
+    <footer className="bg-[#184480] text-white py-10 px-6 md:px-12 lg:px-16">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo and Tagline */}
@@ -29,11 +30,17 @@ const Footer = () => {
           <div className="flex flex-col items-end">
             <h3 className="text-lg font-semibold mb-4">روابط مهمة</h3>
             <ul className="space-y-2 text-right">
-              <li onClick={() => navigate('/doctors')} className="flex items-center justify-end gap-2 cursor-pointer NavLinks">
+              <li
+                onClick={() => navigate("/doctors")}
+                className="flex items-center justify-end gap-2 cursor-pointer NavLinks"
+              >
                 <span>الأطباء</span>
                 <Stethoscope className="w-4 h-4" />
               </li>
-              <li onClick={() => navigate('/services')} className="flex items-center justify-end gap-2 cursor-pointer NavLinks">
+              <li
+                onClick={() => navigate("/services")}
+                className="flex items-center justify-end gap-2 cursor-pointer NavLinks"
+              >
                 <span>الخدمات</span>
                 <User className="w-4 h-4" />
               </li>
@@ -45,7 +52,14 @@ const Footer = () => {
           </div>
 
           {/* Contact Information */}
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-start" dir="rtl">
+            <img src={logo} alt="" />
+            <h3 className="text-md font-semibold mb-4 text-gray-400">
+              ابتسامة الورود ابتسامتك بتعود
+            </h3>
+            <h3 className="text-md font-semibold mb-4 text-gray-400">
+              مكه المكرمة - حي العوالي - شارع ابرهيم الجفالي اعلى صيدلية الدواء
+            </h3>
             <h3 className="text-lg font-semibold mb-4">اتصل بنا</h3>
             <ul className="space-y-2 text-right">
               <li className="flex items-center justify-end gap-2 cursor-pointer">
@@ -53,24 +67,14 @@ const Footer = () => {
                   href="tel:+966508533232"
                   className="text-white hover:underline flex items-center gap-2 duration-200 transition-all"
                 >
-                  <span dir="ltr" className="">+966 50 853 3232</span>
                   <Phone className="w-4 h-4" />
+                  <span dir="ltr" className="">
+                    +966 50 853 3232
+                  </span>
                 </a>
-              </li>
-              <li className="flex items-center justify-end gap-2 cursor-pointer">
-                <span>fildineesoe@gmail.com</span>
-                <Mail className="w-4 h-4" />
               </li>
             </ul>
           </div>
-        </div>
-
-        {/* Divider */}
-        <hr className="my-6 border-blue-500" />
-
-        {/* Copyright */}
-        <div className="text-center text-sm">
-          
         </div>
       </div>
     </footer>

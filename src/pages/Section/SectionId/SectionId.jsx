@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useSectionData from "../../../hooks/Sections/UseSections";
 import { Calendar, Clock, CheckCircle, Star, ArrowLeft } from "lucide-react";
 
@@ -12,6 +12,8 @@ import Loader from "../../../layouts/Loader";
 const SectionId = () => {
   const { reference } = useParams();
   const { sectionData, loading, error } = useSectionData(reference);
+  
+  const navigate = useNavigate();
 
   // Custom arrows for the slider
   const NextArrow = ({ onClick }) => (
@@ -213,6 +215,36 @@ const SectionId = () => {
             </div>
           </div>
         </div>
+
+        {/* Services Slider */}
+        {sectionData?.services && sectionData.services.length > 0 && (
+          <div className="mt-12 cursor-pointer">
+            <h2 className="text-2xl font-bold text-blue-900 mb-6">
+              خدمات القسم
+            </h2>
+            <Slider {...settings}>
+              {sectionData.services.map((service) => (
+                <div key={service._id} className="px-2" onClick={() => navigate(`/service/${service._id}`)}>
+                  <div className="bg-white rounded-xl shadow-lg p-6 h-full flex flex-col">
+                    <div className="overflow-hidden rounded-lg mb-4">
+                      <img
+                        src={service.image?.url || "/api/placeholder/300/200"}
+                        alt={service.title}
+                        className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                    <h3 className="text-lg font-bold text-blue-900 mb-2">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm flex-grow">
+                      {service.subTitle}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </Slider>
+          </div>
+        )}
       </div>
     </div>
   );
