@@ -9,20 +9,6 @@ import {
 } from "react-icons/fa";
 
 const Social = () => {
- let user = null;
-
-  try {
-    const isLogin = localStorage.getItem("isLogin");
-    const userData = localStorage.getItem("user");
-    if (isLogin && userData) {
-      user = JSON.parse(userData);
-    }
-  } catch (err) {
-    console.error("Error parsing user", err);
-  }
-
-  if (user && (user.role === "admin" || user.role === "superadmin")) return null;
-  
   return (
     <div className="fixed top-1/2 left-0 transform -translate-y-1/2 hidden sm:flex flex-col z-500">
       <a
