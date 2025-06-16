@@ -4,7 +4,6 @@ import "./App.css";
 import React, { useEffect, useState } from "react";
 import Up_top from "./components/Up-to-top/Up-to-top";
 import CookieChecker from "./components/CookieChecker/CookieChecker";
-import Social from "./components/Social/Social";
 import { Toaster } from "react-hot-toast";
 
 import "@fontsource/roboto/300.css";
@@ -25,7 +24,6 @@ function App() {
   return (
     <React.Fragment>
       <Up_top />
-      <Social />
       {isLoggedIn && <CookieChecker />}
       <RouterProvider router={routes} />
       <Toaster position="top-center" reverseOrder={false} />
