@@ -1,118 +1,110 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+
+const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/form`;
+
+const fetchCustomerData = async ({ page, size, search }) => {
+  const response = await axios.get(
+    `${BaseURL}?page=${page}&size=${size}&search=${search}`,
+    { withCredentials: true }
+  );
+  return response.data;
+};
 
 const useCustomerDataActions = () => {
-  const [customerData, setCustomerData] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [editLoading, setEditLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const BaseURL = `${import.meta.env.VITE_BACK_END}/api/v1/form`;
+  const queryClient = useQueryClient();
 
   const page = parseInt(searchParams.get("page")) || 1;
   const size = 6;
   const search = searchParams.get("search") || "";
 
-  // Get All Customer Data
-  const fetchCustomerData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${BaseURL}?page=${page}&size=${size}&search=${search}`,
-        {
-          withCredentials: true,
-        }
-      );
-      setCustomerData(response.data.forms || []);
-      setTotal(response.data.totalForms || 0);
-    } catch (error) {
-      console.error("Failed to fetch forms:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // 📦 Fetch data
+  const {
+    data,
+    isLoading: loading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["customers", page, search],
+    queryFn: () => fetchCustomerData({ page, size, search }),
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  // Add Comment
-  const addComment = async (id, data) => {
-    setEditLoading(true);
-    try {
-      const response = await axios.patch(`${BaseURL}/${id}`, data, {
+  // ➕ Add Comment
+  const addCommentMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      const res = await axios.patch(`${BaseURL}/${id}`, data, {
         withCredentials: true,
       });
-      await fetchCustomerData();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "خطأ أثناء الإضافة",
-      };
-    } finally {
-      setEditLoading(false);
-    }
-  };
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["customers"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "خطأ أثناء الإضافة");
+    },
+  });
 
-  // Update Customer Data
-  const updateCustomerData = async (id, data) => {
-    setEditLoading(true);
-    try {
-      const response = await axios.put(`${BaseURL}/${id}`, data, {
+  // ✏️ Update Customer
+  const updateCustomerMutation = useMutation({
+    mutationFn: async ({ id, data }) => {
+      const res = await axios.put(`${BaseURL}/${id}`, data, {
         withCredentials: true,
       });
-      await fetchCustomerData();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "خطأ أثناء التعديل",
-      };
-    } finally {
-      setEditLoading(false);
-    }
-  };
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["customers"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "خطأ أثناء التعديل");
+    },
+  });
 
-  // Delete Customer Data
-  const deleteCustomerData = async (id) => {
-    setDeleteLoading(true);
-    try {
-      const response = await axios.delete(`${BaseURL}/${id}`, {
+  // ❌ Delete Customer
+  const deleteCustomerMutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await axios.delete(`${BaseURL}/${id}`, {
         withCredentials: true,
       });
-      await fetchCustomerData();
-      return { success: true, message: response.data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "فشل في الحذف",
-      };
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["customers"]);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "فشل في الحذف");
+    },
+  });
 
-  useEffect(() => {
-    fetchCustomerData();
-  }, [page, size, search]);
-
+  // 📄 Pagination
   const handlePageChange = (newPage) => {
     setSearchParams({ page: newPage.toString(), search });
   };
 
   return {
-    customerData,
-    total,
+    customerData: data?.forms || [],
+    total: data?.totalForms || 0,
     page,
     size,
-    totalPages: Math.ceil(total / size),
+    totalPages: Math.ceil((data?.totalForms || 0) / size),
     loading,
-    editLoading,
-    deleteLoading,
-    addComment,
-    updateCustomerData,
-    deleteCustomerData,
+    isFetching,
     handlePageChange,
+
+    // Mutations
+    addComment: addCommentMutation.mutateAsync,
+    addLoading: addCommentMutation.isPending,
+
+    updateCustomerData: updateCustomerMutation.mutateAsync,
+    editLoading: updateCustomerMutation.isPending,
+
+    deleteCustomerData: deleteCustomerMutation.mutateAsync,
+    deleteLoading: deleteCustomerMutation.isPending,
   };
 };
 

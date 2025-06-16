@@ -22,7 +22,7 @@ const Social = () => {
   }
 
   if (!user || user.role !== "user") return null;
-
+  
   return (
     <div className="fixed top-1/2 left-0 transform -translate-y-1/2 hidden sm:flex flex-col z-500">
       <a
