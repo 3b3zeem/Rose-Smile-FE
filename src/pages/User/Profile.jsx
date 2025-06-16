@@ -418,19 +418,6 @@ const Profile = () => {
                 className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700 text-sm focus:outline-none"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                المدينة
-              </label>
-              <input
-                type="text"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Enter your city"
-                disabled
-                className="mt-1 w-full p-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700 text-sm focus:outline-none"
-              />
-            </div>
           </div>
         </div>
 

@@ -30,10 +30,10 @@ const Locations = () => {
         <div className="border-t border-gray-300 pt-4">
           <h3 className="font-semibold">Rose Smile</h3>
           <p className="text-gray-600 text-sm">
-            مجمع ابتسامة الورود لطب الأسنان
+            ابتسامة الورود ابتسامتك بتعود
           </p>
           <p className="text-gray-500 text-sm">
-            Ibrahim Al Joufaili, Makkah 24211, Saudi Arabia
+            مكه المكرمة -  حي العوالي - شارع ابرهيم الجفالي اعلى صيدلية الدواء
           </p>
         </div>
         <div className="mt-4">

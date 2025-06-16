@@ -202,7 +202,7 @@ export default function BookingForm({
           <FormControl
             fullWidth
             sx={{ marginBottom: "15px" }}
-            disabled={isServiceDisabled || submitLoading}
+            // disabled={isServiceDisabled || submitLoading}
           >
             <InputLabel id="service-label">الخدمة</InputLabel>
             <Select
@@ -231,7 +231,7 @@ export default function BookingForm({
           <FormControl
             fullWidth
             sx={{ marginBottom: "15px" }}
-            disabled={isSectionDisabled || submitLoading}
+            // disabled={isSectionDisabled || submitLoading}
           >
             <InputLabel id="section-label">القسم</InputLabel>
             <Select
