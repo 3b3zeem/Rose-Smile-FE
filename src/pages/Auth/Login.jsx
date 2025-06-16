@@ -58,7 +58,7 @@ const Login = () => {
   });
 
   return (
-    <div className="min-h-screen max-w-md mx-auto px-6 py-12 rounded-lg text-center">
+    <div className="min-h-150 max-w-md mx-auto px-6 py-12 rounded-lg text-center">
       <ToastContainer position="bottom-left" rtl theme="colored" />
 
       <h2 className="text-4xl font-extrabold text-blue-900 mb-8">
