@@ -9,20 +9,29 @@ import {
 } from "react-icons/fa";
 
 const Social = () => {
-  const isLogin = localStorage.getItem("isLogin");
-  const user = isLogin ? JSON.parse(localStorage.getItem("user")) : null;
+ let user = null;
 
-  if(user?.role !== "user") return null;
-  
+  try {
+    const isLogin = localStorage.getItem("isLogin");
+    const userData = localStorage.getItem("user");
+    if (isLogin && userData) {
+      user = JSON.parse(userData);
+    }
+  } catch (err) {
+    console.error("Error parsing user", err);
+  }
+
+  if (!user || user.role !== "user") return null;
+
   return (
-    <div class="fixed top-1/2 left-0 transform -translate-y-1/2 hidden sm:flex flex-col z-500">
+    <div className="fixed top-1/2 left-0 transform -translate-y-1/2 hidden sm:flex flex-col z-500">
       <a
         href="https://www.instagram.com/rosesmilemakkah"
         target="_blank"
-        class="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-[#8b4e3a] hover:w-40 transition-all duration-300 overflow-hidden"
+        className="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-[#8b4e3a] hover:w-40 transition-all duration-300 overflow-hidden"
       >
         <FaInstagram color="white" size={20} />
-        <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <span className="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           Instagram
         </span>
       </a>
@@ -30,10 +39,10 @@ const Social = () => {
       <a
         href="https://wa.me/966508533232"
         target="_blank"
-        class="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-[#25D366] hover:w-40 transition-all duration-300 overflow-hidden"
+        className="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-[#25D366] hover:w-40 transition-all duration-300 overflow-hidden"
       >
         <FaWhatsapp color="white" size={20} />
-        <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <span className="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           WhatsApp
         </span>
       </a>
@@ -41,10 +50,10 @@ const Social = () => {
       <a
         href="https://snapchat.com/t/niOKvr1K"
         target="_blank"
-        class="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-[#FFFC00] hover:w-40 transition-all duration-300 overflow-hidden"
+        className="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-[#FFFC00] hover:w-40 transition-all duration-300 overflow-hidden"
       >
         <FaSnapchatGhost color="white" size={20} />
-        <span class="absolute left-12 text-black opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <span className="absolute left-12 text-black opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           Snapchat
         </span>
       </a>
@@ -52,10 +61,10 @@ const Social = () => {
       <a
         href="https://www.tiktok.com/@rosesmilemakkah?_t=ZS-8xEdOQrWh3H&_r=1"
         target="_blank"
-        class="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-black hover:w-40 transition-all duration-300 overflow-hidden"
+        className="group relative flex items-center w-8 h-8 ps-1 md:w-12 md:h-12 md:ps-3 bg-black hover:w-40 transition-all duration-300 overflow-hidden"
       >
         <FaTiktok color="white" size={20} />
-        <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <span className="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           TikTok
         </span>
       </a>
@@ -63,10 +72,10 @@ const Social = () => {
       <a
         href="https://www.youtube.com/@RoseSmileMakkah"
         target="_blank"
-        class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-red-700 hover:w-40 transition-all duration-300 overflow-hidden"
+        className="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-red-700 hover:w-40 transition-all duration-300 overflow-hidden"
       >
         <FaYoutube color="white" size={20} />
-        <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <span className="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           YouTube
         </span>
       </a>
@@ -74,10 +83,10 @@ const Social = () => {
       <a
         href="https://x.com/rosesmilemakkah"
         target="_blank"
-        class="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-sky-600 hover:w-40 transition-all duration-300 overflow-hidden"
+        className="group relative flex items-center w-8 h-8 ps-1.5 md:w-12 md:h-12 md:ps-3 bg-sky-600 hover:w-40 transition-all duration-300 overflow-hidden"
       >
         <FaTwitter color="white" size={20} />
-        <span class="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+        <span className="absolute left-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
           Twitter
         </span>
       </a>
