@@ -31,7 +31,7 @@ export default function Service() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-gray-200 dir-rtl font-['Cairo',sans-serif] text-right">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-gray-50 to-gray-200 dir-rtl font-['Cairo',sans-serif]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back Button */}
         <Link
@@ -63,7 +63,7 @@ export default function Service() {
           </div>
 
           {/* Right Column: Service Details */}
-          <div className="lg:w-1/2 space-y-8">
+          <div className="lg:w-1/2 space-y-8" dir="rtl">
             {/* Service Info */}
             <div className="bg-white rounded-2xl shadow-md p-8">
               <div className="space-y-6">
@@ -79,10 +79,10 @@ export default function Service() {
                           key={index}
                           className="flex items-center justify-end gap-3 bg-gray-50 p-4 rounded-lg"
                         >
+                          <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
                           <span className="text-gray-700 leading-relaxed w-full break-words">
                             {desc}
                           </span>
-                          <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
                         </div>
                       ))}
                     </div>
@@ -99,10 +99,10 @@ export default function Service() {
                       {data.features.map((feature, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-end gap-3 bg-blue-50 p-4 rounded-lg"
+                          className="flex items-center justify-start gap-3 bg-blue-50 p-4 rounded-lg"
                         >
-                          <p className="text-gray-700">{feature}</p>
                           <Star className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                          <p className="text-gray-700">{feature}</p>
                         </div>
                       ))}
                     </div>
@@ -112,13 +112,13 @@ export default function Service() {
                 {/* Service Details */}
                 <div className="border-t border-gray-200 pt-6">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-end gap-3 text-gray-700">
-                      <span>آخر تحديث: {formatDate(data?.updatedAt)}</span>
+                    <div className="flex items-center justify-start gap-3 text-gray-700">
                       <Calendar className="w-5 h-5 text-blue-500" />
+                      <span>آخر تحديث: {formatDate(data?.updatedAt)}</span>
                     </div>
-                    <div className="flex items-center justify-end gap-3 text-gray-700">
-                      <span>خدمة معتمدة من قبل العيادة</span>
+                    <div className="flex items-center justify-start gap-3 text-gray-700">
                       <CheckCircle className="w-5 h-5 text-blue-500" />
+                      <span>خدمة معتمدة من قبل العيادة</span>
                     </div>
                   </div>
                 </div>
