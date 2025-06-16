@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import EditCustomerDataModal from "./EditCustomerDataModal";
 import AddCommentModal from "./AddCommentModal";
 import useCustomerDataActions from "../../hooks/CustomerData/useCustomerDataActions";
+
 const AdminCustomerData = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -35,8 +36,9 @@ const AdminCustomerData = () => {
   const [isAddCommentModalOpen, setIsAddCommentModalOpen] = useState(false);
   const [currentCustomerData, setCurrentCustomerData] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+
   const isSuperAdmin =
-    JSON.parse(localStorage.getItem("user")).role === "superadmin";
+    JSON.parse(localStorage.getItem("user"))?.role === "superadmin";
 
   const handleEditClick = (data) => {
     setCurrentCustomerData(data);
@@ -64,8 +66,9 @@ const AdminCustomerData = () => {
       setDeletingId(id);
       try {
         const response = await deleteCustomerData(id);
-        if (response.success) toast.success(response.message);
-        else toast.error(response.message);
+        response.success
+          ? toast.success(response.message)
+          : toast.error(response.message);
       } catch (err) {
         toast.error(err.message || "حدث خطأ أثناء الحذف");
       } finally {
@@ -130,41 +133,30 @@ const AdminCustomerData = () => {
             <Loader2 className="animate-spin text-blue-500" size={32} />
           </div>
         ) : (
-          <React.Fragment>
+          <>
             <div className="bg-white shadow-md rounded-lg overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 text-right">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      اسم العميل
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      رقم هاتف العميل
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      المدينة
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      القسم
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      الخدمة
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      الحالة
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      تعليق
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      تم التعديل بواسطة
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      اخر تحديث
-                    </th>
-                    <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">
-                      الإجراءات
-                    </th>
+                    {[
+                      "اسم العميل",
+                      "رقم هاتف العميل",
+                      "المدينة",
+                      "القسم",
+                      "الخدمة",
+                      "الحالة",
+                      "تعليق",
+                      "تم التعديل بواسطة",
+                      "اخر تحديث",
+                      "الإجراءات",
+                    ].map((head) => (
+                      <th
+                        key={head}
+                        className="text-center px-4 py-3 text-xs font-medium text-gray-500"
+                      >
+                        {head}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200" dir="rtl">
@@ -175,24 +167,30 @@ const AdminCustomerData = () => {
                           {data?.name || " لا يوجد اسم"}
                         </td>
                         <td className="px-4 py-3 text-center" dir="ltr">
-                          {data.phone}
+                          {data?.phone || "لا يوجد رقم هاتف"}
                         </td>
                         <td className="px-4 py-3 text-center">
                           {data.city || "لا يوجد مدينه"}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          {data?.section?.title.slice(0, 50) + "..."}
+                          {data.section
+                            ? `${data.section.title.slice(0, 50)}...`
+                            : "لا يوجد قسم"}
                         </td>
                         <td className="px-4 py-3 text-center">
-                          {data?.service?.title.slice(0, 50) + "..."}
+                          {data.service
+                            ? `${data.service.title.slice(0, 50)}...`
+                            : "لا يوجد خدمه"}
                         </td>
-                        <td className="px-4 py-3 text-center">{data.status}</td>
                         <td className="px-4 py-3 text-center">
-                          {data.comment ? `${data?.comment}` : "لا يوجد تعليق"}
+                          {data.status || "غير محدد"}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {data.comment || "لا يوجد تعليق"}
                         </td>
                         <td className="px-4 py-3 text-center">
                           {data.editedBy
-                            ? `${data.editedBy?.firstName} ${data.editedBy?.lastName}`
+                            ? `${data.editedBy.firstName} ${data.editedBy.lastName}`
                             : "-"}
                         </td>
                         <td className="px-4 py-3 text-center">
@@ -204,8 +202,7 @@ const AdminCustomerData = () => {
                             minute: "2-digit",
                           })}
                         </td>
-
-                        <td className="px-4 py-3 flex flex-row gap-4 justify-center items-center">
+                        <td className="px-4 py-3 flex gap-4 justify-center items-center">
                           <button
                             onClick={() => handleAddCommentClick(data)}
                             className="text-blue-600 hover:text-blue-800 cursor-pointer mt-2"
@@ -215,7 +212,7 @@ const AdminCustomerData = () => {
                           </button>
 
                           {isSuperAdmin && (
-                            <div className="flex gap-2">
+                            <>
                               <button
                                 onClick={() => handleEditClick(data)}
                                 className="text-blue-600 hover:text-blue-800 cursor-pointer mt-2"
@@ -236,7 +233,7 @@ const AdminCustomerData = () => {
                                   <Trash2 size={16} />
                                 )}
                               </button>
-                            </div>
+                            </>
                           )}
                         </td>
                       </tr>
@@ -244,7 +241,7 @@ const AdminCustomerData = () => {
                   ) : (
                     <tr>
                       <td
-                        colSpan="5"
+                        colSpan="10"
                         className="py-6 text-center text-sm text-gray-500"
                       >
                         لا يوجد بيانات عملاء حاليا
@@ -281,7 +278,7 @@ const AdminCustomerData = () => {
                 </div>
               </div>
             </div>
-          </React.Fragment>
+          </>
         )}
       </div>
     </div>

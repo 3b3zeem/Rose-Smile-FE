@@ -21,7 +21,7 @@ const Social = () => {
     console.error("Error parsing user", err);
   }
 
-  if (user && (user.role === "admin" || user.role === "superAdmin")) return null;
+  if (user && (user.role === "admin" || user.role === "superadmin")) return null;
 
   return (
     <div className="fixed top-1/2 left-0 transform -translate-y-1/2 hidden sm:flex flex-col z-500">
