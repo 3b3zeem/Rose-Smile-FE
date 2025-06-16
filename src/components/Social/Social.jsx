@@ -12,7 +12,7 @@ const Social = () => {
   const isLogin = localStorage.getItem("isLogin");
   const user = isLogin ? JSON.parse(localStorage.getItem("user")) : null;
 
-  if(user.role !== "user") return null;
+  if(user?.role !== "user") return null;
   
   return (
     <div class="fixed top-1/2 left-0 transform -translate-y-1/2 hidden sm:flex flex-col z-500">
