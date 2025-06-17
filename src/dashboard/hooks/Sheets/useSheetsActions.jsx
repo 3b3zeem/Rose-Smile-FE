@@ -53,6 +53,8 @@ const useSheetsActions = () => {
   // ✏️ Update Sheet
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }) => {
+      console.log(id, data);
+
       const res = await axios.put(`${BaseURL}/${id}`, data, {
         withCredentials: true,
       });

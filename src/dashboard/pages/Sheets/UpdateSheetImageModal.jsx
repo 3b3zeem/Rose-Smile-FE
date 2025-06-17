@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
 
 const UpdateSheetImageModal = ({
   isOpen,
@@ -37,22 +37,22 @@ const UpdateSheetImageModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedImage) {
-      toast.error('يرجى اختيار صورة للتحديث');
+      toast.error("يرجى اختيار صورة للتحديث");
       return;
     }
     setImageUploadLoading(true);
     const formData = new FormData();
-    formData.append('image', selectedImage);
+    formData.append("image", selectedImage);
     try {
-      const result = await updateSheetImage(sheet._id, formData);
+      const result = await updateSheetImage({ id: sheet._id, formData });
       if (result.success) {
         toast.success(result.message);
         handleClose();
       } else {
-        toast.error(result.message || 'فشل تحديث صورة الفورم');
+        toast.error(result.message || "فشل تحديث صورة الفورم");
       }
     } catch (error) {
-      toast.error(error.message || 'حدث خطأ أثناء تحديث الصورة');
+      toast.error(error.message || "حدث خطأ أثناء تحديث الصورة");
     } finally {
       setImageUploadLoading(false);
     }
@@ -84,7 +84,7 @@ const UpdateSheetImageModal = ({
             <div
               className="relative aspect h-100 bg-gray-100 overflow-hidden rounded-xl shadow-md cursor-pointer hover:opacity-90 transition"
               onClick={() =>
-                document.getElementById('sheetImageUpload').click()
+                document.getElementById("sheetImageUpload").click()
               }
             >
               {previewImage || sheet.image?.url ? (
@@ -126,7 +126,7 @@ const UpdateSheetImageModal = ({
               {imageUploadLoading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
-                'تحديث الصورة'
+                "تحديث الصورة"
               )}
             </button>
           </div>

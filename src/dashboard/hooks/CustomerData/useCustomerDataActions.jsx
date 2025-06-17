@@ -67,7 +67,7 @@ const useCustomerDataActions = () => {
 
   // ❌ Delete Customer
   const deleteCustomerMutation = useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async ({ id }) => {
       const res = await axios.delete(`${BaseURL}/${id}`, {
         withCredentials: true,
       });

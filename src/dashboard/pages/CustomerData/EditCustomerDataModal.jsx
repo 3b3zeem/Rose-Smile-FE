@@ -1,33 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-hot-toast';
-import { Loader2, Minus } from 'lucide-react';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import useCustomerDataActions from "../../hooks/CustomerData/useCustomerDataActions"; 
 
-const EditCustomerDataModal = ({
-  isOpen,
-  onClose,
-  data,
-  updateCustomerData,
-}) => {
+const EditCustomerDataModal = ({ isOpen, onClose, data }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    city: '',
-    comment: '',
-    status: '',
+    name: "",
+    phone: "",
+    city: "",
+    comment: "",
+    status: "",
   });
 
-  const [editLoading, setEditLoading] = useState(false);
+  const { updateCustomerData, editLoading } = useCustomerDataActions();
 
   useEffect(() => {
     if (data) {
       setFormData({
-        name: data.name || '',
-        phone: data.phone || '',
-        city: data.city || '',
-        comment: data.comment || '',
-        status: data.status || '',
+        name: data.name || "",
+        phone: data.phone || "",
+        city: data.city || "",
+        comment: data.comment || "",
+        status: data.status || "",
       });
     }
   }, [data]);
@@ -38,27 +33,19 @@ const EditCustomerDataModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setEditLoading(true);
-    const formdata = {
-      name: formData.name,
-      phone: formData.phone,
-      city: formData.city,
-      comment: formData.comment,
-      status: formData.status,
-    };
-
     try {
-      const result = await updateCustomerData(data._id, formdata);
+      const result = await updateCustomerData({
+        id: data._id,
+        data: formData,
+      });
       if (result.success) {
-        toast.success(result.message);
+        toast.success(result.message || "تم تعديل العميل بنجاح");
         onClose();
       } else {
-        toast.error(result.message || 'حدث خطأ أثناء تعديل معلومات العميل');
+        toast.error(result.message || "حدث خطأ أثناء تعديل معلومات العميل");
       }
     } catch (error) {
-      toast.error(error.message || 'حدث خطأ أثناء تعديل معلومات العميل');
-    } finally {
-      setEditLoading(false);
+      toast.error(error.message || "حدث خطأ أثناء تعديل معلومات العميل");
     }
   };
 
@@ -86,60 +73,27 @@ const EditCustomerDataModal = ({
         </h2>
 
         <form onSubmit={handleSubmit} className="flex-grow space-y-6 px-8">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              اسم العميل
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange(e, 'name')}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
-              required
-              disabled={editLoading}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              هاتف العميل
-            </label>
-            <input
-              type="text"
-              value={formData.phone}
-              onChange={(e) => handleInputChange(e, 'phone')}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
-              required
-              disabled={editLoading}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              المدينة
-            </label>
-            <input
-              type="text"
-              value={formData.city}
-              onChange={(e) => handleInputChange(e, 'city')}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
-              required
-              disabled={editLoading}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              تعليق
-            </label>
-            <input
-              type="text"
-              value={formData.comment}
-              onChange={(e) => handleInputChange(e, 'comment')}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
-              disabled={editLoading}
-            />
-          </div>
+          {["name", "phone", "city", "comment"].map((field) => (
+            <div key={field}>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {field === "name"
+                  ? "اسم العميل"
+                  : field === "phone"
+                  ? "هاتف العميل"
+                  : field === "city"
+                  ? "المدينة"
+                  : "تعليق"}
+              </label>
+              <input
+                type="text"
+                value={formData[field]}
+                onChange={(e) => handleInputChange(e, field)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
+                required={["name", "phone", "city"].includes(field)}
+                disabled={editLoading}
+              />
+            </div>
+          ))}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -148,7 +102,7 @@ const EditCustomerDataModal = ({
             <select
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
               value={formData.status}
-              onChange={(e) => handleInputChange(e, 'status')}
+              onChange={(e) => handleInputChange(e, "status")}
               disabled={editLoading}
             >
               <option value="pending">pending</option>
@@ -174,11 +128,10 @@ const EditCustomerDataModal = ({
               {editLoading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
-                'حفظ التعديلات'
+                "حفظ التعديلات"
               )}
             </button>
           </div>
-          {/* Bottom white space */}
           <div className="h-4"></div>
         </form>
       </motion.div>

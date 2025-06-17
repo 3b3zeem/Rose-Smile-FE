@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-hot-toast';
-import { Loader2, Minus } from 'lucide-react';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-hot-toast";
+import { Loader2, Minus } from "lucide-react";
+import Swal from "sweetalert2";
 
 const EditSheetModal = ({ isOpen, onClose, sheet, updateSheet }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    url: '',
+    title: "",
+    url: "",
   });
 
   const [editLoading, setEditLoading] = useState(false);
@@ -15,8 +15,8 @@ const EditSheetModal = ({ isOpen, onClose, sheet, updateSheet }) => {
   useEffect(() => {
     if (sheet) {
       setFormData({
-        title: sheet.title || '',
-        url: sheet.url || '',
+        title: sheet.title || "",
+        url: sheet.url || "",
       });
     }
   }, [sheet]);
@@ -34,15 +34,15 @@ const EditSheetModal = ({ isOpen, onClose, sheet, updateSheet }) => {
     };
 
     try {
-      const result = await updateSheet(sheet._id, data);
+      const result = await updateSheet({ id: sheet._id, data });
       if (result.success) {
         toast.success(result.message);
         onClose();
       } else {
-        toast.error(result.message || 'حدث خطأ أثناء تعديل الفورم');
+        toast.error(result.message || "حدث خطأ أثناء تعديل الفورم");
       }
     } catch (error) {
-      toast.error(error.message || 'حدث خطأ أثناء تعديل الفورم');
+      toast.error(error.message || "حدث خطأ أثناء تعديل الفورم");
     } finally {
       setEditLoading(false);
     }
@@ -79,7 +79,7 @@ const EditSheetModal = ({ isOpen, onClose, sheet, updateSheet }) => {
             <input
               type="text"
               value={formData.title}
-              onChange={(e) => handleInputChange(e, 'title')}
+              onChange={(e) => handleInputChange(e, "title")}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
               required
               disabled={editLoading}
@@ -93,7 +93,7 @@ const EditSheetModal = ({ isOpen, onClose, sheet, updateSheet }) => {
             <input
               type="text"
               value={formData.url}
-              onChange={(e) => handleInputChange(e, 'url')}
+              onChange={(e) => handleInputChange(e, "url")}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
               required
               disabled={editLoading}
@@ -117,7 +117,7 @@ const EditSheetModal = ({ isOpen, onClose, sheet, updateSheet }) => {
               {editLoading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
-                'حفظ التعديلات'
+                "حفظ التعديلات"
               )}
             </button>
           </div>

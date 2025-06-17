@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-hot-toast';
-import { Loader2, Minus } from 'lucide-react';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import useCustomerDataActions from "../../hooks/CustomerData/useCustomerDataActions"; 
 
-const AddCommentModal = ({ isOpen, onClose, data, addComment }) => {
+const AddCommentModal = ({ isOpen, onClose, data }) => {
   const [formData, setFormData] = useState({
-    comment: '',
-    status: '',
+    comment: "",
+    status: "",
   });
 
-  const [editLoading, setEditLoading] = useState(false);
+  const { addComment, addLoading } = useCustomerDataActions();
 
   useEffect(() => {
     if (data) {
       setFormData({
-        comment: data.comment || '',
-        status: data.status || '',
+        comment: data.comment || "",
+        status: data.status || "",
       });
     }
   }, [data]);
@@ -27,24 +27,29 @@ const AddCommentModal = ({ isOpen, onClose, data, addComment }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setEditLoading(true);
-    const formdata = {
-      comment: formData.comment,
-      status: formData.status,
-    };
+
+    if (!data?._id) {
+      toast.error("لا يوجد بيانات للعميل");
+      return;
+    }
 
     try {
-      const result = await addComment(data._id, formdata);
-      if (result.success) {
-        toast.success(result.message);
+      const result = await addComment({
+        id: data._id,
+        data: {
+          comment: formData.comment,
+          status: formData.status,
+        },
+      });
+
+      if (result?.success) {
+        toast.success(result.message || "تم التعديل بنجاح");
         onClose();
       } else {
-        toast.error(result.message || 'حدث خطأ أثناء تعديل معلومات العميل');
+        toast.error(result?.message || "حدث خطأ أثناء التعديل");
       }
     } catch (error) {
-      toast.error(error.message || 'حدث خطأ أثناء تعديل معلومات العميل');
-    } finally {
-      setEditLoading(false);
+      toast.error(error?.message || "حدث خطأ أثناء التعديل");
     }
   };
 
@@ -79,9 +84,9 @@ const AddCommentModal = ({ isOpen, onClose, data, addComment }) => {
             <input
               type="text"
               value={formData.comment}
-              onChange={(e) => handleInputChange(e, 'comment')}
+              onChange={(e) => handleInputChange(e, "comment")}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
-              disabled={editLoading}
+              disabled={addLoading}
             />
           </div>
 
@@ -92,8 +97,8 @@ const AddCommentModal = ({ isOpen, onClose, data, addComment }) => {
             <select
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-right"
               value={formData.status}
-              onChange={(e) => handleInputChange(e, 'status')}
-              disabled={editLoading}
+              onChange={(e) => handleInputChange(e, "status")}
+              disabled={addLoading}
             >
               <option value="pending">pending</option>
               <option value="absent">absent</option>
@@ -106,23 +111,23 @@ const AddCommentModal = ({ isOpen, onClose, data, addComment }) => {
               type="button"
               onClick={onClose}
               className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition cursor-pointer"
-              disabled={editLoading}
+              disabled={addLoading}
             >
               إغلاق
             </button>
             <button
               type="submit"
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 cursor-pointer"
-              disabled={editLoading}
+              disabled={addLoading}
             >
-              {editLoading ? (
+              {addLoading ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
-                'حفظ التعديلات'
+                "حفظ التعديلات"
               )}
             </button>
           </div>
-          {/* Bottom white space */}
+
           <div className="h-4"></div>
         </form>
       </motion.div>

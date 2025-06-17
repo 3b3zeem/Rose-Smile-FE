@@ -63,9 +63,10 @@ const AdminCustomerData = () => {
     });
 
     if (result.isConfirmed) {
+      console.log(id);
       setDeletingId(id);
       try {
-        const response = await deleteCustomerData(id);
+        const response = await deleteCustomerData({id});
         response.success
           ? toast.success(response.message)
           : toast.error(response.message);
